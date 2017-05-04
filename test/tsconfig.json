@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "lib": ["ES2015", "DOM", "ScriptHost"],
+        "module": "commonjs",
+        "target": "es5",
+        "moduleResolution": "node",
+        "allowUnreachableCode": true,
+        "typeRoots": ["node_modules/@types"],
+        "types": ["mocha"],
+        "sourceMap": true
+    }
+
+}
