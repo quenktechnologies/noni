@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import { pure } from 'fpl/monad/IO';
+import { pure } from 'afpl/monad/IO';
 
 const x = 12;
 

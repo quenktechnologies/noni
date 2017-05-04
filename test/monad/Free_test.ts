@@ -1,9 +1,9 @@
 import * as must from 'must/register';
-import { Either } from 'fpl/monad/Either';
-import { Identity } from 'fpl/monad/Identity';
-import * as Maybe from 'fpl/monad/Maybe';
-import { match } from 'fpl/control/Match';
-import * as Free from 'fpl/monad/Free';
+import { Either } from 'afpl/monad/Either';
+import { Identity } from 'afpl/monad/Identity';
+import * as Maybe from 'afpl/monad/Maybe';
+import { match } from 'afpl/control/Match';
+import * as Free from 'afpl/monad/Free';
 
 class Func {
 

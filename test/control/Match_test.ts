@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import { match, UnMatched, Matched, UnMatchedPatternError } from 'fpl/control/Match';
+import { match, UnMatched, Matched, UnMatchedPatternError } from 'afpl/control/Match';
 
 const id = x => x;
 

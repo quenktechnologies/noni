@@ -1,5 +1,5 @@
 {
-  "name": "fpl",
+  "name": "afpl",
   "version": "0.0.1",
   "description": "A Functional Programming Library for JavaScript",
   "scripts": {
@@ -9,7 +9,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/mocha": "^2.2.41",
-    "fpl": "file:src",
+    "afpl": "file:src",
     "mocha": "^3.3.0",
     "must": "^0.13.4",
     "ts-node": "^3.0.3",

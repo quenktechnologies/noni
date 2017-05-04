@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import * as Either from 'fpl/monad/Either';
+import * as Either from 'afpl/monad/Either';
 
 describe('Left', function() {
 
