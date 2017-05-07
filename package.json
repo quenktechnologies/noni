@@ -1,6 +1,6 @@
 {
   "name": "afpl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Functional Programming Library for JavaScript",
   "scripts": {
     "test": "./node_modules/.bin/mocha --opts mocha.opts test"
