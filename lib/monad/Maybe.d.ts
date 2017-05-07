@@ -41,7 +41,7 @@ export declare class Maybe<A> implements Monad<A> {
     /**
      * cata applies the corresponding function to the Maybe
      */
-    cata<C>(f: () => C, g: (A) => C): C;
+    cata<C>(f: () => C, g: (a: A) => C): C;
 }
 /**
  * Nothing

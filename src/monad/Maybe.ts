@@ -101,11 +101,11 @@ export class Maybe<A> implements Monad<A> {
     /**
      * cata applies the corresponding function to the Maybe
      */
-    cata<C>(f: () => C, g: (A) => C): C {
+    cata<C>(f: () => C, g: (a: A) => C): C {
 
         return match(this)
-            .caseOf(Nothing, f)
-            .caseOf(Just, g)
+            .caseOf(Nothing, () => f())
+            .caseOf(Just, ({ a }) => g(a))
             .end();
 
     }
