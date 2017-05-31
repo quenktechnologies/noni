@@ -1,13 +1,12 @@
 {
   "name": "afpl",
-  "version": "0.1.0",
+  "version": "0.0.4",
   "description": "A Functional Programming Library",
   "scripts": {
     "build": "npm run -s clean; npm run -s build:src; npm run -s build:package",
     "clean": "rm -R lib/*",
     "build:src": "tsc -p src",
     "build:package": "cp --remove-destination package.json lib/package.json",
-    "postinstall": "cp -n -R lib .",
     "dist": "npm run build && cd lib && npm publish",
     "test": "./node_modules/.bin/mocha --opts mocha.opts test"
   },
