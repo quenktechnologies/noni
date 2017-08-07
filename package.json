@@ -1,6 +1,6 @@
 {
   "name": "afpl",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "A Functional Programming Library",
   "scripts": {
     "build": "npm run -s clean; npm run -s build:src; npm run -s build:package",
@@ -12,8 +12,8 @@
   },
   "author": "Lasana Murray <dev@quenk.com> (http://quenk.com)",
   "license": "Apache-2.0",
-"main": "lib",
-"types":"lib/index.d.ts",
+  "main": "lib",
+  "types": "lib/index.d.ts",
   "devDependencies": {
     "@types/mocha": "^2.2.41",
     "afpl": "file:src",
