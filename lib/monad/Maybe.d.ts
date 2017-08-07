@@ -2,37 +2,12 @@ import { Monad } from './Monad';
 /**
  * Maybe
  */
-export declare class Maybe<A> implements Monad<A> {
-    static map: <A, B>(f: (a: A) => B) => (m: Maybe<A>) => Maybe<B>;
-    static chain: <A, B>(f: (a: A) => Maybe<B>) => (m: Maybe<A>) => Maybe<B>;
-    static get: <A>(m: Maybe<A>) => A;
-    static orElse: <A, B>(f: () => Maybe<B>) => (m: Maybe<A>) => Maybe<B>;
-    static orJust: <A, B>(f: () => B) => (m: Maybe<A>) => Maybe<B>;
-    /**
-     * of wraps the passed value in a Maybe
-     */
+export declare abstract class Maybe<A> implements Monad<A> {
     of(a: A): Maybe<A>;
-    /**
-     * map
-     */
-    map<B>(f: (a: A) => B): Maybe<B>;
-    /**
-       * join
-       */
+    map<B>(_: (a: A) => B): Maybe<B>;
     join(): A;
-    /**
-     * chain
-     * @summary Maybe<A> →  (A →  Maybe<B>) →  Maybe<B>
-     */
-    chain<B>(f: (a: A) => Maybe<B>): Maybe<B>;
-    /**
-     * get the value wrapped by the Maybe
-     * @throws {TypeError} if the Maybe is Nothing
-     */
+    chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
     get(): A;
-    /**
-     * orElse applies a function for transforming Nothing into a Just
-     */
     orElse<B>(f: () => Maybe<B>): Maybe<B>;
     /**
      * orJust will turn Nothing into Just, wrapping the value specified.
@@ -41,12 +16,12 @@ export declare class Maybe<A> implements Monad<A> {
     /**
      * cata applies the corresponding function to the Maybe
      */
-    cata<C>(f: () => C, g: (a: A) => C): C;
+    cata<C>(f: () => C, _g: (a: A) => C): C;
 }
 /**
  * Nothing
  */
-export declare class Nothing extends Maybe<null> {
+export declare class Nothing<A> extends Maybe<A> {
 }
 /**
  * Just
@@ -54,8 +29,14 @@ export declare class Nothing extends Maybe<null> {
 export declare class Just<A> extends Maybe<A> {
     a: A;
     constructor(a: A);
+    map<B>(f: (a: A) => B): Maybe<B>;
+    join(): A;
+    chain<B>(f: (a: A) => Maybe<B>): Maybe<B>;
+    get(): A;
+    orElse<B>(_f: () => Maybe<B>): Maybe<B>;
+    orJust<B>(_f: () => B): Maybe<B>;
+    cata<C>(_f: () => C, g: (a: A) => C): C;
 }
-export declare const map: <A, B>(m: Maybe<A>) => (f: (a: A) => B) => Maybe<B>;
 /**
  * just wraps a value in a Just
  */
@@ -63,7 +44,7 @@ export declare const just: <A>(a: A) => Maybe<A>;
 /**
  * nothing constructs nothing
  */
-export declare const nothing: () => Nothing;
+export declare const nothing: () => Nothing<void>;
 /**
  * fromAny constructs a Maybe from a value that may be null.
  */

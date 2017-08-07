@@ -14,26 +14,31 @@ export declare abstract class Free<F, A> implements Monad<A> {
     /**
      * map
      */
-    map<B>(f: (a: A) => B): any;
+    map<B>(f: (a: A) => B): Free<F, B>;
     /**
      * chain
      */
     chain<B>(g: (a: A) => Free<F, B>): Free<F, B>;
-    /**
-     * ap
-     */
-    /**
-     * apRight
-     * @summary Free<F,A> →  Free<F,B> →  Free<F,B>
-     */
     /**
      * resume the next stage of the computation
      */
     resume(): Either<F, A>;
     /**
      * hoist
-     */
-    hoist<B>(func: (fb: Functor<B>) => Functor<B>): Free<F, A>;
+    hoist<B>(func: (fb: Functor<B>) => Functor<B>): Free<F, A> {
+
+        if (this instanceof Suspend) {
+
+            return new Suspend((func(this.f))
+                .map((fr: Free<F, B>) => fr.hoist<any>(func)))
+        } else {
+
+            return this;
+
+        }
+
+    }
+    */
     /**
      * cata
      */
@@ -42,12 +47,12 @@ export declare abstract class Free<F, A> implements Monad<A> {
      * go runs the computation to completion using f to extract each stage.
      * @summmary go :: Free<F<*>, A> →  (F<Free<F,A>> →  Free<F,A>) →  A
      */
-    go<F>(f: (g: F) => Free<F, A>): A;
+    go(f: (next: F) => Free<F, A>): A;
     /**
      * run the Free chain to completion
      * @summary run :: Free<A→ A,A> →  A
      */
-    run<F>(): A;
+    run(): A;
 }
 export declare class Suspend<F, A> extends Free<F, A> {
     f: F;

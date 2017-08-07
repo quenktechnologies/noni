@@ -1,6 +1,5 @@
-import { compose, identity } from '../util';
+import { compose } from '../util';
 import { left, right, Left, Either } from './Either';
-import { match } from '../control/Match';
 import { Monad } from './Monad';
 import { Functor } from '../data/Functor';
 
@@ -23,9 +22,9 @@ export abstract class Free<F, A> implements Monad<A> {
     /**
      * map
      */
-    map<B>(f: (a: A) => B) {
+    map<B>(f: (a: A) => B): Free<F, B> {
 
-        return this.chain(compose(free, f));
+        return this.chain((a: A) => free(f(a)));
 
     }
 
@@ -34,61 +33,54 @@ export abstract class Free<F, A> implements Monad<A> {
      */
     chain<B>(g: (a: A) => Free<F, B>): Free<F, B> {
 
-        return match(this)
-            .caseOf(Suspend, ({ f }) =>
-                (typeof f === 'function') ?
-                    new Suspend(x => f(x).chain(g)) :
-                    new Suspend(f.map(free => free.chain(g))))
-            .caseOf(Return, ({ a }) =>
-                g(a))
-            .end();
+        if (this instanceof Suspend) {
+
+            let f = this.f;
+
+            return (typeof f === 'function') ?
+                new Suspend((x: A) => f(x).chain(g)) :
+                new Suspend(f.map((free: Free<F, A>) => free.chain(g)));
+
+        } else if (this instanceof Return) {
+
+            g(this.a);
+        }
 
     }
-
-    /**
-     * ap
-     */
-    // ap<B>(f: Free<(a: A) => B>): Free<F,B> {
-
-    ///  return this.chain(x => f.map(g => g(x)));
-
-    //}
-
-    /**
-     * apRight
-     * @summary Free<F,A> →  Free<F,B> →  Free<F,B>
-     */
-    //  apRight<B>(f: Free<(a: A) => B>): Free<B> {
-
-    //    return f.ap(this.map(constant(identity)));
-
-    // }
 
     /**
      * resume the next stage of the computation
      */
     resume(): Either<F, A> {
 
-        return match(this)
-            .caseOf(Suspend, ({ f }) => left<F, A>(f))
-            .caseOf(Return, ({ a }) => right<F, A>(a))
-            .end();
+        if (this instanceof Suspend) {
+
+            return left(this.f)
+
+        } else if (this instanceof Return) {
+
+            return right<F, A>(this.a);
+
+        }
 
     }
 
     /**
      * hoist
-     */
     hoist<B>(func: (fb: Functor<B>) => Functor<B>): Free<F, A> {
 
-        return match(this)
-            .caseOf(Suspend, ({ f }) =>
-                new Suspend((func(f))
-                    .map((fr: B): Free<F, B> => (<Free<F, B>><any>fr).hoist(func))))
-            .caseOf(Return, identity)
-            .end();
+        if (this instanceof Suspend) {
+
+            return new Suspend((func(this.f))
+                .map((fr: Free<F, B>) => fr.hoist<any>(func)))
+        } else {
+
+            return this;
+
+        }
 
     }
+    */
 
     /**
      * cata 
@@ -103,28 +95,30 @@ export abstract class Free<F, A> implements Monad<A> {
      * go runs the computation to completion using f to extract each stage.
      * @summmary go :: Free<F<*>, A> →  (F<Free<F,A>> →  Free<F,A>) →  A
      */
-    go<F>(f: (g: F) => Free<F, A>): A {
+    go(f: (next: F) => Free<F, A>): A {
 
-        return match(this)
-            .caseOf(Suspend, s => {
+        if (this instanceof Suspend) {
 
-                let r = s.resume();
+            let r = this.resume();
 
-                while (r instanceof Left)
-                    r = (f(r.takeLeft())).resume();
+            while (r instanceof Left)
+                r = (f(r.takeLeft())).resume();
 
-                return r.takeRight();
+            return r.takeRight();
 
-            })
-            .caseOf(Return, ({ a }) => a)
-            .end();
+        } else if (this instanceof Return) {
+
+            return this.a;
+
+        }
 
     }
+
     /**
      * run the Free chain to completion
      * @summary run :: Free<A→ A,A> →  A
      */
-    run<F>(): A {
+    run(): A {
 
         return this.go((next: F): Free<F, A> => (<Function><any>next)());
 

@@ -1,11 +1,9 @@
 import { Monad } from '../monad/Monad';
-import { match } from '../control/Match';
-import { identity } from '../util';
 
 /**
  * Either monad implementation
  */
-export class Either<L, R> implements Monad<R> {
+export abstract class Either<L, R> implements Monad<R> {
 
     of(v: R): Either<L, R> {
 
@@ -13,61 +11,143 @@ export class Either<L, R> implements Monad<R> {
 
     }
 
-    map<B>(f: (r: R) => B): Either<L, B> {
+    abstract map<B>(f: (r: R) => B): Either<L, B>;
 
-        return match(this)
-            .caseOf(Left, identity)
-            .caseOf(Right, ({ r }) => new Right<L, B>(f(r)))
-            .end();
-
-    }
-
-
-    /**
-     * bimap does a map over either side.
-     */
-    bimap<LL, RR>(f: (l: L) => LL, g: (r: R) => RR): Either<LL, RR> {
-
-        return match(this)
-            .caseOf(Left, ({ l }) => left<LL, RR>(f(l)))
-            .caseOf(Right, ({ r }) => right<LL, RR>(g(r)))
-            .end();
-
-    }
+    abstract bimap<LL, RR>(f: (l: L) => LL, g: (r: R) => RR): Either<LL, RR>;
 
     /**
      * chain
      */
-    chain<B>(f: (r: R) => Either<L, B>): Either<L, B> {
-
-        return match(this)
-            .caseOf(Left, identity)
-            .caseOf(Right, r => r.map(f).join())
-            .end();
-
-    }
+    abstract chain<B>(f: (r: R) => Either<L, B>): Either<L, B>;
 
     /**
      * join an inner monad value to the outer.
      */
-    join(): R {
+    abstract join(): Either<L, R>;
 
-        return match(this)
-            .caseOf(Left, identity)
-            .caseOf(Right, ({ r }) => r)
-            .end();
+    /**
+     * orElse returns the result of f if the Either is left.
+     */
+    abstract orElse<B>(f: (l: L) => Either<L, B>): Either<L, B>;
+
+    /**
+     * ap
+     */
+    abstract ap<B>(e: Either<L, (r: R) => B>): Either<L, B>;
+
+    /**
+      * takeLeft extracts the left value of an Either, throwing an error if the Either is right.
+      */
+    abstract takeLeft(): L;
+
+    /**
+     * takeRight is the opposite of left
+     * @summary Either<A,B> →  B|Error
+     */
+    abstract takeRight(): R;
+
+    /**
+     * cata
+     */
+    abstract cata<B>(f: (l: L) => B, g: (r: R) => B): B;
+
+}
+
+export class Left<L, R> extends Either<L, R> {
+
+    constructor(public l: L) { super(); }
+
+    map<B>(_: (r: R) => B): Either<L, B> {
+
+        return <any>this;
+
+    }
+
+    bimap<LL, RR>(f: (l: L) => LL, _: (r: R) => RR): Either<LL, RR> {
+
+        return left<LL, RR>(f(this.l));
+
+    }
+
+    chain<B>(_: (r: R) => Either<L, B>): Either<L, B> {
+
+        return <any>this;
+
+    }
+
+    join(): Either<L, R> {
+
+        return this;
+
+    }
+
+    orElse<B>(f: (l: L) => Either<L, B>): Either<L, B> {
+
+        return f(this.l);
+    }
+
+    ap<B>(_: Either<L, (r: R) => B>): Either<L, B> {
+
+        return <any>this;
+    }
+
+    takeLeft(): L {
+
+        return this.l;
+
+    }
+
+    takeRight(): R {
+
+        throw new TypeError(`Not right!`);
+    }
+
+    cata<B>(f: (l: L) => B, _: (r: R) => B): B {
+
+        return f(this.l);
+
+    }
+
+
+
+
+}
+
+export class Right<L, R> extends Either<L, R>  {
+
+    constructor(public r: R) { super(); }
+
+    map<B>(f: (r: R) => B): Either<L, B> {
+
+        return new Right(f(this.r));
+
+
+    }
+
+    bimap<LL, RR>(_: (l: L) => LL, g: (r: R) => RR): Either<LL, RR> {
+
+        return right<LL, RR>(g(this.r));
+
+    }
+
+    chain<B>(f: (r: R) => Either<L, B>): Either<L, B> {
+
+        return (<any>this.r).map(f).join();
+
+    }
+
+    join(): Either<L, R> {
+
+        return <any>this.r;
 
     }
 
     /**
      * orElse returns the result of f if the Either is left.
      */
-    orElse<B>(f: (l: L) => B): Either<L, B> {
+    orElse<B>(_: (l: L) => Either<L, B>): Either<L, B> {
 
-        return match(this)
-            .caseOf(Left, ({ l }) => f(l))
-            .caseOf(Right, x => x)
-            .end();
+        return <any>this;
 
     }
 
@@ -76,10 +156,7 @@ export class Either<L, R> implements Monad<R> {
      */
     ap<B>(e: Either<L, (r: R) => B>): Either<L, B> {
 
-        return match(this)
-            .caseOf(Left, identity)
-            .caseOf(Right, ({ r }) => e.map(f => f(r)))
-            .end();
+        return e.map(f => f((<any>this).r));
 
     }
 
@@ -88,50 +165,24 @@ export class Either<L, R> implements Monad<R> {
       */
     takeLeft(): L {
 
-        return match(this)
-            .caseOf(Left, ({ l }) => l)
-            .caseOf(Right, () => { throw new TypeError(`Not left!`); })
-            .end();
+        throw new TypeError(`Not left!`);
 
     }
 
-    /**
-     * takeRight is the opposite of left
-     * @summary Either<A,B> →  B|Error
-     */
     takeRight(): R {
 
-        return match(this)
-            .caseOf(Left, () => { throw new TypeError(`Not right!`); })
-            .caseOf(Right, ({ r }) => r)
-            .end();
+        return this.r;
 
     }
-
 
     /**
      * cata
      */
-    cata<B>(f: (l: L) => B, g: (r: R) => B): B {
+    cata<B>(_: (l: L) => B, g: (r: R) => B): B {
 
-        return match(this)
-            .caseOf(Left, ({ l }) => f(l))
-            .caseOf(Right, ({ r }) => g(r))
-            .end();
+        return g(this.r);
 
     }
-
-}
-
-export class Left<L, R> extends Either<L, R> {
-
-    constructor(public l: L) { super(); }
-
-}
-
-export class Right<L, R> extends Either<L, R>  {
-
-    constructor(public r: R) { super(); }
 
 }
 

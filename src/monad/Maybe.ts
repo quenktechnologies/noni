@@ -1,89 +1,42 @@
-import { match } from '../control/Match';
 import { Monad } from './Monad';
-import { identity } from '../util';
 
 /**
  * Maybe
  */
-export class Maybe<A> implements Monad<A> {
+export abstract class Maybe<A> implements Monad<A> {
 
-    static map = <A, B>(f: (a: A) => B) => (m: Maybe<A>): Maybe<B> => m.map(f);
-
-    static chain = <A, B>(f: (a: A) => Maybe<B>) => (m: Maybe<A>): Maybe<B> => m.chain(f);
-
-    static get = <A>(m: Maybe<A>): A => m.get();
-
-    static orElse = <A, B>(f: () => Maybe<B>) => (m: Maybe<A>): Maybe<B> => m.orElse(f);
-
-    static orJust = <A, B>(f: () => B) => (m: Maybe<A>): Maybe<B> => m.orJust(f);
-
-    /**
-     * of wraps the passed value in a Maybe
-     */
     of(a: A): Maybe<A> {
 
         return new Just(a);
     }
 
-    /**
-     * map
-     */
+    map<B>(_: (a: A) => B): Maybe<B> {
 
-    map<B>(f: (a: A) => B): Maybe<B> {
-
-        return match(this)
-            .caseOf(Nothing, identity)
-            .caseOf(Just, ({ a }) => new Just(f(a)))
-            .end();
+        return <any>this;
 
     }
 
-    /**
-       * join
-       */
     join(): A {
 
-        return match(this)
-            .caseOf(Nothing, identity)
-            .caseOf(Just, ({ a }) => a)
-            .end();
+        return <any>this;
 
     }
 
-    /**
-     * chain
-     * @summary Maybe<A> →  (A →  Maybe<B>) →  Maybe<B>
-     */
-    chain<B>(f: (a: A) => Maybe<B>): Maybe<B> {
+    chain<B>(_: (a: A) => Maybe<B>): Maybe<B> {
 
-        return match(this)
-            .caseOf(Nothing, identity)
-            .caseOf(Just, j => j.map(f).join())
-            .end();
+        return <any>this;
 
     }
-    /**
-     * get the value wrapped by the Maybe
-     * @throws {TypeError} if the Maybe is Nothing
-     */
+
     get(): A {
 
-        return match(this)
-            .caseOf(Nothing, () => { throw new TypeError('Cannot get anything from Nothing!'); })
-            .caseOf(Just, ({ a }) => a)
-            .end();
+        throw new TypeError('Cannot get anything from Nothing!');
 
     }
 
-    /**
-     * orElse applies a function for transforming Nothing into a Just
-     */
     orElse<B>(f: () => Maybe<B>): Maybe<B> {
 
-        return match(this)
-            .caseOf(Nothing, f)
-            .caseOf(Just, identity)
-            .end();
+        return f();
 
     }
 
@@ -92,30 +45,26 @@ export class Maybe<A> implements Monad<A> {
      */
     orJust<B>(f: () => B): Maybe<B> {
 
-        return match(this)
-            .caseOf(Nothing, () => just(f()))
-            .caseOf(Just, identity)
-            .end();
+        return just(f());
+
     }
 
     /**
      * cata applies the corresponding function to the Maybe
      */
-    cata<C>(f: () => C, g: (a: A) => C): C {
+    cata<C>(f: () => C, _g: (a: A) => C): C {
 
-        return match(this)
-            .caseOf(Nothing, () => f())
-            .caseOf(Just, ({ a }) => g(a))
-            .end();
+        return f();
 
     }
+
 
 }
 
 /**
  * Nothing
  */
-export class Nothing extends Maybe<null> { }
+export class Nothing<A> extends Maybe<A> { }
 
 /**
  * Just
@@ -128,14 +77,47 @@ export class Just<A> extends Maybe<A> {
 
     }
 
-}
+    map<B>(f: (a: A) => B): Maybe<B> {
 
-export const map = <A, B>(m: Maybe<A>) => (f: (a: A) => B): Maybe<B> => {
+        return new Just(f(this.a));
 
-    return match(m)
-        .caseOf(Nothing, identity)
-        .caseOf(Just, ({ a }) => new Just(f(a)))
-        .end();
+    }
+
+    join(): A {
+
+        return this.a
+
+    }
+
+    chain<B>(f: (a: A) => Maybe<B>): Maybe<B> {
+
+        return this.map(f).join();
+    }
+
+    get(): A {
+
+        return this.a;
+
+    }
+
+    orElse<B>(_f: () => Maybe<B>): Maybe<B> {
+
+        return <any>this;
+
+    }
+
+    orJust<B>(_f: () => B): Maybe<B> {
+
+        return <any>this;
+
+    }
+
+    cata<C>(_f: () => C, g: (a: A) => C): C {
+
+        return g(this.a);
+
+    }
+
 
 }
 
@@ -147,7 +129,7 @@ export const just = <A>(a: A): Maybe<A> => new Just(a);;
 /**
  * nothing constructs nothing
  */
-export const nothing = (): Nothing => new Nothing();
+export const nothing = (): Nothing<void> => new Nothing();
 
 /**
  * fromAny constructs a Maybe from a value that may be null.
