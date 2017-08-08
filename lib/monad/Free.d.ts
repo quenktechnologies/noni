@@ -2,11 +2,26 @@ import { Either } from './Either';
 import { Monad } from './Monad';
 import { Functor } from '../data/Functor';
 /**
+ * free wraps a value in a free
+ */
+export declare const free: <A>(a: A) => Return<A>;
+/**
+ * suspend lifts a function into a Free monad to mimic tail call recursion.
+ */
+export declare const suspend: <A>(f: () => A) => Suspend<(x: {}) => Return<{}>, {}>;
+/**
+ * liftF lifts a Functor into a Free.
+ */
+export declare const liftF: <F extends Functor<A>, A>(f: F) => Suspend<Functor<Return<A>>, {}>;
+/**
  * Free is a Free monad that also implements a Free Applicative (almost).
  *
  * Inspired by https://cwmyers.github.io/monet.js/#free
  */
 export declare abstract class Free<F, A> implements Monad<A> {
+    static free: <A>(a: A) => Return<A>;
+    static suspend: <A>(f: () => A) => Suspend<(x: {}) => Return<{}>, {}>;
+    static liftF: <F extends Functor<A>, A>(f: F) => Suspend<Functor<Return<A>>, {}>;
     /**
      * of
      */
@@ -62,15 +77,3 @@ export declare class Return<A> extends Free<any, A> {
     a: A;
     constructor(a: A);
 }
-/**
- * free wraps a value in a free
- */
-export declare const free: <A>(a: A) => Return<A>;
-/**
- * suspend lifts a function into a Free monad to mimic tail call recursion.
- */
-export declare const suspend: <A>(f: () => A) => Suspend<(x: {}) => Return<{}>, {}>;
-/**
- * liftF lifts a Functor into a Free.
- */
-export declare const liftF: <F extends Functor<A>, A>(f: F) => Suspend<Functor<Return<A>>, {}>;

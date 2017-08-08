@@ -7,6 +7,34 @@ export interface StateCallback<A, S> {
 }
 
 /**
+ * get the state from the internals of the monad
+ */
+export const get = <S>() => new State((s: S) => ([s, s]));
+
+/**
+ * put
+ */
+export const put = <S>(s: S) => new State(() => ([null, s]));
+
+/**
+ * modify the state
+ * @summary  (S →  S) →  State<S →  {A, S} >
+ */
+export const modify = <S>(f: (s: S) => S) => get().chain((s: S) => put(f(s)));
+
+/**
+ * gets applies a function to the state putting using the result
+ * as the result of the computation.
+ * @summary (S →  A) →  State<S →  {A, S}>
+ */
+export const gets = <S, A>(f: (s: S) => A) => get().chain((s: S) => state(f(s)));
+
+/**
+ * state create a new State monad
+ */
+export const state = <A, S>(a: A) => new State((s: S) => ([a, s]));
+
+/**
  * State is a monadic class that we use to hold information that changes
  * during computation.
  *
@@ -23,6 +51,12 @@ export class State<A, S> implements Monad<A> {
         this.f = f;
 
     }
+
+    static get = get;
+    static put = put;
+    static modify = modify;
+    static gets = gets;
+    static state = state;
 
     /**
      * of wraps a value in the State monad.
@@ -98,31 +132,4 @@ export class State<A, S> implements Monad<A> {
 
 }
 
-/**
- * get the state from the internals of the monad
- */
-export const get = <S>() => new State((s: S) => ([s, s]));
-
-/**
- * put
- */
-export const put = <S>(s: S) => new State(() => ([null, s]));
-
-/**
- * modify the state
- * @summary  (S →  S) →  State<S →  {A, S} >
- */
-export const modify = <S>(f: (s: S) => S) => get().chain((s: S) => put(f(s)));
-
-/**
- * gets applies a function to the state putting using the result
- * as the result of the computation.
- * @summary (S →  A) →  State<S →  {A, S}>
- */
-export const gets = <S, A>(f: (s: S) => A) => get().chain((s: S) => state(f(s)));
-
-/**
- * state create a new State monad
- */
-export const state = <A, S>(a: A) => new State((s: S) => ([a, s]));
 

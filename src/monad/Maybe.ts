@@ -1,9 +1,28 @@
 import { Monad } from './Monad';
 
 /**
+ * just wraps a value in a Just
+ */
+export const just = <A>(a: A): Maybe<A> => new Just(a);;
+
+/**
+ * nothing constructs nothing
+ */
+export const nothing = (): Nothing<void> => new Nothing();
+
+/**
+ * fromAny constructs a Maybe from a value that may be null.
+ */
+export const fromAny = <A>(a: A): Maybe<A> => a == null ? new Nothing() : just(a);
+
+/**
  * Maybe
  */
 export abstract class Maybe<A> implements Monad<A> {
+
+    static just = just;
+    static nothing = nothing;
+    static fromAny = fromAny;
 
     of(a: A): Maybe<A> {
 
@@ -121,17 +140,4 @@ export class Just<A> extends Maybe<A> {
 
 }
 
-/**
- * just wraps a value in a Just
- */
-export const just = <A>(a: A): Maybe<A> => new Just(a);;
 
-/**
- * nothing constructs nothing
- */
-export const nothing = (): Nothing<void> => new Nothing();
-
-/**
- * fromAny constructs a Maybe from a value that may be null.
- */
-export const fromAny = <A>(a: A): Maybe<A> => a == null ? new Nothing() : just(a);

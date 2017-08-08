@@ -1,8 +1,18 @@
 import { Monad } from '../monad/Monad';
 /**
+ * left wraps a value on the left side.
+ */
+export declare const left: <A, B>(v: A) => Left<A, B>;
+/**
+ * right wraps a value on the right side.
+ */
+export declare const right: <A, B>(v: B) => Right<A, B>;
+/**
  * Either monad implementation
  */
 export declare abstract class Either<L, R> implements Monad<R> {
+    static left: <A, B>(v: A) => Left<A, B>;
+    static right: <A, B>(v: B) => Right<A, B>;
     of(v: R): Either<L, R>;
     abstract map<B>(f: (r: R) => B): Either<L, B>;
     abstract bimap<LL, RR>(f: (l: L) => LL, g: (r: R) => RR): Either<LL, RR>;
@@ -74,11 +84,3 @@ export declare class Right<L, R> extends Either<L, R> {
      */
     cata<B>(_: (l: L) => B, g: (r: R) => B): B;
 }
-/**
- * left wraps a value on the left side.
- */
-export declare const left: <A, B>(v: A) => Left<A, B>;
-/**
- * right wraps a value on the right side.
- */
-export declare const right: <A, B>(v: B) => Right<A, B>;

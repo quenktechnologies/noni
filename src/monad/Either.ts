@@ -1,9 +1,22 @@
 import { Monad } from '../monad/Monad';
 
 /**
+ * left wraps a value on the left side.
+ */
+export const left = <A, B>(v: A) => new Left<A, B>(v);
+
+/**
+ * right wraps a value on the right side.
+ */
+export const right = <A, B>(v: B) => new Right<A, B>(v);
+
+/**
  * Either monad implementation
  */
 export abstract class Either<L, R> implements Monad<R> {
+
+    static left = left;
+    static right = right;
 
     of(v: R): Either<L, R> {
 
@@ -186,12 +199,4 @@ export class Right<L, R> extends Either<L, R>  {
 
 }
 
-/**
- * left wraps a value on the left side.
- */
-export const left = <A, B>(v: A) => new Left<A, B>(v);
 
-/**
- * right wraps a value on the right side.
- */
-export const right = <A, B>(v: B) => new Right<A, B>(v);

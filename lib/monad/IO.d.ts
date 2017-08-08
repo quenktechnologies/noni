@@ -1,9 +1,22 @@
 /**
+ * wrapIO a value in the IO monad
+ */
+export declare const wrapIO: <A>(a: A) => IO<A>;
+/**
+ * safeIO accepts a function that has side effects and wrapIOs it in an IO Monad.
+ */
+export declare const safeIO: <A>(f: () => A) => IO<A>;
+export declare const pure: <A>(a: A) => IO<A>;
+export declare const suspend: <A>(f: () => A) => IO<A>;
+/**
  * IO monadic type for containing interactions with the 'real world'.
  */
 export declare class IO<A> {
     private effect;
     constructor(effect: () => A);
+    static safeIO: <A>(f: () => A) => IO<A>;
+    static pure: <A>(a: A) => IO<A>;
+    static suspend: <A>(f: () => A) => IO<A>;
     static chain: <A, B>(f: (a: A) => IO<B>) => (m: IO<A>) => IO<B>;
     of(v: A): IO<A>;
     map<B>(f: (a: A) => B): IO<B>;
@@ -18,13 +31,3 @@ export declare class IO<A> {
      */
     run(): A;
 }
-/**
- * wrapIO a value in the IO monad
- */
-export declare const wrapIO: <A>(a: A) => IO<A>;
-/**
- * safeIO accepts a function that has side effects and wrapIOs it in an IO Monad.
- */
-export declare const safeIO: <A>(f: () => A) => IO<A>;
-export declare const pure: <A>(a: A) => IO<A>;
-export declare const suspend: <A>(f: () => A) => IO<A>;
