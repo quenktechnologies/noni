@@ -8,11 +8,16 @@ export declare const left: <A, B>(v: A) => Left<A, B>;
  */
 export declare const right: <A, B>(v: B) => Right<A, B>;
 /**
+ * fromBoolean constructs an Either using a boolean value.
+ */
+export declare const fromBoolean: (b: boolean) => Either<boolean, boolean>;
+/**
  * Either monad implementation
  */
 export declare abstract class Either<L, R> implements Monad<R> {
     static left: <A, B>(v: A) => Left<A, B>;
     static right: <A, B>(v: B) => Right<A, B>;
+    static fromBoolean: (b: boolean) => Either<boolean, boolean>;
     of(v: R): Either<L, R>;
     abstract map<B>(f: (r: R) => B): Either<L, B>;
     abstract bimap<LL, RR>(f: (l: L) => LL, g: (r: R) => RR): Either<LL, RR>;

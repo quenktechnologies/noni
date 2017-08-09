@@ -11,12 +11,18 @@ export const left = <A, B>(v: A) => new Left<A, B>(v);
 export const right = <A, B>(v: B) => new Right<A, B>(v);
 
 /**
+ * fromBoolean constructs an Either using a boolean value.
+ */
+export const fromBoolean = (b: boolean): Either<boolean, boolean> => b ? right(true) : left(false);
+
+/**
  * Either monad implementation
  */
 export abstract class Either<L, R> implements Monad<R> {
 
     static left = left;
     static right = right;
+    static fromBoolean = fromBoolean;
 
     of(v: R): Either<L, R> {
 
