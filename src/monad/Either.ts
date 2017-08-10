@@ -3,12 +3,12 @@ import { Monad } from '../monad/Monad';
 /**
  * left wraps a value on the left side.
  */
-export const left = <A, B>(v: A) => new Left<A, B>(v);
+export const left = <A, B>(a: A) => new Left<A, B>(a);
 
 /**
  * right wraps a value on the right side.
  */
-export const right = <A, B>(v: B) => new Right<A, B>(v);
+export const right = <A, B>(b: B) => new Right<A, B>(b);
 
 /**
  * fromBoolean constructs an Either using a boolean value.
@@ -40,14 +40,9 @@ export abstract class Either<L, R> implements Monad<R> {
     abstract chain<B>(f: (r: R) => Either<L, B>): Either<L, B>;
 
     /**
-     * join an inner monad value to the outer.
-     */
-    abstract join(): Either<L, R>;
-
-    /**
      * orElse returns the result of f if the Either is left.
      */
-    abstract orElse<B>(f: (l: L) => Either<L, B>): Either<L, B>;
+    abstract orElse(f: (l: L) => Either<L, R>): Either<L, R>;
 
     /**
      * ap
@@ -78,7 +73,7 @@ export class Left<L, R> extends Either<L, R> {
 
     map<B>(_: (r: R) => B): Either<L, B> {
 
-        return <any>this;
+        return new Left<L, B>(this.l);
 
     }
 
@@ -90,13 +85,7 @@ export class Left<L, R> extends Either<L, R> {
 
     chain<B>(_: (r: R) => Either<L, B>): Either<L, B> {
 
-        return <any>this;
-
-    }
-
-    join(): Either<L, R> {
-
-        return this;
+        return new Left<L, B>(this.l);
 
     }
 
@@ -107,7 +96,7 @@ export class Left<L, R> extends Either<L, R> {
 
     ap<B>(_: Either<L, (r: R) => B>): Either<L, B> {
 
-        return <any>this;
+        return new Left<L, B>(this.l);
     }
 
     takeLeft(): L {
@@ -126,9 +115,6 @@ export class Left<L, R> extends Either<L, R> {
         return f(this.l);
 
     }
-
-
-
 
 }
 
@@ -151,22 +137,16 @@ export class Right<L, R> extends Either<L, R>  {
 
     chain<B>(f: (r: R) => Either<L, B>): Either<L, B> {
 
-        return (<any>this.r).map(f).join();
-
-    }
-
-    join(): Either<L, R> {
-
-        return <any>this.r;
+        return f(this.r);
 
     }
 
     /**
      * orElse returns the result of f if the Either is left.
      */
-    orElse<B>(_: (l: L) => Either<L, B>): Either<L, B> {
+    orElse(_: (l: L) => Either<L, R>): Either<L, R> {
 
-        return <any>this;
+        return new Right<L, R>(this.r);
 
     }
 
@@ -175,7 +155,7 @@ export class Right<L, R> extends Either<L, R>  {
      */
     ap<B>(e: Either<L, (r: R) => B>): Either<L, B> {
 
-        return e.map(f => f((<any>this).r));
+        return e.map(f => f(this.r));
 
     }
 

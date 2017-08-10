@@ -29,21 +29,34 @@ export abstract class Maybe<A> implements Monad<A> {
         return new Just(a);
     }
 
+    abstract map<B>(_: (a: A) => B): Maybe<B>;
+
+    abstract chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
+
+    abstract get(): A
+
+    abstract orElse<B>(f: () => Maybe<B>): Maybe<B>;
+
+    abstract orJust<B>(f: () => B): Maybe<B>;
+
+    abstract cata<C>(f: () => C, _g: (a: A) => C): C;
+
+}
+
+/**
+ * Nothing
+ */
+export class Nothing<A> extends Maybe<A> {
+
     map<B>(_: (a: A) => B): Maybe<B> {
 
-        return <any>this;
-
-    }
-
-    join(): A {
-
-        return <any>this;
+        return new Nothing<B>();
 
     }
 
     chain<B>(_: (a: A) => Maybe<B>): Maybe<B> {
 
-        return <any>this;
+        return new Nothing<B>();
 
     }
 
@@ -77,13 +90,7 @@ export abstract class Maybe<A> implements Monad<A> {
 
     }
 
-
 }
-
-/**
- * Nothing
- */
-export class Nothing<A> extends Maybe<A> { }
 
 /**
  * Just
@@ -110,7 +117,8 @@ export class Just<A> extends Maybe<A> {
 
     chain<B>(f: (a: A) => Maybe<B>): Maybe<B> {
 
-        return this.map(f).join();
+        return f(this.a);
+
     }
 
     get(): A {

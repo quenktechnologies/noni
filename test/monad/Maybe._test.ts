@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import * as Maybe from 'afpl/monad/Maybe';
+import { Maybe } from '../../src';
 
 const one = () => 1;
 const sqr = x => x * x;

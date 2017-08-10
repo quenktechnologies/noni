@@ -14,10 +14,13 @@ export interface ObjectMapper<A> {
  * identity is the famed identity function.
  */
 export declare const identity: <A>(a: A) => A;
+export interface O<A> {
+    [key: string]: A;
+}
 /**
  * merge two objects easily
  */
-export declare const merge: (o1: Object, o2: Object) => Object;
+export declare const merge: <A>(o1: O<A>, o2: O<A>) => O<A>;
 /**
  * reduce an object's keys (in no guaranteed order)
  */

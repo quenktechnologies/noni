@@ -19,8 +19,18 @@ export declare abstract class Maybe<A> implements Monad<A> {
     static nothing: () => Nothing<void>;
     static fromAny: <A>(a: A) => Maybe<A>;
     of(a: A): Maybe<A>;
+    abstract map<B>(_: (a: A) => B): Maybe<B>;
+    abstract chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
+    abstract get(): A;
+    abstract orElse<B>(f: () => Maybe<B>): Maybe<B>;
+    abstract orJust<B>(f: () => B): Maybe<B>;
+    abstract cata<C>(f: () => C, _g: (a: A) => C): C;
+}
+/**
+ * Nothing
+ */
+export declare class Nothing<A> extends Maybe<A> {
     map<B>(_: (a: A) => B): Maybe<B>;
-    join(): A;
     chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
     get(): A;
     orElse<B>(f: () => Maybe<B>): Maybe<B>;
@@ -32,11 +42,6 @@ export declare abstract class Maybe<A> implements Monad<A> {
      * cata applies the corresponding function to the Maybe
      */
     cata<C>(f: () => C, _g: (a: A) => C): C;
-}
-/**
- * Nothing
- */
-export declare class Nothing<A> extends Maybe<A> {
 }
 /**
  * Just

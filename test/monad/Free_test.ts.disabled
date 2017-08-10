@@ -1,9 +1,5 @@
 import * as must from 'must/register';
-import { Either } from 'afpl/monad/Either';
-import { Identity } from 'afpl/monad/Identity';
-import * as Maybe from 'afpl/monad/Maybe';
-import { match } from 'afpl/control/Match';
-import * as Free from 'afpl/monad/Free';
+import { Either, Identity, Maybe, Free } from '../../src';
 
 class Func {
 
@@ -166,6 +162,7 @@ describe('hoist', function() {
 
 });
 
+/*
 describe('fold', function() {
 
     it('Free<F<A>> →  (F<X> → M<X>) →  M<A>', function() {
@@ -204,3 +201,4 @@ describe('reduce', function() {
     });
 
 });
+*/

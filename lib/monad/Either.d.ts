@@ -2,11 +2,11 @@ import { Monad } from '../monad/Monad';
 /**
  * left wraps a value on the left side.
  */
-export declare const left: <A, B>(v: A) => Left<A, B>;
+export declare const left: <A, B>(a: A) => Left<A, B>;
 /**
  * right wraps a value on the right side.
  */
-export declare const right: <A, B>(v: B) => Right<A, B>;
+export declare const right: <A, B>(b: B) => Right<A, B>;
 /**
  * fromBoolean constructs an Either using a boolean value.
  */
@@ -15,8 +15,8 @@ export declare const fromBoolean: (b: boolean) => Either<boolean, boolean>;
  * Either monad implementation
  */
 export declare abstract class Either<L, R> implements Monad<R> {
-    static left: <A, B>(v: A) => Left<A, B>;
-    static right: <A, B>(v: B) => Right<A, B>;
+    static left: <A, B>(a: A) => Left<A, B>;
+    static right: <A, B>(b: B) => Right<A, B>;
     static fromBoolean: (b: boolean) => Either<boolean, boolean>;
     of(v: R): Either<L, R>;
     abstract map<B>(f: (r: R) => B): Either<L, B>;
@@ -26,13 +26,9 @@ export declare abstract class Either<L, R> implements Monad<R> {
      */
     abstract chain<B>(f: (r: R) => Either<L, B>): Either<L, B>;
     /**
-     * join an inner monad value to the outer.
-     */
-    abstract join(): Either<L, R>;
-    /**
      * orElse returns the result of f if the Either is left.
      */
-    abstract orElse<B>(f: (l: L) => Either<L, B>): Either<L, B>;
+    abstract orElse(f: (l: L) => Either<L, R>): Either<L, R>;
     /**
      * ap
      */
@@ -57,7 +53,6 @@ export declare class Left<L, R> extends Either<L, R> {
     map<B>(_: (r: R) => B): Either<L, B>;
     bimap<LL, RR>(f: (l: L) => LL, _: (r: R) => RR): Either<LL, RR>;
     chain<B>(_: (r: R) => Either<L, B>): Either<L, B>;
-    join(): Either<L, R>;
     orElse<B>(f: (l: L) => Either<L, B>): Either<L, B>;
     ap<B>(_: Either<L, (r: R) => B>): Either<L, B>;
     takeLeft(): L;
@@ -70,11 +65,10 @@ export declare class Right<L, R> extends Either<L, R> {
     map<B>(f: (r: R) => B): Either<L, B>;
     bimap<LL, RR>(_: (l: L) => LL, g: (r: R) => RR): Either<LL, RR>;
     chain<B>(f: (r: R) => Either<L, B>): Either<L, B>;
-    join(): Either<L, R>;
     /**
      * orElse returns the result of f if the Either is left.
      */
-    orElse<B>(_: (l: L) => Either<L, B>): Either<L, B>;
+    orElse(_: (l: L) => Either<L, R>): Either<L, R>;
     /**
      * ap
      */

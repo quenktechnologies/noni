@@ -1,17 +1,17 @@
 import * as must from 'must/register';
-import * as Either from 'afpl/monad/Either';
+import { Either } from '../../src';
 
 describe('Left', function() {
 
     it('Left#map<A> :: (A →  B) →  Left<A>', function() {
 
-        must(Either.left(12).map(v => v * v).l).be(12);
+        must(Either.left(12).map((v: number) => v * v).takeLeft()).be(12);
 
     });
 
     it('Left#chain<A> :: (A →  B) →  Left<B>', function() {
 
-        must(Either.left(12).chain(() => Either.left(144)).l).be(12);
+        must(Either.left(12).chain(() => Either.left(144)).takeLeft()).be(12);
 
     });
 
@@ -21,13 +21,13 @@ describe('Right', function() {
 
     it('Right#map<A> :: (A → B) →  Right<B>', function() {
 
-        must(Either.right(12).map(v => v * v).r).be(144);
+        must(Either.right(12).map(v => v * v).takeRight()).be(144);
 
     });
 
     it('Right#chain<A> :: (A →  B) →  Left<B>', function() {
 
-        must(Either.right(12).chain(() => Either.right(144)).r).be(144);
+        must(Either.right(12).chain(() => Either.right(144)).takeRight()).be(144);
 
     });
 

@@ -26,10 +26,17 @@ export interface ObjectMapper<A> {
  */
 export const identity = <A>(a: A): A => a;
 
+export interface O<A> {
+
+    [key: string]: A
+
+}
+
 /**
  * merge two objects easily
  */
-export const merge = (o1: Object, o2: Object): Object => Object.assign({}, o1, o2);
+export const merge = <A>(o1: O<A>, o2: O<A>): O<A> =>
+    <O<A>><any>(<any>Object).assign({}, o1, o2);
 
 /**
  * reduce an object's keys (in no guaranteed order)
