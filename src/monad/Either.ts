@@ -45,6 +45,11 @@ export abstract class Either<L, R> implements Monad<R> {
     abstract orElse(f: (l: L) => Either<L, R>): Either<L, R>;
 
     /**
+     * orRight is like orElse except it just expects the value
+     */
+    abstract orRight(f: (l: L) => R): Either<L, R>;
+
+    /**
      * ap
      */
     abstract ap<B>(e: Either<L, (r: R) => B>): Either<L, B>;
@@ -92,6 +97,12 @@ export class Left<L, R> extends Either<L, R> {
     orElse<B>(f: (l: L) => Either<L, B>): Either<L, B> {
 
         return f(this.l);
+    }
+
+    orRight(f: (l: L) => R): Either<L, R> {
+
+        return new Right(f(this.l));
+
     }
 
     ap<B>(_: Either<L, (r: R) => B>): Either<L, B> {
@@ -146,7 +157,13 @@ export class Right<L, R> extends Either<L, R>  {
      */
     orElse(_: (l: L) => Either<L, R>): Either<L, R> {
 
-        return new Right<L, R>(this.r);
+        return this;
+
+    }
+
+    orRight(_: (l: L) => R): Either<L, R> {
+
+        return this;
 
     }
 
