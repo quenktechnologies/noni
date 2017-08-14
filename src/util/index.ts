@@ -15,9 +15,9 @@ export interface ObjectReducer<A, B> {
 
 }
 
-export interface ObjectMapper<A> {
+export interface ObjectMapper<A, B> {
 
-    (value?: A, key?: string, hash?: Hash<A>): A
+    (value?: A, key?: string, hash?: Hash<A>): B
 
 }
 
@@ -47,7 +47,7 @@ export const reduce = <A, B>(o: Hash<A>, f: ObjectReducer<A, B>, accum?: B) =>
 /**
  * map over an object (in no guaranteed oreder)
  */
-export const map = <A>(o: Hash<A>, f: ObjectMapper<A>) =>
+export const map = <A, B>(o: Hash<A>, f: ObjectMapper<A, B>) =>
     Object.keys(o).map((k => f(o[k], k, o)));
 
 /**

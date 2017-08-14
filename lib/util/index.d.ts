@@ -7,8 +7,8 @@ export interface Hash<A> {
 export interface ObjectReducer<A, B> {
     (accum?: B, value?: A, key?: string, hash?: Hash<A>): B;
 }
-export interface ObjectMapper<A> {
-    (value?: A, key?: string, hash?: Hash<A>): A;
+export interface ObjectMapper<A, B> {
+    (value?: A, key?: string, hash?: Hash<A>): B;
 }
 /**
  * identity is the famed identity function.
@@ -28,7 +28,7 @@ export declare const reduce: <A, B>(o: Hash<A>, f: ObjectReducer<A, B>, accum?: 
 /**
  * map over an object (in no guaranteed oreder)
  */
-export declare const map: <A>(o: Hash<A>, f: ObjectMapper<A>) => A[];
+export declare const map: <A, B>(o: Hash<A>, f: ObjectMapper<A, B>) => B[];
 /**
  * compose two functions into one.
  */
