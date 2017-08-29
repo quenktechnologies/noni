@@ -36,7 +36,7 @@ export interface O<A> {
  * merge two objects easily
  */
 export const merge = <A, B>(...o: A[]): B =>
-    Object.assign.apply(Object, o);
+    Object.assign.apply(Object, [{}].concat(o));
 
 /**
  * reduce an object's keys (in no guaranteed order)
