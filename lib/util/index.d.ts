@@ -20,7 +20,7 @@ export interface O<A> {
 /**
  * merge two objects easily
  */
-export declare const merge: <A>(...o: A[]) => O<A>;
+export declare const merge: <A, B>(...o: A[]) => B;
 /**
  * reduce an object's keys (in no guaranteed order)
  */

@@ -35,7 +35,7 @@ export interface O<A> {
 /**
  * merge two objects easily
  */
-export const merge = <A,B>(...o: A[]): O<B> =>
+export const merge = <A, B>(...o: A[]): B =>
     Object.assign.apply(Object, o);
 
 /**
