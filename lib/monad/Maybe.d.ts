@@ -6,17 +6,18 @@ export declare const just: <A>(a: A) => Maybe<A>;
 /**
  * nothing constructs nothing
  */
-export declare const nothing: () => Nothing<void>;
+export declare const nothing: <A>() => Nothing<A>;
 /**
  * fromAny constructs a Maybe from a value that may be null.
  */
 export declare const fromAny: <A>(a: A) => Maybe<A>;
+export declare const fromArray: <A>(a: A[]) => Maybe<A[]>;
 /**
  * Maybe
  */
 export declare abstract class Maybe<A> implements Monad<A> {
     static just: <A>(a: A) => Maybe<A>;
-    static nothing: () => Nothing<void>;
+    static nothing: <A>() => Nothing<A>;
     static fromAny: <A>(a: A) => Maybe<A>;
     of(a: A): Maybe<A>;
     abstract map<B>(_: (a: A) => B): Maybe<B>;

@@ -8,12 +8,20 @@ export const just = <A>(a: A): Maybe<A> => new Just(a);;
 /**
  * nothing constructs nothing
  */
-export const nothing = (): Nothing<void> => new Nothing();
+export const nothing = <A>() => new Nothing<A>();
 
 /**
  * fromAny constructs a Maybe from a value that may be null.
  */
-export const fromAny = <A>(a: A): Maybe<A> => a == null ? new Nothing() : just(a);
+export const fromAny = <A>(a: A): Maybe<A> => a == null ? nothing<A>() : just(a);
+
+/**
+ * fromArray checks an array to see if it's empty (or full of nulls)
+ * and returns a Maybe.
+ */
+export const fromArray = <A>(a: A[]): Maybe<A[]> =>
+    ((a.length === 0) || (a.reduce((c, v) => (v == null) ? c + 1 : c, 0) === 0)) ?
+        nothing<A[]>() : just(a)
 
 /**
  * Maybe
