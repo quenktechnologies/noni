@@ -20,7 +20,7 @@ export const fromAny = <A>(a: A): Maybe<A> => a == null ? nothing<A>() : just(a)
  * and returns a Maybe.
  */
 export const fromArray = <A>(a: A[]): Maybe<A[]> =>
-    ((a.length === 0) || (a.reduce((c, v) => (v == null) ? c + 1 : c, 0) === 0)) ?
+    ((a.length === 0) || (a.reduce((c, v) => (v == null) ? c + 1 : c, 0) === a.length)) ?
         nothing<A[]>() : just(a)
 
 /**
