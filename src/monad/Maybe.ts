@@ -31,6 +31,7 @@ export abstract class Maybe<A> implements Monad<A> {
     static just = just;
     static nothing = nothing;
     static fromAny = fromAny;
+    static fromArray = fromArray;
 
     of(a: A): Maybe<A> {
 
