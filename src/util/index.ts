@@ -36,6 +36,7 @@ export interface O<A> {
  * merge two objects easily
  */
 export const merge = <A, B>(...o: A[]): B =>
+
     Object.assign.apply(Object, [{}].concat(o));
 
 /**
@@ -44,19 +45,24 @@ export const merge = <A, B>(...o: A[]): B =>
 export const fuse = <A, B>(...args: A[]): B =>
     args.reduce<any>((o: B, c: A = (<any>{})) =>
         reduce(c, (co: B, cc: any, k: string) =>
-            typeof cc !== 'object' ?
-                merge(co, { [k]: cc }) :
-                merge<any, B>(co, {
-                    [k]: (typeof (<any>co)[k] !== 'object') ?
-                        merge((<any>co)[k], cc) :
-                        fuse((<any>co)[k], cc)
-                }), o), {})
+            Array.isArray(cc) ?
+                (Array.isArray((<any>co)[k]) ?
+                    merge(co, { [k]: ((<any>co)[k]).map(copy).concat(cc.map(copy)) }) :
+                    merge<any, B>(co, { [k]: cc.map(copy) })) :
+                typeof cc !== 'object' ?
+                    merge(co, { [k]: cc }) :
+                    merge<any, B>(co, {
+                        [k]: (typeof (<any>co)[k] !== 'object') ?
+                            merge((<any>co)[k], cc) :
+                            fuse((<any>co)[k], cc)
+                    }), o), {})
 
 export const copy = <A, B>(o: A): B =>
     (Array.isArray(o)) ?
         o.map(copy) :
         (typeof o === 'object') ?
-            reduce<any, any>(o, (p, c, k) => merge<any, any>(p, { [k]: copy(c) }), {}) : o;
+            reduce<any, any>(o, (p, c, k) =>
+                merge<any, any>(p, { [k]: copy(c) }), {}) : o;
 
 /**
  * reduce an object's keys (in no guaranteed order)

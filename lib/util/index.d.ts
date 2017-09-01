@@ -22,6 +22,11 @@ export interface O<A> {
  */
 export declare const merge: <A, B>(...o: A[]) => B;
 /**
+ * fuse is the deep version of merge
+ */
+export declare const fuse: <A, B>(...args: A[]) => B;
+export declare const copy: <A, B>(o: A) => B;
+/**
  * reduce an object's keys (in no guaranteed order)
  */
 export declare const reduce: <A, B>(o: Hash<A>, f: ObjectReducer<A, B>, accum?: B) => B;
