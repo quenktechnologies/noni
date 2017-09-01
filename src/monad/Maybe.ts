@@ -1,4 +1,5 @@
 import { Monad } from './Monad';
+import { Either, left, right } from './Either';
 
 /**
  * just wraps a value in a Just
@@ -50,6 +51,8 @@ export abstract class Maybe<A> implements Monad<A> {
 
     abstract cata<C>(f: () => C, _g: (a: A) => C): C;
 
+    abstract toEither(): Either<undefined, A>
+
 }
 
 /**
@@ -96,6 +99,12 @@ export class Nothing<A> extends Maybe<A> {
     cata<C>(f: () => C, _g: (a: A) => C): C {
 
         return f();
+
+    }
+
+    toEither(): Either<undefined, A> {
+
+        return left<undefined, A>(undefined);
 
     }
 
@@ -154,6 +163,11 @@ export class Just<A> extends Maybe<A> {
 
     }
 
+    toEither(): Either<undefined, A> {
+
+        return right<undefined, A>(this.a);
+
+    }
 
 }
 
