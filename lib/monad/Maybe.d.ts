@@ -44,6 +44,7 @@ export declare abstract class Maybe<A> implements Monad<A> {
     static fromArray: <A>(a: A[]) => Maybe<A[]>;
     static fromString: (s: string) => Maybe<string>;
     static fromBoolean: (b: boolean) => Maybe<boolean>;
+    static fromNumber: (n: number) => Maybe<number>;
     of(a: A): Maybe<A>;
     abstract map<B>(_: (a: A) => B): Maybe<B>;
     abstract chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;

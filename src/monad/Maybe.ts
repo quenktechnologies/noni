@@ -27,26 +27,26 @@ export const fromArray = <A>(a: A[]): Maybe<A[]> =>
 /**
  * fromOBject uses Object.keys to turn see if an object has any own properties.
  */
-export const fromObject = <A>(o:A): Maybe<A> => 
-  Object.keys(o).length === 0 ? nothing<A>() : just(o);
+export const fromObject = <A>(o: A): Maybe<A> =>
+    Object.keys(o).length === 0 ? nothing<A>() : just(o);
 
 /**
  * fromString constructs nothing if the string is empty or just otherwise.
  */
-export const fromString = (s:string):Maybe<string> => 
-  (s==='') ? nothing<string>() : just(s);
+export const fromString = (s: string): Maybe<string> =>
+    (s === '') ? nothing<string>() : just(s);
 
 /**
  * fromBoolean constructs nothing if b is false, just otherwise
  */
-export const fromBoolean = (b:boolean) : Maybe<boolean> =>
-  (b === false) ? nothing<boolean>(): just(b);
+export const fromBoolean = (b: boolean): Maybe<boolean> =>
+    (b === false) ? nothing<boolean>() : just(b);
 
 /**
  * fromNumber constructs nothing if n is 0 just otherwise.
  */
-export const fromNumber  = (n:number):Maybe<number> => 
-  (n===0) ? nothing<number>() : just(n);
+export const fromNumber = (n: number): Maybe<number> =>
+    (n === 0) ? nothing<number>() : just(n);
 
 /**
  * Maybe
@@ -56,10 +56,11 @@ export abstract class Maybe<A> implements Monad<A> {
     static just = just;
     static nothing = nothing;
     static fromAny = fromAny;
-  static fromObject = fromObject;
+    static fromObject = fromObject;
     static fromArray = fromArray;
-  static fromString = fromString;
-  static fromBoolean = fromBoolean
+    static fromString = fromString;
+    static fromBoolean = fromBoolean
+  static fromNumber = fromNumber;
 
     of(a: A): Maybe<A> {
 

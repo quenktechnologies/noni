@@ -61,19 +61,35 @@ describe('fromObject', () => {
 
     });
 
-    describe('fromArray', function () {
-      
+    describe('fromArray', function() {
+
         it('should return nothing for an empty array  ', function() {
 
-        must(Maybe.fromArray([]).cata(()=>true, ()=>false)).be(true);
+            must(Maybe.fromArray([]).cata(() => true, () => false)).be(true);
 
         });
 
         it('should return just for a populated arrays', function() {
 
-          must(Maybe.fromArray([true,false,true]).cata(()=>false, x=>x[2])).be(true);
-        
+            must(Maybe.fromArray([true, false, true]).cata(() => false, x => x[2])).be(true);
+
         });
+    });
+
+    describe('fromNumber', function() {
+
+        it('should return nothing for 0', function() {
+
+            must(Maybe.fromNumber(0).cata(() => true, () => false)).be(false);
+
+        });
+
+        it('should return the number for >0 or <0', function() {
+
+            must(Maybe.fromNumber(12).cata<number | boolean>(() => false, x => x)).be(12);
+
+        });
+
     });
 
 });
