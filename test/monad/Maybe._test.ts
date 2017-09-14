@@ -29,6 +29,54 @@ describe('fromObject', () => {
 
     });
 
+    describe('fromBoolean', function() {
+
+        it('should be nothing with false', function() {
+
+            must(Maybe.fromBoolean(false).cata(() => true, () => false)).be(true);
+
+        });
+
+        it('should be just with true', function() {
+
+            must(Maybe.fromBoolean(true).cata(() => false, x => x)).be(true);
+
+        });
+
+    });
+
+    describe('fromString', function() {
+
+        it('should return nothing for an empty string', function() {
+
+            must(Maybe.fromString('').cata(() => true, () => false)).be(true);
+
+        });
+
+        it('should return just for a string', function() {
+
+            must(Maybe.fromString('abc').cata(() => 'no', x => x)).be('abc');
+
+        });
+
+    });
+
+    describe('fromArray', function () {
+      
+        it('should return nothing for an empty array  ', function() {
+
+        must(Maybe.fromArray([]).cata(()=>true, ()=>false)).be(true);
+
+        });
+
+        it('should return just for a populated arrays', function() {
+
+          must(Maybe.fromArray([true,false,true]).cata(()=>false, x=>x[2])).be(true);
+        
+        });
+    });
+
 });
+
 
 

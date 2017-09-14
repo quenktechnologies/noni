@@ -18,13 +18,32 @@ export declare const fromAny: <A>(a: A) => Maybe<A>;
  */
 export declare const fromArray: <A>(a: A[]) => Maybe<A[]>;
 /**
+ * fromOBject uses Object.keys to turn see if an object has any own properties.
+ */
+export declare const fromObject: <A>(o: A) => Maybe<A>;
+/**
+ * fromString constructs nothing if the string is empty or just otherwise.
+ */
+export declare const fromString: (s: string) => Maybe<string>;
+/**
+ * fromBoolean constructs nothing if b is false, just otherwise
+ */
+export declare const fromBoolean: (b: boolean) => Maybe<boolean>;
+/**
+ * fromNumber constructs nothing if n is 0 just otherwise.
+ */
+export declare const fromNumber: (n: number) => Maybe<number>;
+/**
  * Maybe
  */
 export declare abstract class Maybe<A> implements Monad<A> {
     static just: <A>(a: A) => Maybe<A>;
     static nothing: <A>() => Nothing<A>;
     static fromAny: <A>(a: A) => Maybe<A>;
+    static fromObject: <A>(o: A) => Maybe<A>;
     static fromArray: <A>(a: A[]) => Maybe<A[]>;
+    static fromString: (s: string) => Maybe<string>;
+    static fromBoolean: (b: boolean) => Maybe<boolean>;
     of(a: A): Maybe<A>;
     abstract map<B>(_: (a: A) => B): Maybe<B>;
     abstract chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
