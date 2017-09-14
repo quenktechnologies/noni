@@ -15,4 +15,20 @@ describe('Maybe', function() {
 
 });
 
+describe('fromObject', () => {
+
+    it('should be nothing with an empty object', function() {
+
+        must(Maybe.fromObject({}).cata(() => false, () => true)).be(false);
+
+    });
+
+    it('should be just with a populated object', function() {
+
+        must(Maybe.fromObject({ a: 1 }).cata<boolean | object>(() => false, x => x)).eql({ a: 1 });
+
+    });
+
+});
+
 
