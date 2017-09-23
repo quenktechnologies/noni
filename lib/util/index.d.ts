@@ -66,3 +66,24 @@ export declare const tail: <A>(list: A[]) => A;
  *
  */
 export declare const constant: <A>(a: A) => (_: any) => A;
+export declare type F<A, B> = (a: A) => B;
+/**
+ * f1 partial application.
+ */
+export declare const f1: <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => any;
+/**
+ * f2 partial application
+ */
+export declare const f2: <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => any;
+/**
+ * f3 partial application
+ */
+export declare const f3: <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa: A) => any;
+/**
+ * f4 partial application
+ */
+export declare const f4: <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa: A) => (aaaa: A) => any;
+/**
+ * f5 partial application
+ */
+export declare const f5: <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa: A) => (aaaa: A) => (aaaaa: A) => any;

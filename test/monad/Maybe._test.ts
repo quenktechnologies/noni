@@ -80,7 +80,7 @@ describe('fromObject', () => {
 
         it('should return nothing for 0', function() {
 
-            must(Maybe.fromNumber(0).cata(() => true, () => false)).be(false);
+            must(Maybe.fromNumber(0).cata(() => true, () => false)).be(true);
 
         });
 

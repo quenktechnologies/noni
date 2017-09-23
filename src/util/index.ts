@@ -121,3 +121,38 @@ export const tail = <A>(list: A[]) => list[list.length - 1];
  *
  */
 export const constant = <A>(a: A): ((_: any) => A) => () => a;
+
+export type F<A, B> = (a: A) => B;
+
+/**
+ * f1 partial application.
+ */
+export const f1 =
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => f.apply(null, args.concat(a));
+
+/**
+ * f2 partial application
+ */
+export const f2 =
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => f.apply(null, args.concat(a, aa));
+
+/**
+ * f3 partial application
+ */
+export const f3 =
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa:A)=> f.apply(null, args.concat(a, aa,aaa));
+
+/**
+ * f4 partial application
+ */
+export const f4 =
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa:A)=> (aaaa:A)=>
+  f.apply(null, args.concat(a, aa,aaa,aaaa));
+
+/**
+ * f5 partial application
+ */
+export const f5 =
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa:A)=> (aaaa:A)=> (aaaaa:A)=>
+  f.apply(null, args.concat(a, aa,aaa,aaaa, aaaaa));
+
