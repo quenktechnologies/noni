@@ -140,19 +140,25 @@ export const f2 =
  * f3 partial application
  */
 export const f3 =
-    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa:A)=> f.apply(null, args.concat(a, aa,aaa));
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa: A) => f.apply(null, args.concat(a, aa, aaa));
 
 /**
  * f4 partial application
  */
 export const f4 =
-    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa:A)=> (aaaa:A)=>
-  f.apply(null, args.concat(a, aa,aaa,aaaa));
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa: A) => (aaaa: A) =>
+        f.apply(null, args.concat(a, aa, aaa, aaaa));
 
 /**
  * f5 partial application
  */
 export const f5 =
-    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa:A)=> (aaaa:A)=> (aaaaa:A)=>
-  f.apply(null, args.concat(a, aa,aaa,aaaa, aaaaa));
+    <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa: A) => (aaaa: A) => (aaaaa: A) =>
+        f.apply(null, args.concat(a, aa, aaa, aaaa, aaaaa));
+
+/**
+ * except copies an object removing a single key.
+ */
+export const except = <O extends Hash<V>, V>(keys: string[], o: O): O =>
+    reduce(o, (p, c, k) => keys.indexOf(k) > -1 ? p : merge(p, { [k]: c }), <any>{});
 

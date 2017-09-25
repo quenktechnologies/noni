@@ -70,6 +70,17 @@ describe('util', () => {
 
     });
 
+    describe('except', function () {
+
+        it('should remove unwanted keys', function() {
+
+          must(util.except(['one','two','three'], {one:1,two:2,three:3,four:4,five:5,six:6}))
+          .eql({four:4, five:5, six:6});
+          
+        });
+      
+    });
+
 });
 
 

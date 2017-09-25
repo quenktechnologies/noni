@@ -87,3 +87,7 @@ export declare const f4: <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) =
  * f5 partial application
  */
 export declare const f5: <A, B>(f: F<A, B>, ...args: A[]) => (a: A) => (aa: A) => (aaa: A) => (aaaa: A) => (aaaaa: A) => any;
+/**
+ * except copies an object removing a single key.
+ */
+export declare const except: <O extends Hash<V>, V>(keys: string[], o: O) => O;
