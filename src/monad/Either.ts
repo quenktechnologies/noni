@@ -13,7 +13,8 @@ export const right = <A, B>(b: B) => new Right<A, B>(b);
 /**
  * fromBoolean constructs an Either using a boolean value.
  */
-export const fromBoolean = (b: boolean): Either<boolean, boolean> => b ? right(true) : left(false);
+export const fromBoolean = (b: boolean): Either<boolean, boolean> =>
+    b ? right<boolean, boolean>(true) : left<boolean, boolean>(false);
 
 /**
  * Either monad implementation
@@ -31,6 +32,8 @@ export abstract class Either<L, R> implements Monad<R> {
     }
 
     abstract map<B>(f: (r: R) => B): Either<L, B>;
+
+    abstract mapLeft<B>(f: (l: L) => B): Either<B, R>;
 
     abstract bimap<LL, RR>(f: (l: L) => LL, g: (r: R) => RR): Either<LL, RR>;
 
@@ -82,6 +85,12 @@ export class Left<L, R> extends Either<L, R> {
 
     }
 
+    mapLeft<B>(f: (l: L) => B): Either<B, R> {
+
+        return new Left<B, R>(f(this.l));
+
+    }
+
     bimap<LL, RR>(f: (l: L) => LL, _: (r: R) => RR): Either<LL, RR> {
 
         return left<LL, RR>(f(this.l));
@@ -101,7 +110,7 @@ export class Left<L, R> extends Either<L, R> {
 
     orRight(f: (l: L) => R): Either<L, R> {
 
-        return new Right(f(this.l));
+        return new Right<L, R>(f(this.l));
 
     }
 
@@ -135,8 +144,13 @@ export class Right<L, R> extends Either<L, R>  {
 
     map<B>(f: (r: R) => B): Either<L, B> {
 
-        return new Right(f(this.r));
+        return new Right<L, B>(f(this.r));
 
+    }
+
+    mapLeft<B>(_: (l: L) => B): Either<B, R> {
+
+        return new Right<B, R>(this.r);
 
     }
 

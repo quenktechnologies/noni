@@ -20,6 +20,7 @@ export declare abstract class Either<L, R> implements Monad<R> {
     static fromBoolean: (b: boolean) => Either<boolean, boolean>;
     of(v: R): Either<L, R>;
     abstract map<B>(f: (r: R) => B): Either<L, B>;
+    abstract mapLeft<B>(f: (l: L) => B): Either<B, R>;
     abstract bimap<LL, RR>(f: (l: L) => LL, g: (r: R) => RR): Either<LL, RR>;
     /**
      * chain
@@ -55,6 +56,7 @@ export declare class Left<L, R> extends Either<L, R> {
     l: L;
     constructor(l: L);
     map<B>(_: (r: R) => B): Either<L, B>;
+    mapLeft<B>(f: (l: L) => B): Either<B, R>;
     bimap<LL, RR>(f: (l: L) => LL, _: (r: R) => RR): Either<LL, RR>;
     chain<B>(_: (r: R) => Either<L, B>): Either<L, B>;
     orElse<B>(f: (l: L) => Either<L, B>): Either<L, B>;
@@ -68,6 +70,7 @@ export declare class Right<L, R> extends Either<L, R> {
     r: R;
     constructor(r: R);
     map<B>(f: (r: R) => B): Either<L, B>;
+    mapLeft<B>(_: (l: L) => B): Either<B, R>;
     bimap<LL, RR>(_: (l: L) => LL, g: (r: R) => RR): Either<LL, RR>;
     chain<B>(f: (r: R) => Either<L, B>): Either<L, B>;
     /**
