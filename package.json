@@ -1,6 +1,6 @@
 {
   "name": "afpl",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A Functional Programming Library",
   "scripts": {
     "build": "npm run -s clean; npm run -s build:src; npm run -s build:package",
