@@ -1,4 +1,5 @@
 import * as util from './util';
+import * as curry from './curry';
 
 export { Monad } from './monad/Monad';
 export { Functor } from './data/Functor';
@@ -9,3 +10,4 @@ export { State } from './monad/State';
 export { Free } from './monad/Free';
 export { IO } from './monad/IO';
 export { util };
+export { curry };
