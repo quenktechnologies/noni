@@ -49,6 +49,36 @@ export const fromNumber = (n: number): Maybe<number> =>
     (n === 0) ? nothing<number>() : just(n);
 
 /**
+ * isString tests whether the value is a string or not.
+ */
+export const isString = (s: any): Maybe<string> =>
+    (typeof s === 'string') ? just(s) : nothing<string>();
+
+/**
+ * isBoolean tests whether the value is a boolean or not.
+ */
+export const isBoolean = (b: any): Maybe<boolean> =>
+    (typeof b === 'boolean') ? just(b) : nothing<boolean>();
+
+/**
+ * isNumber tests whether the value is number or not.
+ */
+export const isNumber = (n: any): Maybe<number> =>
+    (typeof n === 'number') ? just(n) : nothing<number>();
+
+/**
+ * isObject tests whether the value is an object or not.
+ */
+export const isObject = (o: any): Maybe<object> =>
+    ((!Array.isArray(o)) && (typeof o === 'object')) ? just(o) : nothing<object>();
+
+/**
+ * isArray tests whether the value is an array or not.
+ */
+export const isArray = (a: any): Maybe<any[]> =>
+    Array.isArray(a) ? just(a) : nothing<any[]>();
+
+/**
  * Maybe
  */
 export abstract class Maybe<A> implements Monad<A> {
@@ -60,7 +90,12 @@ export abstract class Maybe<A> implements Monad<A> {
     static fromArray = fromArray;
     static fromString = fromString;
     static fromBoolean = fromBoolean
-  static fromNumber = fromNumber;
+    static fromNumber = fromNumber;
+    static isNumber = isNumber;
+    static isString = isString;
+    static isArray = isArray;
+    static isBoolean = isBoolean;
+    static isObject = isObject;
 
     of(a: A): Maybe<A> {
 

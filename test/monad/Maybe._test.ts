@@ -92,7 +92,30 @@ describe('fromObject', () => {
 
     });
 
+    describe('is*', function() {
+
+        it('should return nothing for a non-*', function() {
+
+            must(Maybe.isNumber('tweleve').cata(() => true, () => false)).be(true);
+            must(Maybe.isBoolean('tweleve').cata(() => true, () => false)).be(true);
+            must(Maybe.isString(12).cata(() => true, () => false)).be(true);
+            must(Maybe.isArray('[1,2,3]').cata(() => true, () => false)).be(true);
+            must(Maybe.isObject('{}').cata(() => true, () => false)).be(true);
+            must(Maybe.isObject([]).cata(() => true, () => false)).be(true);
+
+        });
+
+        it('should return just for a * value', function() {
+
+            must(Maybe.isNumber(12).cata(() => false, () => true)).be(true);
+            must(Maybe.isBoolean(true).cata(() => false, () => true)).be(true);
+            must(Maybe.isString('12').cata(() => false, () => true)).be(true);
+            must(Maybe.isArray([1, 2, 3]).cata(() => false, () => true)).be(true);
+            must(Maybe.isObject({}).cata(() => false, () => true)).be(true);
+
+        });
+
+    });
+
+
 });
-
-
-

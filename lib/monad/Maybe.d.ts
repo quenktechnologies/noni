@@ -34,6 +34,26 @@ export declare const fromBoolean: (b: boolean) => Maybe<boolean>;
  */
 export declare const fromNumber: (n: number) => Maybe<number>;
 /**
+ * isString tests whether the value is a string or not.
+ */
+export declare const isString: (s: any) => Maybe<string>;
+/**
+ * isBoolean tests whether the value is a boolean or not.
+ */
+export declare const isBoolean: (b: any) => Maybe<boolean>;
+/**
+ * isNumber tests whether the value is number or not.
+ */
+export declare const isNumber: (n: any) => Maybe<number>;
+/**
+ * isObject tests whether the value is an object or not.
+ */
+export declare const isObject: (o: any) => Maybe<object>;
+/**
+ * isArray tests whether the value is an array or not.
+ */
+export declare const isArray: (a: any) => Maybe<any[]>;
+/**
  * Maybe
  */
 export declare abstract class Maybe<A> implements Monad<A> {
@@ -45,6 +65,11 @@ export declare abstract class Maybe<A> implements Monad<A> {
     static fromString: (s: string) => Maybe<string>;
     static fromBoolean: (b: boolean) => Maybe<boolean>;
     static fromNumber: (n: number) => Maybe<number>;
+    static isNumber: (n: any) => Maybe<number>;
+    static isString: (s: any) => Maybe<string>;
+    static isArray: (a: any) => Maybe<any[]>;
+    static isBoolean: (b: any) => Maybe<boolean>;
+    static isObject: (o: any) => Maybe<object>;
     of(a: A): Maybe<A>;
     abstract map<B>(_: (a: A) => B): Maybe<B>;
     abstract chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;

@@ -121,3 +121,9 @@ export const tail = <A>(list: A[]) => list[list.length - 1];
  *
  */
 export const constant = <A>(a: A): ((_: any) => A) => () => a;
+
+/**
+  * except copies an object removing a single key.
+  */
+ export const except = <O extends Hash<V>, V>(keys: string[], o: O): O =>
+     reduce(o, (p, c, k) => keys.indexOf(k) > -1 ? p : merge(p, { [k]: c }), <any>{});
