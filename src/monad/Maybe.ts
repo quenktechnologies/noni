@@ -61,6 +61,18 @@ export const isBoolean = (b: any): Maybe<boolean> =>
     (typeof b === 'boolean') ? just(b) : nothing<boolean>();
 
 /**
+ * isTrue constructs nothing if b !== true
+ */
+export const isTrue = (b: any): Maybe<boolean> =>
+    (b === true) ? just(b) : nothing<boolean>();
+
+/**
+ * isFalse constructs nothing if b !== false
+ */
+export const isFalse = (b: any): Maybe<boolean> =>
+    (b === false) ? just(b) : nothing<boolean>();
+
+/**
  * isNumber tests whether the value is number or not.
  */
 export const isNumber = (n: any): Maybe<number> =>
@@ -95,6 +107,8 @@ export abstract class Maybe<A> implements Monad<A> {
     static isString = isString;
     static isArray = isArray;
     static isBoolean = isBoolean;
+    static isTrue = isTrue;
+    static isFalse = isFalse;
     static isObject = isObject;
 
     of(a: A): Maybe<A> {

@@ -66,3 +66,7 @@ export declare const tail: <A>(list: A[]) => A;
  *
  */
 export declare const constant: <A>(a: A) => (_: any) => A;
+/**
+  * except copies an object removing a single key.
+  */
+export declare const except: <O extends Hash<V>, V>(keys: string[], o: O) => O;

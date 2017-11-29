@@ -42,6 +42,14 @@ export declare const isString: (s: any) => Maybe<string>;
  */
 export declare const isBoolean: (b: any) => Maybe<boolean>;
 /**
+ * isTrue constructs nothing if b !== true
+ */
+export declare const isTrue: (b: any) => Maybe<boolean>;
+/**
+ * isFalse constructs nothing if b !== false
+ */
+export declare const isFalse: (b: any) => Maybe<boolean>;
+/**
  * isNumber tests whether the value is number or not.
  */
 export declare const isNumber: (n: any) => Maybe<number>;
@@ -69,6 +77,8 @@ export declare abstract class Maybe<A> implements Monad<A> {
     static isString: (s: any) => Maybe<string>;
     static isArray: (a: any) => Maybe<any[]>;
     static isBoolean: (b: any) => Maybe<boolean>;
+    static isTrue: (b: any) => Maybe<boolean>;
+    static isFalse: (b: any) => Maybe<boolean>;
     static isObject: (o: any) => Maybe<object>;
     of(a: A): Maybe<A>;
     abstract map<B>(_: (a: A) => B): Maybe<B>;
