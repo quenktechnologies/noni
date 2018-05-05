@@ -3,12 +3,13 @@ import { Alt } from '../control/alt';
 import { Plus } from '../control/plus';
 import { Alternative } from '../control/alternative';
 import { Extend } from '../control/extend';
+import { Eq } from './eq';
 
 /**
  * Maybe monad represents an optional or nullable value.
  */
 export interface Maybe<A> extends
-    Monad<A>, Alt<A>, Plus<A>, Alternative<A>, Extend<A> {
+    Monad<A>, Alt<A>, Plus<A>, Alternative<A>, Extend<A>, Eq<Maybe<A>> {
 
     /**
      * orJust is like applying map to the Nothing<A> side.
@@ -95,6 +96,15 @@ export class Nothing<A> implements Maybe<A> {
     extend<B>(): Maybe<B> {
 
         return new Nothing<B>();
+
+    }
+
+    /**
+     * eq returns true if compared to another Nothing instance.
+     */
+    eq(m: Maybe<A>) {
+
+        return m instanceof Nothing;
 
     }
 
@@ -203,6 +213,15 @@ export class Just<A> implements Maybe<A> {
     }
 
     /**
+     * eq tests the value of two Justs.
+     */
+    eq(m: Maybe<A>): boolean {
+
+        return ((m instanceof Just) && (m.value === this.value));
+
+    }
+
+    /**
      * orJust returns this Just.
      */
     orJust<B>(_: (a: A) => B): Maybe<A> {
@@ -230,6 +249,21 @@ export class Just<A> implements Maybe<A> {
     }
 
 }
+
+/**
+ * of
+ */
+export const of = <A>(a: A) => new Just(a);
+
+/**
+ * nothing convenience constructor
+ */
+export const nothing = <A>()=> new Nothing<A>();
+
+/**
+ * just convenience constructor
+ */
+export const just = <A>(a:A) => new Just(a);
 
 /**
  * fromNullable constructs a Maybe from a value that may be null.

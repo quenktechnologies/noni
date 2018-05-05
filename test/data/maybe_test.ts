@@ -1,7 +1,11 @@
 import * as must from 'must/register';
+import * as tests from '../tests';
 import {
+    Maybe,
     Nothing,
     Just,
+    nothing,
+    just,
     fromObject,
     fromArray,
     fromString,
@@ -11,7 +15,27 @@ import {
     fromNullable
 } from '../../src/data/maybe';
 
+const eq = <A>(a: Maybe<A>) => (b: Maybe<A>) => a.eq(b);
+const map = (n: number) => n + 1;
+const value = 12;
+
 describe('maybe', () => {
+
+    describe('Just', tests.isMonad({
+        pure: just,
+        eq,
+        bind: (n: number) => just(n + 1),
+        map,
+        value
+    }));
+
+    describe('Nothing', tests.isMonad({
+        pure: nothing,
+        eq,
+        bind: (_: number) => nothing(),
+        map,
+        value
+    }));
 
     describe('fromObject', () => {
 
