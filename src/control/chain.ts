@@ -7,7 +7,7 @@ import { Apply } from './apply';
 export interface Chain<A> extends Apply<A> {
 
     /**
-     * chain (bind/>>=).
+     * chain (bind/flatMap/>>=).
      */
     chain<B>(f: (a: A) => Chain<B>): Chain<B>;
 

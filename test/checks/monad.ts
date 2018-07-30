@@ -24,12 +24,12 @@ export const leftIdentity =
  * Monad m => m.chain(m.of) = m
  */
 export const rightIdentity =
-  <A>(pure: <X>(x:X) => Monad<X>) => (eq :Eq<A>) => (x:A) => {
+    <A>(pure: <X>(x: X) => Monad<X>) => (eq: Eq<A>) => (x: A) => {
 
-    let a = <Monad<A>>pure(x).chain(pure);
-    let b = pure(x);
+        let a = <Monad<A>>pure(x).chain(pure);
+        let b = pure(x);
 
-    return (eq(a)(b));
+        return (eq(a)(b));
 
-  }
+    }
 

@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import * as tests from '../tests';
+import * as tests from '../checks';
 import {
     Maybe,
     Nothing,

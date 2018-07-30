@@ -8,8 +8,8 @@
         "allowUnreachableCode": true,
         "noUnusedParameters": true,
         "noUnusedLocals": true,
+        "strict": true,
         "sourceMap": true,
-        "declaration": true,
         "types": ["node", "mocha"],
         "typeRoots": ["node_modules/@types"]
     },

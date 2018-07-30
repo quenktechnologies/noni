@@ -1,9 +1,9 @@
 import * as must from 'must/register';
-import * as functor from '../laws/functor';
-import * as apply from '../laws/apply';
-import * as applicative from '../laws/applicative';
-import * as chain from '../laws/chain';
-import * as monad from '../laws/monad';
+import * as functor from './functor';
+import * as apply from './apply';
+import * as applicative from './applicative';
+import * as chain from './chain';
+import * as monad from './monad';
 import { Monad } from '../../src/control/monad';
 
 export interface TestOpts<A> {

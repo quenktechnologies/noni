@@ -20,7 +20,7 @@ export const composition =
 
             let l = a.ap(b.ap(
                 <Apply<(a: F<A>) => (x: A) => A>>c
-                    .map(f => (g) => (x: A) => f(g(x)))));
+              .map(f => (g:(x:A)=>A) => (x: A) => f(g(x)))));
 
             let r = a.ap(b).ap(c);
 

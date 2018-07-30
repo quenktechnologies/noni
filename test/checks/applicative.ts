@@ -10,7 +10,7 @@ export type Eq<A> = (f: Applicative<A>) => (g: Applicative<A>) => boolean;
 export const identity =
     <A>(pure: <X>(x: X) => Applicative<X>) => (eq: Eq<A>) => (x: A) => {
 
-        let a = <Applicative<A>>pure(x).ap(pure(x => x));
+        let a = <Applicative<A>>pure(x).ap(pure((x: A) => x));
         let b = pure(x);
 
         return (eq(b)(a));
@@ -41,8 +41,8 @@ export const interchange =
     <A>(pure: <X>(x: X) => Applicative<X>) => (eq: Eq<A>) => (x: A) => {
 
         let u = pure((a: A) => a);
-      let a = <Applicative<A>>pure(x).ap(u);
-      let b = <Applicative<A>>u.ap(pure(f => f((a: A) => a)));
+        let a = <Applicative<A>>pure(x).ap(u);
+        let b = <Applicative<A>>u.ap(pure((f:any) => f((a: A) => a)));
 
         return (eq(a)(b));
 

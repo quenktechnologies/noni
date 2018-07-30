@@ -93,7 +93,7 @@ export class Nothing<A> implements Maybe<A> {
     /**
      * extend returns a Nothing<A>.
      */
-    extend<B>(): Maybe<B> {
+    extend<B>(_: (ex: Maybe<A>) => B): Maybe<B> {
 
         return new Nothing<B>();
 
@@ -274,7 +274,7 @@ export const fromNullable = <A>(a: A): Maybe<A> => a == null ?
 /**
  * fromArray checks an array to see if it's empty
  *
- * Returns Nothing if it is, Just<A> otherwise.
+ * Returns [[Nothing]] if it is, [[Just]] otherwise.
  */
 export const fromArray = <A>(a: A[]): Maybe<A[]> =>
     (a.length === 0) ? new Nothing<A[]>() : new Just(a)
