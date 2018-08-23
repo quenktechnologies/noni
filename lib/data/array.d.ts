@@ -13,4 +13,4 @@ export declare const tail: <A>(list: A[]) => A;
 /**
  * map is a curried version of the Array#map method.
  */
-export declare const map: <A, B>(f: (a: A) => B) => (list: A[]) => B[];
+export declare const map: <A, B>(list: A[]) => (f: (a: A) => B) => B[];

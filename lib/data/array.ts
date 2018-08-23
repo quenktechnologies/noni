@@ -16,4 +16,4 @@ export const tail = <A>(list: A[]) => list[list.length - 1];
 /**
  * map is a curried version of the Array#map method.
  */
-export const map = <A,B>(f: (a:A) => B) => (list: A[]) => list.map(f);
+export const map = <A, B>(list: A[]) => (f: (a: A) => B): B[] => list.map(f);

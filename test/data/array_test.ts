@@ -27,7 +27,7 @@ describe('array', () => {
 
         it('should map over all elements', () => {
 
-            must(map((n:number) => n * n)([2, 4, 6])).eql([4, 16, 36]);
+            must(map(([2, 4, 6]))((n: number) => n * n)).eql([4, 16, 36]);
 
         });
 
