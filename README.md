@@ -1,33 +1,28 @@
 
-Noni
-====
+# Noni
 
-> Commons library used by Quenk Technologies everywhere.
+TypeScript commons library used by Quenk Technologies.
 
-# Introduction
+## Introduction
 
 This library provides functions, types and classes commonly used
-by [Quenk Technologies Limited](http://quenk.com).
+by [Quenk Technologies Limited](http://quenk.com) during software development.
 
-Quenk Technologies is an application engineering company located in Trinidad and
-Tobago with a main focus on Information and Data management.
+Quenk Technologies is an application engineering company located in 
+Trinidad and Tobago focused mainly on information and data management through
+Web technologies.
 
-Most if not all of the code provided here is written from a functional programming
-standpoint influenced by languages like Haskell, Purescript, Scheme, and even Erlang.
+Most if not all of the code provided here is influenced by functional programming
+paradigms and may not make sense if new to concepts like function composition,
+Monads and pattern matching.
 
-## Why Functional Programming?
+## Links
 
-Everyone has there own reasons, for us it makes the design phase of APIs faster
-and allows us to write more stable programs.
+This project structure complies with the style-guide
+[here](https://github.com/quenktechnologies/quenk-typescript-javascript-style-guide).
 
+API documentation can be found [here](https://quenktechnologies.github.io).
 
-# Project Structure
+## License
 
-This project is organised according to 
-[QTP-2018-01](https://github.com/quenktechnologies/quenk-typescript-javascript-style-guide).
-
-```
-
-# License
-
-Apache-2.0 (c) Quenk Technologies Limited
+Apache-2.0 (C) Quenk Technologies Limited
