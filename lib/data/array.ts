@@ -1,3 +1,7 @@
+/**
+ * The array module provides helper functions 
+ * for working with JS arrays.
+ */
 
 /**
  * head returns the item at index 0 of an array
@@ -9,3 +13,7 @@ export const head = <A>(list: A[]) => list[0];
  */
 export const tail = <A>(list: A[]) => list[list.length - 1];
 
+/**
+ * map is a curried version of the Array#map method.
+ */
+export const map = <A,B>(f: (a:A) => B) => (list: A[]) => list.map(f);
