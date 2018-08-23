@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import { curry, curry3, curry4, curry5 } from '../../src/data/function';
+import { curry, curry3, curry4, curry5, flip } from '../../src/data/function';
 
 describe('function', () => {
 
@@ -17,5 +17,18 @@ describe('function', () => {
         })
 
     })
+
+    describe('flip', () => {
+
+        it('should flip arguments', () => {
+
+          let f = (n:number) => (s:string) => [s, n];
+          let flipped = flip(f);
+
+          must(flipped('num')(1)).eql(['num', 1]);
+          
+        });
+      
+    });
 
 })

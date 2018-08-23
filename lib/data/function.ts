@@ -40,7 +40,8 @@ export const cons = <A, B>(a: A) => (_: B) => a;
 /**
  * flip the order of arguments to a curried function that takes 2 arguments.
  */
-export const flip = <A, B, C>(f: (a: A) => (b: B) => C) => (b: B) => (a: A) => (f(a)(b));
+export const flip = <A, B, C>(f: (a: A) => (b: B) => C) => (b: B) => (a: A)
+    : C => (f(a)(b));
 
 /**
  * identity function.
@@ -64,11 +65,11 @@ export const curry3 = <A, B, C, D>
  */
 export const curry4 = <A, B, C, D, E>
     (f: (a: A, b: B, c: C, d: D) => E) =>
-    (a: A) =>        (b: B) =>            (c: C) =>                (d: D) => f(a, b, c, d);
+    (a: A) => (b: B) => (c: C) => (d: D) => f(a, b, c, d);
 
 /**
  * curry5 curries an ES function that accepts 5 parameters.
  */
 export const curry5 = <A, B, C, D, E, F>
     (f: (a: A, b: B, c: C, d: D, e: E) => F) =>
-    (a: A) =>        (b: B) =>            (c: C) =>                (d: D) =>                    (e: E) => f(a, b, c, d, e);
+    (a: A) => (b: B) => (c: C) => (d: D) => (e: E) => f(a, b, c, d, e);
