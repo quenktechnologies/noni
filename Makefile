@@ -9,4 +9,5 @@ lib: $(shell find src -type f)
 .PHONY: docs
 docs: lib
 	./node_modules/.bin/typedoc --mode modules --out $@ \
-	--tsconfig lib/tsconfig.json --theme minimal lib
+	--tsconfig lib/tsconfig.json --theme minimal lib && \
+	echo "" > docs/.nojekyll
