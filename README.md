@@ -21,7 +21,7 @@ Monads and pattern matching.
 This project structure complies with the style-guide
 [here](https://github.com/quenktechnologies/quenk-typescript-javascript-style-guide).
 
-API documentation can be found [here](https://quenktechnologies.github.io).
+API documentation can be found [here](https://quenktechnologies.github.io/noni).
 
 ## License
 
