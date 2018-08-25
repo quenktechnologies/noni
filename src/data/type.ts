@@ -1,7 +1,6 @@
 /**
- * test provides basic type tests common when working with ES.
+ * test provides basic type tests common when working with ECMAScript.
  */
-import { Record } from './record';
 
 /**
  * Pattern is the value used to match expressions.
@@ -11,19 +10,18 @@ export type Pattern
     | number
     | boolean
     | object
-  | Record<any>
     | { new(...args: any[]): object }
     ;
 
 const prims = ['string', 'number', 'boolean'];
 
 /**
- * isRecord test.
+ * isObject test.
  *
- * An array is not considered Record.
+ * Does not consider an Array an object.
  */
-export const isRecord = <A>(value: any): value is Record<A> =>
-    (typeof value === 'object') && (!Array.isArray(value));
+export const isObject = (value: any): value is object => 
+  (typeof value === 'object') && (!isArray(value));
 
 /**
  * isArray test.
@@ -31,9 +29,9 @@ export const isRecord = <A>(value: any): value is Record<A> =>
 export const isArray = Array.isArray;
 
 /**
- * is performs a typeof of check on a type.
+ * isString test.
  */
-export const is = <A>(expected: string) => (value: A) => typeof (value) === expected;
+export const isString = (value: any): value is string => typeof value === 'string';
 
 /**
  * isNumber test.
@@ -42,33 +40,31 @@ export const isNumber = (value: any): value is Number =>
     (typeof value === 'number') && (!isNaN(value))
 
 /**
- * isObject test.
- */
-export const isObject = (value: any): value is object => typeof value === 'object';
-
-/**
- * isString test.
- */
-export const isString = (value: any): value is string => typeof value === 'string';
-
-/**
  * isBoolean test.
  */
 export const isBoolean = (value: any): value is boolean => typeof value === 'boolean';
 
 /**
- * typeOf determines if some value loosely conforms to a specified type.
+ * is performs a typeof of check on a type.
+ */
+export const is = <A>(expected: string) => (value: A) => typeof (value) === expected;
+
+/**
+ * test whether a value conforms to some pattern.
  *
- * It can be used to implement a sort of pattern matching and works as follows:
+ * This function is made available mainly for a crude pattern matching 
+ * machinery that works as followss:
  * string   -> Matches on the value of the string.
  * number   -> Matches on the value of the number.
  * boolean  -> Matches on the value of the boolean.
  * object   -> Each key of the object is matched on the value, all must match.
  * function -> Treated as a constructor and results in an instanceof check or
- *             for String,Number and Boolean, this uses the typeof check.
+ *             for String,Number and Boolean, this uses the typeof check. If
+ *             the function is RegExp then we uses the RegExp.test function
+ *             instead.
  */
-export const typeOf = <V>(value: V, t: Pattern): boolean =>
-  ((prims.indexOf(typeof t) > -1) && (<any>value === t)) ?
+export const test = <V>(value: V, t: Pattern): boolean =>
+    ((prims.indexOf(typeof t) > -1) && (<any>value === t)) ?
         true :
         ((typeof t === 'function') &&
             (((<Function>t === String) && (typeof value === 'string')) ||
@@ -83,7 +79,6 @@ export const typeOf = <V>(value: V, t: Pattern): boolean =>
                     Object
                         .keys(t)
                         .every(k => value.hasOwnProperty(k) ?
-                          typeOf((<Record<any>>value)[k], (<Record<any>>t)[k]) : false) :
+                          test((<{[key:string] :any}>value)[k], 
+                            (<{[key:string]:any}>t)[k]) : false) :
                     false;
-
-

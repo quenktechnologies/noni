@@ -6,7 +6,6 @@
  * would not be able to verify the runtime value) and may result in crashes
  * if not used carefully.
  */
-import { isRecord } from './test';
 
 /**
  * Record is simply a plain old ES object with an index signature.
@@ -16,6 +15,15 @@ export interface Record<A> {
     [key: string]: A
 
 }
+
+/**
+ * isRecord tests whether a value is a record.
+ *
+ * Note: This function is also an unsafe type guard.
+ * Use with caution.
+ */
+export const isRecord = <A>(value: any): value is Record<A> =>
+    (typeof value === 'object') && (!Array.isArray(value));
 
 /**
  * keys produces a list of property names. of a Record.

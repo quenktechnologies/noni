@@ -1,41 +1,79 @@
-import { Pattern, typeOf } from '../data/type';
-
 /**
- * Result represents the state of applying pattern matching to a value.
+ * The match module provides a best effort pattern runtime pattern matching
+ * framework for ECMAScript. 
  *
- * It is either matched or unmatched.
+ * Example:
+ * ```ts
+ *    
+ *    let r:string = match(window.global)
+ *                   .caseOf(1, (_:number) => 'one')
+ *                   .caseOf('one', (n:string) => n)
+ *                   .orElse(()=> 'N/A')
+ *                   .end();
+ *
+ * ```
+ * This framework uses the data/type#test function to do the actual 
+ * pattern matching and attention must be paid to the rules of that 
+ * function to avoid unexpected errors.
+ *
+ * Great effort was made to try and make the `caseOf` methods as
+ * type safe as possible however it is still possible to evade the compiler
+ * especially when the first argument is a shape (object with keys describing
+ * allowed types).
+ *
  */
-export interface Result<V> {
+import { test } from '../data/type';
 
-    caseOf<A, B>(t: Pattern, f: (a: A | V) => B): Result<V | B>
-
-    orElse<A, B>(f: (a: A | V) => B): Result<V | B>;
-
-    end(): V;
-
-}
+export type Cons<T> = { new(...args: any[]): T };
 
 /**
- * UnMatchedResult represents a yet to be matched pattern.
+ * Result is the sum of the UnMatched and Matched types.
  */
-export class UnMatchedResult<V> implements Result<V> {
+export type Result<A>
+    = UnMatched<A>
+    | Matched<A>
+    ;
 
-    constructor(public value: V) { }
+/**
+ * UnMatched represents a value yet to have a successful match.
+ */
+export class UnMatched<A> {
 
-    caseOf<A, B>(p: Pattern, f: (a: A | V) => B): Result<V | B> {
+    constructor(public value: A) { }
 
-        return typeOf(this.value, p) ?
-            new MatchedResult<B>(f(this.value)) : this;
+    /**
+     * caseOf test.
+     */
+    caseOf<T, B>(pattern: Cons<T>, f: (value: T) => B): Result<A | B>
+    caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>
+    caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>
+    caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>
+    caseOf<T extends object, B>(pattern: T, f: (value: { [P in keyof T]: any }) => B): Result<A | B>
+    caseOf<T extends string, B>(pattern: T, f: (value: T) => B): Result<A | B>
+    caseOf<T extends number, B>(pattern: T, f: (value: T) => B): Result<A | B>
+    caseOf<T extends boolean, B>(pattern: T, f: (value: T) => B): Result<A | B>
+    caseOf<B>(pattern: any, f: (value: any) => B): Result<A | B> {
+
+        return test(this.value, pattern) ?
+            new Matched<B>(f(this.value)) : this;
 
     }
 
-    orElse<B>(f: (a: V) => B): Result<B> {
+    /**
+     * orElse produces the alternative value since no cases have been matched yet.
+     */
+    orElse<B>(f: (a: A) => B): Matched<A | B> {
 
-        return new MatchedResult<B>(f(this.value));
+        return new Matched<B>(f(this.value));
 
     }
 
-    end(): V {
+    /**
+     * end
+     *
+     * Calling end on an UnMatched is an error.
+     */
+    end(): A {
 
         throw new Error(`The pattern '${this.value}' was not matched!`);
 
@@ -44,25 +82,42 @@ export class UnMatchedResult<V> implements Result<V> {
 }
 
 /**
- * MatchedResult indicates a successful pattern match.
+ * Matched represents a succefully matched case.
  */
-export class MatchedResult<V> implements Result<V> {
+export class Matched<A> {
 
-    constructor(public value: V) { }
+    constructor(public value: A) { }
 
-    caseOf<A, B>(_p: Pattern, _f: (x: A | V) => B): Result<V> {
+    /**
+     * caseOf does nothing.
+     */
+    caseOf<T, B>(pattern: Cons<T>, f: (value: T) => B): Result<A | B>
+    caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>
+    caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>
+    caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>
+    caseOf<T extends object, B>(pattern: T, f: (value: { [P in keyof T]: any }) => B): Result<A | B>
+    caseOf<T extends string, B>(pattern: T, f: (value: T) => B): Result<A | B>
+    caseOf<T extends number, B>(pattern: T, f: (value: T) => B): Result<A | B>
+    caseOf<T extends boolean, B>(pattern: T, f: (value: T) => B): Result<A | B>
+    caseOf<B>(_: any, __: (value: any) => B): Result<A | B> {
 
         return this;
 
     }
 
-    orElse<A, B>(_f: (x: V | A) => B): Result<V> {
+    /**
+     * orElse does nothing.
+     */
+    orElse<B>(_: (a: A) => B): Matched<A | B> {
 
         return this;
 
     }
 
-    end(): V {
+    /**
+     * end produces the value the Matched was created with.
+     */
+    end(): A {
 
         return this.value;
 
@@ -71,6 +126,6 @@ export class MatchedResult<V> implements Result<V> {
 }
 
 /**
- * match expression.
+ * match wraps a value in an UnMatched so that case tests can be applied.
  */
-export const match = <V>(value: any): Result<V> => new UnMatchedResult<V>(value);
+export const match = <A>(value: A): Result<A> => new UnMatched<A>(value);

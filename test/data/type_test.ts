@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import { typeOf } from '../../src/data/type';
+import { test } from '../../src/data/type';
 
 class Point {
 
@@ -8,49 +8,49 @@ class Point {
 
 }
 
-describe('typeOf', function() {
+describe('test', function() {
 
     it('must match literals', function() {
 
-        must(typeOf(1, 1)).be(true);
-        must(typeOf('one', 'one')).be(true);
-        must(typeOf(true, true)).be(true);
-        must(typeOf(false, false)).be(true);
+        must(test(1, 1)).be(true);
+        must(test('one', 'one')).be(true);
+        must(test(true, true)).be(true);
+        must(test(false, false)).be(true);
 
-        must(typeOf(1, 12)).be(false);
-        must(typeOf('one', 'two')).be(false);
-        must(typeOf(true, false)).be(false);
-        must(typeOf(false, true)).be(false);
+        must(test(1, 12)).be(false);
+        must(test('one', 'two')).be(false);
+        must(test(true, false)).be(false);
+        must(test(false, true)).be(false);
 
     });
 
     it('must match builtins', function() {
 
-        must(typeOf(1, Number)).be(true);
-        must(typeOf('one', String)).be(true);
-        must(typeOf(true, Boolean)).be(true);
-        must(typeOf(false, Boolean)).be(true);
+        must(test(1, Number)).be(true);
+        must(test('one', String)).be(true);
+        must(test(true, Boolean)).be(true);
+        must(test(false, Boolean)).be(true);
 
     });
 
     it('must match constructors', function() {
 
-        must(typeOf(new Point(), Point)).be(true);
-        must(typeOf(Point, Point)).be(false);
+        must(test(new Point(), Point)).be(true);
+        must(test(Point, Point)).be(false);
 
     });
 
     it('must match shapes', function() {
 
-        must(typeOf(new Point(), { x: Number, y: 12 })).be(true);
-        must(typeOf({ y: 12 }, { x: Number, y: 12 })).be(false);
+        must(test(new Point(), { x: Number, y: 12 })).be(true);
+        must(test({ y: 12 }, { x: Number, y: 12 })).be(false);
 
     });
 
     it('should match regular expressions', function() {
 
-        must(typeOf('Do you know the movie jaws?', /^jaws/ )).be(false);
-        must(typeOf( 'jaws? yeah I know it.', /^jaws/ )).be(true);
+        must(test('Do you know the movie jaws?', /^jaws/ )).be(false);
+        must(test( 'jaws? yeah I know it.', /^jaws/ )).be(true);
 
     });
 
