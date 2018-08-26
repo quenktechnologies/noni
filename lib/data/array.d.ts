@@ -14,3 +14,9 @@ export declare const tail: <A>(list: A[]) => A;
  * map is a curried version of the Array#map method.
  */
 export declare const map: <A, B>(list: A[]) => (f: (a: A) => B) => B[];
+/**
+ * partition an array into two using a partitioning function.
+ *
+ * The first array contains values that return true and the second false.
+ */
+export declare const partition: <A>(list: A[]) => (f: (a: A) => boolean) => [A[], A[]];

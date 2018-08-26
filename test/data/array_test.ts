@@ -45,6 +45,12 @@ describe('array', () => {
 
         });
 
+        it('should not blow up on empty arrays', () => {
+
+          must(partition([])((n:number)=> n > 1)).eql([[],[]]);
+          
+        });
+
     });
 
 });
