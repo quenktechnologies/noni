@@ -7,7 +7,8 @@ import {
     merge,
     rmerge,
     exclude,
-    flatten
+    flatten,
+    partition
 } from '../../src/data/record';
 
 describe('record', () => {
@@ -18,9 +19,8 @@ describe('record', () => {
 
             must(keys({ a: 1, b: 2, c: { d: 1, e: { f: 'g' } } })).eql(['a', 'b', 'c']);
 
-        });
-
-    });
+        })
+    })
 
     describe('map', () => {
 
@@ -31,9 +31,8 @@ describe('record', () => {
                     `${key}-${value}-${keys(rec).length}`))
                 .eql({ a: 'a-1-3', b: 'b-2-3', c: 'c-3-3' });
 
-        });
-
-    });
+        })
+    })
 
     describe('reduce', () => {
 
@@ -43,9 +42,8 @@ describe('record', () => {
                 (p: number, c: number, _: string) => p + c))
                 .eql(6);
 
-        });
-
-    });
+        })
+    })
 
     describe('merge', () => {
 
@@ -56,9 +54,8 @@ describe('record', () => {
 
             must(r).eql({ a: 1, b: 2, c: 4, e: 4 });
 
-        });
-
-    });
+        })
+    })
 
     describe('rmerge', () => {
 
@@ -104,11 +101,9 @@ describe('record', () => {
                         e: { f: '4', e1: 6 },
                         g: '5'
                     }
-                });
-
-        });
-
-    });
+                })
+        })
+    })
 
     describe('fling', () => {
 
@@ -117,8 +112,8 @@ describe('record', () => {
             must(exclude({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }, 'one', 'two', 'three'))
                 .eql({ four: 4, five: 5, six: 6 });
 
-        });
-    });
+        })
+    })
 
     describe('flatten', () => {
 
@@ -128,7 +123,7 @@ describe('record', () => {
 
                 'name.first': 'Lasana',
                 name: { last: 'Murray' },
-              'name.middle': 'K',
+                'name.middle': 'K',
                 'options.flags.enabled': [0, 1, 2],
                 'options.flags': { version: 'v22' },
                 level: 'master'
@@ -137,12 +132,26 @@ describe('record', () => {
 
                 'name.first': 'Lasana',
                 'name.last': 'Murray',
+              'name.middle': 'K',
                 'options.flags.enabled': [0, 1, 2],
                 'options.flags.version': 'v22',
                 'level': 'master'
 
             })
         })
-    });
+    })
+
+    describe('partition', () => {
+
+        it('should partition records', () => {
+
+            let m = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9, j: 10 };
+            let f = (n: number) => ((n % 2) === 0)
+            let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 }, { a: 1, c: 3, e: 5, g: 7, i: 9 }];
+
+            must(partition<number, Record<number>>(m)(f)).eql(r);
+
+        });
+    })
 });
 

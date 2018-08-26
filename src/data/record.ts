@@ -94,7 +94,7 @@ export const exclude = <A, R extends Record<A>>(o: R, ...keys: string[]) =>
  * with dots in them.
  */
 export const flatten = <A, R extends Record<A>>(r: R): Record<A> =>
-  flatImpl<A, R>('')({})(r);
+    (flatImpl<A, R>('')({})(r));
 
 const flatImpl = <A, R extends Record<A>>
     (pfix: string) => (prev: Record<any>) => (r: R): Record<A> =>
@@ -104,3 +104,16 @@ const flatImpl = <A, R extends Record<A>>
 
 const prefix = (pfix: string, key: string) => (pfix === '') ?
     key : `${pfix}.${key}`;
+
+/**
+ * partition a Record into two sub-records using a separating function.
+ *
+ * This function produces an array where the first element is a record
+ * of passing values and the second the failing values.
+ */
+export const partition = <A, R extends Record<A>>
+    (r: R) => (f: (a: A) => boolean): [Record<A>, Record<A>] =>
+  <[Record<A>, Record<A>]>reduce(r, [{}, {}], ([yes, no], c, k) =>
+    f(<A>c) ?
+            [merge(yes, { [k]: c }), no] :
+            [yes, merge(no, { [k]: c })]);
