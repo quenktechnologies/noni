@@ -112,8 +112,8 @@ const prefix = (pfix: string, key: string) => (pfix === '') ?
  * of passing values and the second the failing values.
  */
 export const partition = <A, R extends Record<A>>
-    (r: R) => (f: (a: A) => boolean): [Record<A>, Record<A>] =>
-  <[Record<A>, Record<A>]>reduce(r, [{}, {}], ([yes, no], c, k) =>
-    f(<A>c) ?
-            [merge(yes, { [k]: c }), no] :
-            [yes, merge(no, { [k]: c })]);
+    (r: R) => (f: (a: A, k: string, r:R) => boolean): [Record<A>, Record<A>] =>
+        <[Record<A>, Record<A>]>reduce(r, [{}, {}], ([yes, no], c, k) =>
+            f(<A>c, k,r) ?
+                [merge(yes, { [k]: c }), no] :
+                [yes, merge(no, { [k]: c })]);

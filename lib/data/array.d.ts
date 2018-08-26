@@ -19,4 +19,4 @@ export declare const map: <A, B>(list: A[]) => (f: (a: A) => B) => B[];
  *
  * The first array contains values that return true and the second false.
  */
-export declare const partition: <A>(list: A[]) => (f: (a: A) => boolean) => [A[], A[]];
+export declare const partition: <A>(list: A[]) => (f: (a: A, i: number, l: A[]) => boolean) => [A[], A[]];

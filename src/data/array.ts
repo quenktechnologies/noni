@@ -24,9 +24,9 @@ export const map = <A, B>(list: A[]) => (f: (a: A) => B): B[] => list.map(f);
  *
  * The first array contains values that return true and the second false.
  */
-export const partition = <A>(list: A[]) => (f: (a: A) => boolean): [A[], A[]] =>
-    (list.length === 0 ) ? [[],[]] : 
-    list.reduce(([yes, no]: [A[], A[]], c: A) =>
-        <[A[], A[]]>(f(c) ?
-            [yes.concat(c), no] :
-            [yes, no.concat(c)]), [[], []]);
+export const partition = <A>(list: A[]) => (f: (a: A, i:number, l:A[]) => boolean): [A[], A[]] =>
+    (list.length === 0) ? [[], []] :
+        list.reduce(([yes, no]: [A[], A[]], c: A, i:number) =>
+            <[A[], A[]]>(f(c,i,list) ?
+                [yes.concat(c), no] :
+                [yes, no.concat(c)]), [[], []]);

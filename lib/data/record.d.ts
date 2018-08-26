@@ -62,4 +62,4 @@ export declare const flatten: <A, R extends Record<A>>(r: R) => Record<A>;
  * This function produces an array where the first element is a record
  * of passing values and the second the failing values.
  */
-export declare const partition: <A, R extends Record<A>>(r: R) => (f: (a: A) => boolean) => [Record<A>, Record<A>];
+export declare const partition: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => boolean) => [Record<A>, Record<A>];
