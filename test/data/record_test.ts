@@ -6,7 +6,8 @@ import {
     reduce,
     merge,
     rmerge,
-    exclude
+    exclude,
+    flatten
 } from '../../src/data/record';
 
 describe('record', () => {
@@ -119,5 +120,29 @@ describe('record', () => {
         });
     });
 
+    describe('flatten', () => {
+
+        it('should work', () => {
+
+            must(flatten({
+
+                'name.first': 'Lasana',
+                name: { last: 'Murray' },
+              'name.middle': 'K',
+                'options.flags.enabled': [0, 1, 2],
+                'options.flags': { version: 'v22' },
+                level: 'master'
+
+            })).eql({
+
+                'name.first': 'Lasana',
+                'name.last': 'Murray',
+                'options.flags.enabled': [0, 1, 2],
+                'options.flags.version': 'v22',
+                'level': 'master'
+
+            })
+        })
+    });
 });
 

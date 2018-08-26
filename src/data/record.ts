@@ -6,6 +6,7 @@
  * would not be able to verify the runtime value) and may result in crashes
  * if not used carefully.
  */
+import { isObject } from '../data/type';
 
 /**
  * Record is simply a plain old ES object with an index signature.
@@ -82,3 +83,24 @@ export const rmerge = <A, R extends Record<A>, B, S extends Record<B>>
  */
 export const exclude = <A, R extends Record<A>>(o: R, ...keys: string[]) =>
     reduce(o, {}, (p, c, k) => keys.indexOf(k) > -1 ? p : merge(p, { [k]: c }));
+
+/**
+ * flatten an object into a map of key value pairs.
+ *
+ * The keys are the paths on the objects where the value would have been
+ * found. 
+ * 
+ * Note: This function does not give special treatment to properties
+ * with dots in them.
+ */
+export const flatten = <A, R extends Record<A>>(r: R): Record<A> =>
+  flatImpl<A, R>('')({})(r);
+
+const flatImpl = <A, R extends Record<A>>
+    (pfix: string) => (prev: Record<any>) => (r: R): Record<A> =>
+        reduce(r, prev, (p, c, k) => isObject(c) ?
+            (flatImpl(prefix(pfix, k))(p)(<Record<any>>c)) :
+            merge(p, { [prefix(pfix, k)]: c }));
+
+const prefix = (pfix: string, key: string) => (pfix === '') ?
+    key : `${pfix}.${key}`;
