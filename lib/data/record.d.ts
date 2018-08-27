@@ -63,3 +63,8 @@ export declare const flatten: <A, R extends Record<A>>(r: R) => Record<A>;
  * of passing values and the second the failing values.
  */
 export declare const partition: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => boolean) => [Record<A>, Record<A>];
+/**
+ * group the properties of a Record into another Record using a grouping
+ * function.
+ */
+export declare const group: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => string) => Record<Record<A>>;

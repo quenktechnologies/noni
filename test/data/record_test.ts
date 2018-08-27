@@ -8,7 +8,8 @@ import {
     rmerge,
     exclude,
     flatten,
-    partition
+    partition,
+    group
 } from '../../src/data/record';
 
 describe('record', () => {
@@ -132,7 +133,7 @@ describe('record', () => {
 
                 'name.first': 'Lasana',
                 'name.last': 'Murray',
-              'name.middle': 'K',
+                'name.middle': 'K',
                 'options.flags.enabled': [0, 1, 2],
                 'options.flags.version': 'v22',
                 'level': 'master'
@@ -153,5 +154,43 @@ describe('record', () => {
 
         });
     })
+
+    describe('group', () => {
+
+        it('should group properties', () => {
+
+          let m = { 
+            a: 1, 
+            b: 'b',
+            c: 22, 
+            d: 'e',
+            f: { n: 'o' }, 
+            g: [1, 2, 3],
+            h: 12 };
+
+            let f = (n: number | string | object) => typeof (n);
+
+          let r = { 
+            number: { 
+              a: 1,
+              c: 22,
+              h: 12 },
+            string: { 
+              b: 'b',
+              d: 'e' 
+            },
+            object: { 
+              f: { 
+                n: 'o' 
+              }, 
+              g: [1, 2, 3] 
+            } 
+          }
+
+            must(group(m)(f)).eql(r);
+
+        });
+
+    });
 });
 

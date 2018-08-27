@@ -1,5 +1,13 @@
 import * as must from 'must/register';
-import { head, tail, map, partition } from '../../src/data/array';
+import {
+    head,
+    tail,
+    contains,
+    empty,
+    map,
+    partition,
+    group
+} from '../../src/data/array';
 
 describe('array', () => {
 
@@ -22,6 +30,28 @@ describe('array', () => {
         });
 
     });
+
+    describe('contains', () => {
+
+        it('should work', () => {
+
+            must(contains([1, 2, 3])(2)).be(true);
+            must(contains([1, 2, 3])(4)).be(false);
+
+        });
+
+    })
+
+    describe('empty', () => {
+
+        it('should work', () => {
+
+            must(empty([])).be(true);
+            must(empty([1, 2, 3])).be(false);
+
+        });
+
+    })
 
     describe('map', () => {
 
@@ -47,10 +77,26 @@ describe('array', () => {
 
         it('should not blow up on empty arrays', () => {
 
-          must(partition([])((n:number)=> n > 1)).eql([[],[]]);
-          
+            must(partition([])((n: number) => n > 1)).eql([[], []]);
+
         });
 
     });
 
-});
+    describe('group', () => {
+
+        it('should group elements', () => {
+
+            let m = [1, 'b', 22, 'e', { n: 'o' }, 12];
+            let f = (n: number | string | object) => typeof (n);
+            let r = {
+                number: [1, 22, 12],
+                string: ['b', 'e'],
+                object: [{ n: 'o' }]
+            }
+
+            must(group(m)(f)).eql(r);
+
+        })
+    })
+})

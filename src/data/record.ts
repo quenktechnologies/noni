@@ -112,8 +112,26 @@ const prefix = (pfix: string, key: string) => (pfix === '') ?
  * of passing values and the second the failing values.
  */
 export const partition = <A, R extends Record<A>>
-    (r: R) => (f: (a: A, k: string, r:R) => boolean): [Record<A>, Record<A>] =>
+    (r: R) => (f: (a: A, k: string, r: R) => boolean): [Record<A>, Record<A>] =>
         <[Record<A>, Record<A>]>reduce(r, [{}, {}], ([yes, no], c, k) =>
-            f(<A>c, k,r) ?
+            f(<A>c, k, r) ?
                 [merge(yes, { [k]: c }), no] :
                 [yes, merge(no, { [k]: c })]);
+
+/**
+ * group the properties of a Record into another Record using a grouping 
+ * function.
+ */
+export const group = <A, R extends Record<A>>
+    (r: R) => (f: (a: A, k: string, r: R) => string): Record<Record<A>> =>
+        reduce(r, <Record<Record<A>>>{}, (p, c, k) => {
+
+            let g = f(<A>c, k, r);
+
+            return merge(p, {
+                [g]: isRecord(p[g]) ?
+                    merge(p[g], { [k]: c }) : { [k]: c }
+            });
+
+        });
+
