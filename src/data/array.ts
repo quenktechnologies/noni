@@ -30,6 +30,12 @@ export const contains = <A>(list: A[]) => (a: A) => (list.indexOf(a) > -1)
 export const map = <A, B>(list: A[]) => (f: (a: A) => B): B[] => list.map(f);
 
 /**
+ * concat concatenates an element to an array without destructuring
+ * the element if itself is an array.
+ */
+export const concat = <A>(list: A[]) => (a: A): A[] => [...list, a];
+
+/**
  * partition an array into two using a partitioning function.
  *
  * The first array contains values that return true and the second false.
@@ -39,8 +45,8 @@ export const partition = <A>(list: A[]) => (f: (a: A, i: number, l: A[]) => bool
         [[], []] :
         list.reduce(([yes, no]: [A[], A[]], c: A, i: number) =>
             <[A[], A[]]>(f(c, i, list) ?
-                [yes.concat(c), no] :
-                [yes, no.concat(c)]), [[], []]);
+                [concat(yes)(c), no] :
+                [yes, concat(no)(c)]), [[], []]);
 
 /**
  * group the properties of a Record into another Record using a grouping 
@@ -54,7 +60,7 @@ export const group = <A>(list: A[]) => (f: (a: A, i: number, r: A[]) => string)
 
         return merge(p, {
             [g]: Array.isArray(p[g]) ?
-                p[g].concat(c) : [c]
+                concat(p[g])(c) : [c]
         });
 
     }, <Record<A[]>>{});

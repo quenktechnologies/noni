@@ -9,7 +9,8 @@ import {
     exclude,
     flatten,
     partition,
-    group
+  group,
+  values
 } from '../../src/data/record';
 
 describe('record', () => {
@@ -159,35 +160,47 @@ describe('record', () => {
 
         it('should group properties', () => {
 
-          let m = { 
-            a: 1, 
-            b: 'b',
-            c: 22, 
-            d: 'e',
-            f: { n: 'o' }, 
-            g: [1, 2, 3],
-            h: 12 };
+            let m = {
+                a: 1,
+                b: 'b',
+                c: 22,
+                d: 'e',
+                f: { n: 'o' },
+                g: [1, 2, 3],
+                h: 12
+            };
 
             let f = (n: number | string | object) => typeof (n);
 
-          let r = { 
-            number: { 
-              a: 1,
-              c: 22,
-              h: 12 },
-            string: { 
-              b: 'b',
-              d: 'e' 
-            },
-            object: { 
-              f: { 
-                n: 'o' 
-              }, 
-              g: [1, 2, 3] 
-            } 
-          }
+            let r = {
+                number: {
+                    a: 1,
+                    c: 22,
+                    h: 12
+                },
+                string: {
+                    b: 'b',
+                    d: 'e'
+                },
+                object: {
+                    f: {
+                        n: 'o'
+                    },
+                    g: [1, 2, 3]
+                }
+            }
 
             must(group(m)(f)).eql(r);
+
+        });
+
+    });
+
+    describe('values', () => {
+
+        it('should return a shallow array', () => {
+
+            must(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' })).eql([1, [22], { n: 1 }, 'e']);
 
         });
 
