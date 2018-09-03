@@ -47,6 +47,7 @@ export const flip = <A, B, C>(f: (a: A) => (b: B) => C) => (b: B) => (a: A)
  * identity function.
  */
 export const identity = <A>(a: A) => a;
+export const id = identity;
 
 /**
  * curry an ES function that accepts 2 parameters.
