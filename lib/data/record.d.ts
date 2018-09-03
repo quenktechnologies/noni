@@ -5,6 +5,13 @@ export interface Record<A> {
     [key: string]: A;
 }
 /**
+ * isRecord tests whether a value is a record.
+ *
+ * Note: This function is also an unsafe type guard.
+ * Use with caution.
+ */
+export declare const isRecord: <A>(value: any) => value is Record<A>;
+/**
  * keys produces a list of property names. of a Record.
  */
 export declare const keys: <A, R extends Record<A>>(value: R) => string[];
@@ -39,3 +46,29 @@ export declare const rmerge: <A, R extends Record<A>, B, S extends Record<B>>(le
  * exclude removes the specified properties from a Record.
  */
 export declare const exclude: <A, R extends Record<A>>(o: R, ...keys: string[]) => {};
+/**
+ * flatten an object into a map of key value pairs.
+ *
+ * The keys are the paths on the objects where the value would have been
+ * found.
+ *
+ * Note: This function does not give special treatment to properties
+ * with dots in them.
+ */
+export declare const flatten: <A, R extends Record<A>>(r: R) => Record<A>;
+/**
+ * partition a Record into two sub-records using a separating function.
+ *
+ * This function produces an array where the first element is a record
+ * of passing values and the second the failing values.
+ */
+export declare const partition: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => boolean) => [Record<A>, Record<A>];
+/**
+ * group the properties of a Record into another Record using a grouping
+ * function.
+ */
+export declare const group: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => string) => Record<Record<A>>;
+/**
+ * values returns a shallow array of the values of a record.
+ */
+export declare const values: <A, R extends Record<A>>(r: R) => A[];

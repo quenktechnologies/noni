@@ -1,9 +1,10 @@
 import * as must from 'must/register';
 import { match } from '../../src/control/match';
 
-class ClassA { }
-class ClassB { }
-class ClassC { }
+class ClassA { constructor(public a: string) { } }
+class ClassB { constructor(public b: string) { } }
+class ClassC { constructor(public c: string) { } }
+class ClassD { constructor(public d: number) { } }
 
 describe('match', function() {
 
@@ -14,22 +15,22 @@ describe('match', function() {
                 .caseOf(ClassA, (a: ClassA) => a)
                 .caseOf(ClassB, (b: ClassB) => b)
                 .caseOf(ClassC, (c: ClassC) => c)
-                .caseOf('12', (n: number) => n)
-                .caseOf({ n: 1 }, (n: object) => n)
-                .caseOf(12, () => new Array(12))
+                .caseOf(12, (n: number) => new ClassD(n))
+                .caseOf('12', (n: string) => [new ClassD(Number(n))])
+                .caseOf({ n: 1 }, (o: { n: number }) => '' + new ClassD(o.n))
                 .orElse(() => new Date())
                 .end();
 
-        must(result).eql(new Array(12));
+        must((<ClassD>result).d).eql(12);
 
-    });
+    })
 
     it('should return orElse if no match and specified', function() {
 
         let result =
             match({})
                 .caseOf(ClassA, (a: ClassA) => a)
-                .caseOf('12', (n: number) => n)
+                .caseOf('12', (n: string) => n)
                 .orElse(() => Date)
                 .end();
 

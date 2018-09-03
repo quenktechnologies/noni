@@ -30,6 +30,7 @@ export declare const flip: <A, B, C>(f: (a: A) => (b: B) => C) => (b: B) => (a: 
  * identity function.
  */
 export declare const identity: <A>(a: A) => A;
+export declare const id: <A>(a: A) => A;
 /**
  * curry an ES function that accepts 2 parameters.
  */

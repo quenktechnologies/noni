@@ -41,7 +41,7 @@ export declare abstract class Free<F extends Functor<any>, A> implements Monad<A
     /**
      * foldFree transforms a [[Free]] into the [[Monad]] of choice.
      */
-    abstract foldFree<M extends Monad<A>>(f: (ff: Functor<any>) => Monad<any>): M;
+    abstract foldFree<M extends Monad<A>>(f: (func: Functor<any>) => Monad<any>): M;
     /**
      * run the computations of the [[Free]] to completion.
      */
@@ -61,7 +61,7 @@ export declare class Suspend<F extends Functor<any>, A> extends Free<F, A> {
     chain<B>(f: (a: A) => Free<F, B>): Free<F, B>;
     ap<B>(f: Free<F, (a: A) => B>): Free<F, B>;
     resume(): Either<F, A>;
-    foldFree<M extends Monad<A>>(f: (ff: Functor<any>) => Monad<any>): M;
+    foldFree<M extends Monad<A>>(f: (func: Functor<any>) => Monad<any>): M;
     run(f: (next: F) => Free<F, A>): A;
     /**
      * eq implementation.
@@ -78,7 +78,7 @@ export declare class Return<F extends Functor<any>, A> extends Free<F, A> {
     chain<B>(f: (a: A) => Free<F, B>): Free<F, B>;
     ap<B>(f: Free<F, (a: A) => B>): Free<F, B>;
     resume(): Either<F, A>;
-    foldFree<M extends Monad<A>>(f: (ff: Functor<any>) => Monad<any>): M;
+    foldFree<M extends Monad<A>>(f: (func: Functor<any>) => Monad<any>): M;
     run(_: (next: F) => Free<F, A>): A;
     eq(f: Free<F, A>): boolean;
 }

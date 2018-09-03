@@ -6,7 +6,11 @@ import {
     reduce,
     merge,
     rmerge,
-    exclude
+    exclude,
+    flatten,
+    partition,
+  group,
+  values
 } from '../../src/data/record';
 
 describe('record', () => {
@@ -17,9 +21,8 @@ describe('record', () => {
 
             must(keys({ a: 1, b: 2, c: { d: 1, e: { f: 'g' } } })).eql(['a', 'b', 'c']);
 
-        });
-
-    });
+        })
+    })
 
     describe('map', () => {
 
@@ -30,9 +33,8 @@ describe('record', () => {
                     `${key}-${value}-${keys(rec).length}`))
                 .eql({ a: 'a-1-3', b: 'b-2-3', c: 'c-3-3' });
 
-        });
-
-    });
+        })
+    })
 
     describe('reduce', () => {
 
@@ -42,9 +44,8 @@ describe('record', () => {
                 (p: number, c: number, _: string) => p + c))
                 .eql(6);
 
-        });
-
-    });
+        })
+    })
 
     describe('merge', () => {
 
@@ -55,9 +56,8 @@ describe('record', () => {
 
             must(r).eql({ a: 1, b: 2, c: 4, e: 4 });
 
-        });
-
-    });
+        })
+    })
 
     describe('rmerge', () => {
 
@@ -103,11 +103,9 @@ describe('record', () => {
                         e: { f: '4', e1: 6 },
                         g: '5'
                     }
-                });
-
-        });
-
-    });
+                })
+        })
+    })
 
     describe('fling', () => {
 
@@ -116,8 +114,96 @@ describe('record', () => {
             must(exclude({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }, 'one', 'two', 'three'))
                 .eql({ four: 4, five: 5, six: 6 });
 
+        })
+    })
+
+    describe('flatten', () => {
+
+        it('should work', () => {
+
+            must(flatten({
+
+                'name.first': 'Lasana',
+                name: { last: 'Murray' },
+                'name.middle': 'K',
+                'options.flags.enabled': [0, 1, 2],
+                'options.flags': { version: 'v22' },
+                level: 'master'
+
+            })).eql({
+
+                'name.first': 'Lasana',
+                'name.last': 'Murray',
+                'name.middle': 'K',
+                'options.flags.enabled': [0, 1, 2],
+                'options.flags.version': 'v22',
+                'level': 'master'
+
+            })
+        })
+    })
+
+    describe('partition', () => {
+
+        it('should partition records', () => {
+
+            let m = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9, j: 10 };
+            let f = (n: number) => ((n % 2) === 0)
+            let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 }, { a: 1, c: 3, e: 5, g: 7, i: 9 }];
+
+            must(partition<number, Record<number>>(m)(f)).eql(r);
+
         });
+    })
+
+    describe('group', () => {
+
+        it('should group properties', () => {
+
+            let m = {
+                a: 1,
+                b: 'b',
+                c: 22,
+                d: 'e',
+                f: { n: 'o' },
+                g: [1, 2, 3],
+                h: 12
+            };
+
+            let f = (n: number | string | object) => typeof (n);
+
+            let r = {
+                number: {
+                    a: 1,
+                    c: 22,
+                    h: 12
+                },
+                string: {
+                    b: 'b',
+                    d: 'e'
+                },
+                object: {
+                    f: {
+                        n: 'o'
+                    },
+                    g: [1, 2, 3]
+                }
+            }
+
+            must(group(m)(f)).eql(r);
+
+        });
+
     });
 
+    describe('values', () => {
+
+        it('should return a shallow array', () => {
+
+            must(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' })).eql([1, [22], { n: 1 }, 'e']);
+
+        });
+
+    });
 });
 

@@ -1,52 +1,50 @@
 /**
- * test provides basic type tests common when working with ES.
+ * test provides basic type tests common when working with ECMAScript.
  */
-import { Record } from './record';
 /**
  * Pattern is the value used to match expressions.
  */
-export declare type Pattern = string | number | boolean | object | Record<any> | {
+export declare type Pattern = string | number | boolean | object | {
     new (...args: any[]): object;
 };
 /**
- * isRecord test.
+ * isObject test.
  *
- * An array is not considered Record.
+ * Does not consider an Array an object.
  */
-export declare const isRecord: <A>(value: any) => value is Record<A>;
+export declare const isObject: (value: any) => value is object;
 /**
  * isArray test.
  */
 export declare const isArray: (arg: any) => arg is any[];
 /**
- * is performs a typeof of check on a type.
+ * isString test.
  */
-export declare const is: <A>(expected: string) => (value: A) => boolean;
+export declare const isString: (value: any) => value is string;
 /**
  * isNumber test.
  */
 export declare const isNumber: (value: any) => value is Number;
 /**
- * isObject test.
- */
-export declare const isObject: (value: any) => value is object;
-/**
- * isString test.
- */
-export declare const isString: (value: any) => value is string;
-/**
  * isBoolean test.
  */
 export declare const isBoolean: (value: any) => value is boolean;
 /**
- * typeOf determines if some value loosely conforms to a specified type.
+ * is performs a typeof of check on a type.
+ */
+export declare const is: <A>(expected: string) => (value: A) => boolean;
+/**
+ * test whether a value conforms to some pattern.
  *
- * It can be used to implement a sort of pattern matching and works as follows:
+ * This function is made available mainly for a crude pattern matching
+ * machinery that works as followss:
  * string   -> Matches on the value of the string.
  * number   -> Matches on the value of the number.
  * boolean  -> Matches on the value of the boolean.
  * object   -> Each key of the object is matched on the value, all must match.
  * function -> Treated as a constructor and results in an instanceof check or
- *             for String,Number and Boolean, this uses the typeof check.
+ *             for String,Number and Boolean, this uses the typeof check. If
+ *             the function is RegExp then we uses the RegExp.test function
+ *             instead.
  */
-export declare const typeOf: <V>(value: V, t: Pattern) => boolean;
+export declare const test: <V>(value: V, t: Pattern) => boolean;
