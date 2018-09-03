@@ -24,6 +24,11 @@ export declare const contains: <A>(list: A[]) => (a: A) => boolean;
  */
 export declare const map: <A, B>(list: A[]) => (f: (a: A) => B) => B[];
 /**
+ * concat concatenates an element to an array without destructuring
+ * the element if itself is an array.
+ */
+export declare const concat: <A>(list: A[]) => (a: A) => A[];
+/**
  * partition an array into two using a partitioning function.
  *
  * The first array contains values that return true and the second false.

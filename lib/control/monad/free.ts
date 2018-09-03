@@ -58,7 +58,7 @@ export abstract class Free<F extends Functor<any>, A>
     /**
      * foldFree transforms a [[Free]] into the [[Monad]] of choice.
      */
-    abstract foldFree<M extends Monad<A>>(f: (ff: Functor<any>) => Monad<any>): M;
+    abstract foldFree<M extends Monad<A>>(f: (func: Functor<any>) => Monad<any>): M;
 
     /**
      * run the computations of the [[Free]] to completion.
@@ -98,7 +98,7 @@ export class Suspend<F extends Functor<any>, A> extends Free<F, A> {
 
     }
 
-    foldFree<M extends Monad<A>>(f: (ff: Functor<any>) => Monad<any>): M {
+    foldFree<M extends Monad<A>>(f: (func: Functor<any>) => Monad<any>): M {
 
         return <M>f(this.value).chain(free => free.foldFree(f));
 
@@ -155,7 +155,7 @@ export class Return<F extends Functor<any>, A> extends Free<F, A> {
 
     }
 
-    foldFree<M extends Monad<A>>(f: (ff: Functor<any>) => Monad<any>): M {
+    foldFree<M extends Monad<A>>(f: (func: Functor<any>) => Monad<any>): M {
 
         return <M>f(new Identity(this.value))
 

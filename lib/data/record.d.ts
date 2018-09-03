@@ -68,3 +68,7 @@ export declare const partition: <A, R extends Record<A>>(r: R) => (f: (a: A, k: 
  * function.
  */
 export declare const group: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => string) => Record<Record<A>>;
+/**
+ * values returns a shallow array of the values of a record.
+ */
+export declare const values: <A, R extends Record<A>>(r: R) => A[];

@@ -7,6 +7,7 @@
  * if not used carefully.
  */
 import { isObject } from '../data/type';
+import {concat} from './array';
 
 /**
  * Record is simply a plain old ES object with an index signature.
@@ -134,4 +135,10 @@ export const group = <A, R extends Record<A>>
             });
 
         });
+
+/**
+ * values returns a shallow array of the values of a record.
+ */
+export const values = <A, R extends Record<A>>(r: R): A[] =>
+    reduce(r, [], (p: A[], c) => concat(p)(<A>c));
 
