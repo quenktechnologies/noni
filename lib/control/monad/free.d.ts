@@ -85,4 +85,4 @@ export declare class Return<F extends Functor<any>, A> extends Free<F, A> {
 /**
  * liftF a Functor into a Free.
  */
-export declare const liftF: <F extends Functor<any>, A>(f: Functor<any>) => Free<F, A>;
+export declare const liftF: <F extends Functor<any>, A>(f: F) => Free<F, A>;

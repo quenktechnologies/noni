@@ -180,5 +180,5 @@ export class Return<F extends Functor<any>, A> extends Free<F, A> {
 /**
  * liftF a Functor into a Free.
  */
-export const liftF = <F extends Functor<any>, A>(f: Functor<any>): Free<F, A> =>
+export const liftF = <F extends Functor<any>, A>(f: F): Free<F, A> =>
     new Suspend(<F>f.map(a => new Return(a)));
