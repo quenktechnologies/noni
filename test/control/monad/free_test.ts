@@ -1,60 +1,207 @@
 import * as must from 'must/register';
 import * as checks from '../../checks';
 import { Functor } from '../../../src/data/functor';
-import { Free, liftF } from '../../../src/control/monad/free';
+import { Free, Step, liftF, flatten, reduce } from '../../../src/control/monad/free';
 
-export class F1<A> {
+const _ = undefined;
 
-    constructor(public next: A) { }
+type API<N>
+    = Put<N>
+    | Get<N>
+    | Remove<N>
+    ;
 
-    map<B>(f: (a: A) => B): F1<B> {
+class F<N> {
 
-        return new F1(f(this.next));
+    constructor(public next: N) { }
+
+    map<B>(f: (a: N) => B): F<B> {
+
+        return new F(f(this.next));
 
     }
 
 }
 
-export class F2<A> {
+class Put<N> {
 
-    constructor(public next: A) { }
+    constructor(public key: string, public value: string, public next: N) { }
 
-    map<B>(f: (a: A) => B): F2<B> {
+    map<B>(f: (a: N) => B): Put<B> {
 
-        return new F2(f(this.next));
+        return new Put(this.key, this.value, f(this.next));
+
+    }
+
+}
+
+class Get<N> {
+
+    constructor(public key: string, public next: (s: string) => N) { }
+
+    map<B>(f: (a: N) => B): Get<B> {
+
+        return new Get(this.key, (a: string) => f(this.next(a)));
+
+    }
+
+}
+
+class Remove<N> {
+
+    constructor(public key: string, public next: N) { }
+
+    map<B>(f: (a: N) => B): Remove<B> {
+
+        return new Remove(this.key, f(this.next));
 
     }
 
 }
 
 const eq = <F extends Functor<any>, A>(a: Free<F, A>) => (b: Free<F, A>) => a.eq(b);
+
 const map = (n: number) => n + 1;
-const value = new F1(12);
 
+const value = new Put('n', '12', _);
 
-//const mkF1 = <A>(a:A)=> new F1(a);
+const put = (key: string, value: string) => liftF<API<any>, undefined>(new Put(key, value, _));
 
-//const mkF2 = <A>(a:A)=> new F2(a);
+const get = (key: string) => liftF<API<string>, undefined>(new Get(key, (s: string) => s));
 
-describe('Free', () => {
+const remove = (key: string) => liftF<API<any>, undefined>(new Remove(key, _));
 
-    it('should be a Monad', checks.isMonad({
-        pure: <A>(a: A) => liftF(new F1(a)),
-        eq,
-        bind: (n: number) => liftF(new F1(n + 1)),
-        map,
-        value
-    }));
+describe('free', () => {
 
+    describe('Free', () => {
 
-    describe('resume', () => {
+        it('should be a Monad', checks.isMonad({
+            pure: <A>(a: A) => liftF(new F(a)),
+            eq,
+            bind: (n: number) => liftF(new F(n + 1)),
+            map,
+            value
+        }));
 
-        it('should unwrap the first layer', () => {
+        describe('resume', () => {
 
-            let f = new F1(12);
-            let x = liftF(f);
+            it('should unwrap one layer of Free', () => {
 
-            must(x.resume().takeLeft()).be.instanceof(F1);
+                let x =
+                    put('n', '12')
+                        .chain(() => get('n'))
+                        .chain((n: string) => remove(n));
+
+                must(
+                    x
+                        .resume()
+                        .takeLeft())
+                    .be
+                    .instanceof(Put);
+
+                must(
+                    x
+                        .resume()
+                        .takeLeft()
+                        .next
+                        .resume()
+                        .takeLeft())
+                    .be
+                    .instanceof(Get);
+
+                must(
+                    x.resume()
+                        .takeLeft()
+                        .next.resume()
+                        .takeLeft()
+                        .next()
+                        .resume()
+                        .takeLeft())
+                    .be
+                    .instanceof(Remove);
+
+            });
+
+        });
+
+        describe('run', () => {
+
+            it('should unroll all the computations', () => {
+
+                let l: string[] = [];
+
+                let x: Free<API<any>, undefined> =
+                    put('num', '12')
+                        .chain(() => get('num'))
+                        .chain((n: string) => remove(n));
+
+                x.run((n: API<any>) => {
+
+                    if (n instanceof Put) {
+
+                        l.push(`PUT '${n.key}' '${n.value}'`);
+                        return n.next;
+
+                    } else if (n instanceof Get) {
+
+                        l.push(`GET '${n.key}'`)
+                        return n.next(n.key);
+
+                    } else if (n instanceof Remove) {
+
+                        l.push(`REMOVE '${n.key}'`);
+                        return n.next;
+
+                    }
+
+                });
+
+                must(l).eql(["PUT 'num' '12'", "GET 'num'", "REMOVE 'num'"]);
+
+            });
+
+        });
+
+    });
+
+    describe('flatten', () => {
+
+        it('should flatten a Free chain', () => {
+
+            let chain =
+                put('num', '12')
+                    .chain(() => get('num'))
+                    .chain((n: string) => remove(n))
+                    .chain(() => put('num', '12'));
+
+            let aray = flatten(chain)((a: API<any>) => (typeof a.next === 'function') ?
+                a.next() : a.next);
+
+            must(aray[0]).be.instanceof(Put);
+            must(aray[1]).be.instanceof(Get);
+            must(aray[2]).be.instanceof(Remove);
+            must(aray[3]).be.instanceof(Put);
+
+        });
+
+    });
+
+    describe('reduce', () => {
+
+        it('should reduce a Free chain', () => {
+
+            let chain =
+                put('num', '12')
+                    .chain(() => get('num'))
+                    .chain((n: string) => remove(n))
+                    .chain(() => put('num', '12'));
+
+            let r = reduce(chain)([])((p: string[], curr: API<any>) =>
+                new Step(p.concat((<any>curr.constructor).name),
+                    (typeof curr.next === 'function') ?
+                        curr.next() : curr.next));
+
+            must(r).eql(['Put', 'Get', 'Remove', 'Put']);
 
         });
 
