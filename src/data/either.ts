@@ -256,3 +256,10 @@ export const right = <A, B>(b: B) => new Right<A, B>(b);
 export const fromBoolean = (b: boolean): Either<boolean, boolean> =>
     b ? right<boolean, boolean>(true) : left<boolean, boolean>(false);
 
+/**
+ * either given two functions, first for Left, second for Right, will return
+ * the result of applying the appropriate function to an Either's internal value.
+ */
+export const either =
+    <A, B, C>(f: (a: A) => C) => (g: (b: B) => C) => (e: Either<A, B>) =>
+        (e instanceof Right) ? g(e.takeRight()) : f(e.takeLeft())

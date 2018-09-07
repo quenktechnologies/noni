@@ -6,7 +6,8 @@ import {
     Right,
     left,
     right,
-    fromBoolean
+    fromBoolean,
+    either
 } from '../../src/data/either';
 
 const eq = <A, B>(a: Either<A, B>) => (b: Either<A, B>) => a.eq(b);
@@ -18,7 +19,7 @@ describe('either', () => {
     describe('Left', tests.isMonad({
         pure: right,
         eq,
-        bind: (n: number) => left(n+1),
+        bind: (n: number) => left(n + 1),
         map,
         value
     }));
@@ -38,6 +39,24 @@ describe('either', () => {
             must(fromBoolean(false) instanceof Left).be(true);
 
             must(fromBoolean(true) instanceof Right).be(true);
+
+        });
+
+    });
+
+    describe('either', () => {
+
+        it('should apply to the right side', () => {
+
+            let l: Either<boolean, boolean> = left(false);
+            let r: Either<boolean, boolean> = right(true);
+            let f = (l: boolean) => '' + l;
+            let g = (_: boolean) => '12';
+            let test = either<boolean, boolean, string>(f)(g);
+
+            must(test(l)).be('false');
+            must(test(r)).be('12');
+
 
         });
 
