@@ -57,7 +57,6 @@ describe('either', () => {
             must(test(l)).be('false');
             must(test(r)).be('12');
 
-
         });
 
     });

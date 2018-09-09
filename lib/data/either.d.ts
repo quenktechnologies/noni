@@ -92,3 +92,8 @@ export declare const right: <A, B>(b: B) => Right<A, B>;
  * fromBoolean constructs an Either using a boolean value.
  */
 export declare const fromBoolean: (b: boolean) => Either<boolean, boolean>;
+/**
+ * either given two functions, first for Left, second for Right, will return
+ * the result of applying the appropriate function to an Either's internal value.
+ */
+export declare const either: <A, B, C>(f: (a: A) => C) => (g: (b: B) => C) => (e: Either<A, B>) => C;
