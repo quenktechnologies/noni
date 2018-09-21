@@ -1,16 +1,14 @@
 /**
- * The record module provides functions for manipulating ES objects used
- * as records.
+ * The record module provides functions for treating ES objects as records.
  *
- * Some of the functions provided here are inherently unsafe (the compiler 
- * would not be able to verify the runtime value) and may result in crashes
- * if not used carefully.
+ * Some of the functions provided here are inherently unsafe (tsc will not
+ * be able track integrity and may result in runtime errors if not used carefully.
  */
 import { isObject } from '../data/type';
-import {concat} from './array';
+import { concat } from './array';
 
 /**
- * Record is simply a plain old ES object with an index signature.
+ * Record is an ES object with an index signature.
  */
 export interface Record<A> {
 
@@ -21,25 +19,26 @@ export interface Record<A> {
 /**
  * isRecord tests whether a value is a record.
  *
- * Note: This function is also an unsafe type guard.
- * Use with caution.
+ * This is a typeof check that excludes arrays.
+ * 
+ * Unsafe.
  */
 export const isRecord = <A>(value: any): value is Record<A> =>
     (typeof value === 'object') && (!Array.isArray(value));
 
 /**
- * keys produces a list of property names. of a Record.
+ * keys produces a list of property names from a Record.
  */
-export const keys = <A, R extends Record<A>>(value: R) => Object.keys(value);
+export const keys = <A>(value: Record<A>) => Object.keys(value);
 
 /**
  * map over a Record's properties producing a new record.
  *
  * The order of keys processed is not guaranteed.
  */
-export const map = <A, R extends Record<A>, B, S extends Record<B>>
-    (o: R, f: (value: A, key: string, rec: R) => B): S =>
-    <S>keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), <Record<B>>{});
+export const map = <A, B, R extends Record<B>>
+    (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B): R =>
+    <R>keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), <Record<B>>{});
 
 /**
  * reduce a Record's keys to a single value.
@@ -48,12 +47,12 @@ export const map = <A, R extends Record<A>, B, S extends Record<B>>
  * there are no properites on the Record.
  * The order of keys processed is not guaranteed.
  */
-export const reduce = <A, R extends Record<A>, S>
-    (o: R, accum: S, f: (pre: S, curr: A, key: string) => S) =>
+export const reduce = <A, B>
+    (o: Record<A>, accum: B, f: (pre: B, curr: A, key: string) => B): B =>
     keys(o).reduce((p, k) => f(p, o[k], k), accum);
 
 /**
- * merge two or more objects into one returning the value.
+ * merge two objects into one.
  *
  * The return value's type is the product of the two types supplied.
  * This function may be unsafe.
@@ -62,28 +61,106 @@ export const merge = <A, R extends Record<A>, B, S extends Record<B>>
     (left: R, right: S): R & S => (<any>Object).assign({}, left, right);
 
 /**
- * rmerge merges nested records recursively.
+ * merge3 merges 3 records into one.
+ */
+export const merge3 =
+    <A, R extends Record<A>,
+        B, S extends Record<B>,
+        C, T extends Record<C>>
+        (r: R, s: S, t: T) => (<any>Object).assign({}, r, s, t);
+
+/**
+ * merge4 merges 4 records into one.
+ */
+export const merge4 =
+    <A, R extends Record<A>,
+        B, S extends Record<B>,
+        C, T extends Record<C>,
+        D, U extends Record<D>>
+        (r: R, s: S, t: T, u: U) => (<any>Object).assign({}, r, s, t, u);
+
+/**
+ * merge5 merges 5 records into one.
+ */
+export const merge5 =
+    <A, R extends Record<A>,
+        B, S extends Record<B>,
+        C, T extends Record<C>,
+        D, U extends Record<D>,
+        E, V extends Record<E>>
+        (r: R, s: S, t: T, u: U, v: V) =>
+        (<any>Object).assign({}, r, s, t, u, v);
+
+/**
+ * rmerge merges 2 records recursively.
  *
  * This function may be unsafe.
  */
 export const rmerge = <A, R extends Record<A>, B, S extends Record<B>>
     (left: R, right: S): R & S =>
-    reduce(right, (<any>left), (pre: R & S, curr: A | B, key: string) =>
-        isRecord(curr) ?
-            merge(pre, {
+    reduce(right, (<any>left), deepMerge);
 
-                [key]: isRecord(pre[key]) ?
-                    rmerge((<any>pre[key]), curr) :
-                    curr
+/**
+ * rmerge3 merges 3 records recursively.
+ */
+export const rmerge3 =
+    <A, R extends Record<A>,
+        B, S extends Record<B>,
+        C, T extends Record<C>>
+        (r: R, s: S, t: T): R & S & T =>
+        [s, t]
+            .reduce((p: R & S & T, c: S | T) =>
+                reduce(<Record<A | B>>c, (p), deepMerge), <any>r);
 
-            }) :
-            merge((<any>pre), { [key]: curr }));
+/**
+ * rmerge4 merges 4 records recursively.
+ */
+export const rmerge4 =
+    <A, R extends Record<A>,
+        B, S extends Record<B>,
+        C, T extends Record<C>,
+        D, U extends Record<D>>
+        (r: R, s: S, t: T, u: U): R & S & T & U =>
+        [s, t, u]
+            .reduce((p: R & S & T & U, c: S | T | U) =>
+                reduce(<Record<A | B | C | D>>c, (p), deepMerge), <any>r);
+
+/**
+ * rmerge5 merges 5 records recursively.
+ */
+export const rmerge5 =
+    <A, R extends Record<A>,
+        B, S extends Record<B>,
+        C, T extends Record<C>,
+        D, U extends Record<D>,
+        E, V extends Record<E>>
+        (r: R, s: S, t: T, u: U, v: V): R & S & T & U & V =>
+        [s, t, u, v]
+            .reduce((p: R & S & T & U & V, c: S | T | U | V) =>
+                reduce(<Record<A | B | C | D | E>>c, (p), deepMerge), <any>r);
+
+const deepMerge = <A, R extends Record<A>>(pre: R, curr: A, key: string) =>
+    isRecord(curr) ?
+        merge(pre, {
+
+            [key]: isRecord(pre[key]) ?
+                rmerge((<any>pre[key]), curr) :
+                curr
+
+        }) :
+        merge((<any>pre), { [key]: curr });
 
 /**
  * exclude removes the specified properties from a Record.
  */
-export const exclude = <A, R extends Record<A>>(o: R, ...keys: string[]) =>
-    reduce(o, {}, (p, c, k) => keys.indexOf(k) > -1 ? p : merge(p, { [k]: c }));
+export const exclude = <A, R extends Record<A>>(o: R, keys: string | string[]) => {
+
+    let list: string[] = Array.isArray(keys) ? keys : [keys];
+
+    return reduce(o, {}, (p, c, k) =>
+        list.indexOf(k) > -1 ? p : merge(p, { [k]: c }));
+
+}
 
 /**
  * flatten an object into a map of key value pairs.

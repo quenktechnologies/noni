@@ -5,13 +5,102 @@ import {
     map,
     reduce,
     merge,
+    merge3,
+    merge4,
+    merge5,
     rmerge,
+    rmerge3,
+    rmerge4,
+    rmerge5,
     exclude,
     flatten,
     partition,
-  group,
-  values
+    group,
+    values
 } from '../../src/data/record';
+
+type A = { a: number };
+type B = { b: number };
+type C = { c: number };
+type D = { d: number };
+type E = { e: { f: string } };
+
+type RA = {
+    a: number,
+    b: string,
+    c: {
+        d: number,
+        e: { f: string },
+        g: string,
+        h: number[]
+    }
+};
+
+type RB = {
+    c: {
+        e: { e1: number }
+    }
+};
+
+type RC = {
+    c: {
+        c1: string
+    }
+};
+
+type RD = {
+    c: {
+        h: number[]
+    }
+};
+
+type RE = {
+    b: {
+        bv: string
+    }
+};
+
+
+const a = { a: 1 };
+const b = { b: 2 };
+const c = { c: 3 };
+const d = { d: 4 };
+const e = { e: { f: 'g' } };
+
+const ra: RA = {
+    a: 1,
+    b: '2',
+    c: {
+        d: 3,
+        e: { f: '4' },
+        g: '5',
+        h: [1]
+    }
+};
+
+const rb: RB = {
+    c: {
+        e: { e1: 6 }
+    }
+};
+
+const rc: RC = {
+    c: {
+        c1: 'c1'
+    }
+};
+
+const rd: RD = {
+    c: {
+        h: [2, 3, 4, 5, 6]
+    }
+};
+
+const re: RE = {
+    b: {
+        bv: 'b2'
+    }
+};
 
 describe('record', () => {
 
@@ -56,6 +145,129 @@ describe('record', () => {
 
             must(r).eql({ a: 1, b: 2, c: 4, e: 4 });
 
+        })
+    })
+
+    describe('merge3', () => {
+
+        it('should shallow merge 3 Records', () => {
+
+            let r: A & B & C = merge3(a, b, c);
+
+            must(r).eql({ a: 1, b: 2, c: 3 });
+
+        });
+
+    });
+
+    describe('merge4', () => {
+
+        it('should shallow merge 4 Records', () => {
+
+            let r: A & B & C & D = merge4(a, b, c, d);
+
+            must(r).eql({ a: 1, b: 2, c: 3, d: 4 });
+
+        });
+
+    });
+
+    describe('merge5', () => {
+
+        it('should shallow merge 5 Records', () => {
+
+            let r: A & B & C & D & E = merge5(a, b, c, d, e);
+
+            must(r).eql({ a: 1, b: 2, c: 3, d: 4, e: { f: 'g' } });
+
+        });
+
+    });
+
+    describe('rmerge', () => {
+
+        it('should merge deeply', () => {
+
+            let r: RA & RB = rmerge(ra, rb);
+
+            must(r).eql(
+                {
+                    a: 1,
+                    b: '2',
+                    c: {
+                        d: 3,
+                        e: { f: '4', e1: 6 },
+                        g: '5',
+                        h: [1]
+                    }
+                });
+        })
+    })
+
+    describe('rmerge3', () => {
+
+        it('should merge deeply', () => {
+
+            let r: RA & RB & RC = rmerge3(ra, rb, rc);
+
+            must(r).eql(
+                {
+                    a: 1,
+                    b: '2',
+                    c: {
+                        c1: 'c1',
+                        d: 3,
+                        e: { f: '4', e1: 6 },
+                        g: '5',
+                        h: [1]
+                    }
+                });
+        })
+    })
+
+    describe('rmerge4', () => {
+
+        it('should merge deeply', () => {
+
+            let r: RA & RB & RC & RD = rmerge4(ra, rb, rc, rd);
+
+            must(r).eql(
+                {
+                    a: 1,
+                    b: '2',
+                    c: {
+                        c1: 'c1',
+                        d: 3,
+                        e: { f: '4', e1: 6 },
+                        g: '5',
+                        h: [2, 3, 4, 5, 6]
+
+                    }
+                });
+        })
+    })
+
+    describe('rmerge5', () => {
+
+        it('should merge deeply', () => {
+
+            let r: RA & RB & RC & RD & RE = rmerge5(ra, rb, rc, rd, re);
+
+            must(r).eql(
+                {
+                    a: 1,
+                    b: {
+                        bv: 'b2'
+                    },
+                    c: {
+                        c1: 'c1',
+                        d: 3,
+                        e: { f: '4', e1: 6 },
+                        g: '5',
+                        h: [2, 3, 4, 5, 6]
+
+                    }
+                });
         })
     })
 
@@ -111,7 +323,11 @@ describe('record', () => {
 
         it('should remove unwanted keys', () => {
 
-            must(exclude({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }, 'one', 'two', 'three'))
+            must(exclude({ one: 1, two: 2, three: 3 }, 'two'))
+                .eql({ one: 1, three: 3 });
+
+            must(exclude({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 },
+                ['one', 'two', 'three']))
                 .eql({ four: 4, five: 5, six: 6 });
 
         })
