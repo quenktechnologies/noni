@@ -48,3 +48,10 @@ export declare const is: <A>(expected: string) => (value: A) => boolean;
  *             instead.
  */
 export declare const test: <V>(value: V, t: Pattern) => boolean;
+/**
+ * show the type of a value.
+ *
+ * Note: This may crash if the value is an
+ * object literal with recursive references.
+ */
+export declare const show: <A>(value: A) => string;

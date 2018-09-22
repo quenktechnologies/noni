@@ -20,8 +20,8 @@ const prims = ['string', 'number', 'boolean'];
  *
  * Does not consider an Array an object.
  */
-export const isObject = (value: any): value is object => 
-  (typeof value === 'object') && (!isArray(value));
+export const isObject = (value: any): value is object =>
+    (typeof value === 'object') && (!isArray(value));
 
 /**
  * isArray test.
@@ -79,6 +79,31 @@ export const test = <V>(value: V, t: Pattern): boolean =>
                     Object
                         .keys(t)
                         .every(k => value.hasOwnProperty(k) ?
-                          test((<{[key:string] :any}>value)[k], 
-                            (<{[key:string]:any}>t)[k]) : false) :
+                            test((<{ [key: string]: any }>value)[k],
+                                (<{ [key: string]: any }>t)[k]) : false) :
                     false;
+
+/**
+ * show the type of a value.
+ *
+ * Note: This may crash if the value is an
+ * object literal with recursive references.
+ */
+export const show = <A>(value: A): string => {
+
+    if (typeof value === 'object') {
+
+        if (Array.isArray(value))
+            return `[${value.map(show)}]`
+        else if (value.constructor !== Object)
+            return value.constructor.name;
+        else
+            return JSON.stringify(value);
+
+    } else {
+
+        return '' + value;
+
+    }
+
+}
