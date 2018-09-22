@@ -1,5 +1,5 @@
 /**
- * Record is simply a plain old ES object with an index signature.
+ * Record is an ES object with an index signature.
  */
 export interface Record<A> {
     [key: string]: A;
@@ -7,20 +7,21 @@ export interface Record<A> {
 /**
  * isRecord tests whether a value is a record.
  *
- * Note: This function is also an unsafe type guard.
- * Use with caution.
+ * This is a typeof check that excludes arrays.
+ *
+ * Unsafe.
  */
 export declare const isRecord: <A>(value: any) => value is Record<A>;
 /**
- * keys produces a list of property names. of a Record.
+ * keys produces a list of property names from a Record.
  */
-export declare const keys: <A, R extends Record<A>>(value: R) => string[];
+export declare const keys: <A>(value: Record<A>) => string[];
 /**
  * map over a Record's properties producing a new record.
  *
  * The order of keys processed is not guaranteed.
  */
-export declare const map: <A, R extends Record<A>, B, S extends Record<B>>(o: R, f: (value: A, key: string, rec: R) => B) => S;
+export declare const map: <A, B, R extends Record<B>>(o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B) => R;
 /**
  * reduce a Record's keys to a single value.
  *
@@ -28,24 +29,48 @@ export declare const map: <A, R extends Record<A>, B, S extends Record<B>>(o: R,
  * there are no properites on the Record.
  * The order of keys processed is not guaranteed.
  */
-export declare const reduce: <A, R extends Record<A>, S>(o: R, accum: S, f: (pre: S, curr: A, key: string) => S) => S;
+export declare const reduce: <A, B>(o: Record<A>, accum: B, f: (pre: B, curr: A, key: string) => B) => B;
 /**
- * merge two or more objects into one returning the value.
+ * merge two objects into one.
  *
  * The return value's type is the product of the two types supplied.
  * This function may be unsafe.
  */
 export declare const merge: <A, R extends Record<A>, B, S extends Record<B>>(left: R, right: S) => R & S;
 /**
- * rmerge merges nested records recursively.
+ * merge3 merges 3 records into one.
+ */
+export declare const merge3: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>>(r: R, s: S, t: T) => any;
+/**
+ * merge4 merges 4 records into one.
+ */
+export declare const merge4: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>, D, U extends Record<D>>(r: R, s: S, t: T, u: U) => any;
+/**
+ * merge5 merges 5 records into one.
+ */
+export declare const merge5: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>, D, U extends Record<D>, E, V extends Record<E>>(r: R, s: S, t: T, u: U, v: V) => any;
+/**
+ * rmerge merges 2 records recursively.
  *
  * This function may be unsafe.
  */
 export declare const rmerge: <A, R extends Record<A>, B, S extends Record<B>>(left: R, right: S) => R & S;
 /**
+ * rmerge3 merges 3 records recursively.
+ */
+export declare const rmerge3: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>>(r: R, s: S, t: T) => R & S & T;
+/**
+ * rmerge4 merges 4 records recursively.
+ */
+export declare const rmerge4: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>, D, U extends Record<D>>(r: R, s: S, t: T, u: U) => R & S & T & U;
+/**
+ * rmerge5 merges 5 records recursively.
+ */
+export declare const rmerge5: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>, D, U extends Record<D>, E, V extends Record<E>>(r: R, s: S, t: T, u: U, v: V) => R & S & T & U & V;
+/**
  * exclude removes the specified properties from a Record.
  */
-export declare const exclude: <A, R extends Record<A>>(o: R, ...keys: string[]) => {};
+export declare const exclude: <A, R extends Record<A>>(o: R, keys: string | string[]) => {};
 /**
  * flatten an object into a map of key value pairs.
  *
