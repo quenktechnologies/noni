@@ -1,3 +1,5 @@
+import {show} from '../data/type';
+
 /**
  * The match module provides a best effort pattern runtime pattern matching
  * framework for ECMAScript. 
@@ -75,7 +77,7 @@ export class UnMatched<A> {
      */
     end(): A {
 
-        throw new Error(`The pattern '${this.value}' was not matched!`);
+        throw new Error(`The pattern '${show(this.value)}' was not matched!`);
 
     }
 
