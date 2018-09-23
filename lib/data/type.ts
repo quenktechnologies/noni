@@ -45,6 +45,11 @@ export const isNumber = (value: any): value is Number =>
 export const isBoolean = (value: any): value is boolean => typeof value === 'boolean';
 
 /**
+ * isFunction test.
+ */
+export const isFunction = (value:any): value is (<A,B>(a:A)=>B) => typeof value === 'function';
+
+/**
  * is performs a typeof of check on a type.
  */
 export const is = <A>(expected: string) => (value: A) => typeof (value) === expected;
