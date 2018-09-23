@@ -34,6 +34,10 @@ export declare const isBoolean: (value: any) => value is boolean;
  */
 export declare const isFunction: (value: any) => value is <A, B>(a: A) => B;
 /**
+ * isPrim test.
+ */
+export declare const isPrim: (value: any) => boolean;
+/**
  * is performs a typeof of check on a type.
  */
 export declare const is: <A>(expected: string) => (value: A) => boolean;

@@ -47,7 +47,15 @@ export const isBoolean = (value: any): value is boolean => typeof value === 'boo
 /**
  * isFunction test.
  */
-export const isFunction = (value:any): value is (<A,B>(a:A)=>B) => typeof value === 'function';
+export const isFunction = (value: any): value is (<A, B>(a: A) => B) => typeof value === 'function';
+
+/**
+ * isPrim test.
+ */
+export const isPrim = (value: any) =>
+    !(isObject(value) ||
+        isArray(value) ||
+        isFunction(value))
 
 /**
  * is performs a typeof of check on a type.
