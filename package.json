@@ -1,6 +1,6 @@
 {
   "name": "@quenk/noni",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Commons library used by Quenk Technologies everywhere.",
   "scripts": {
     "test": "./node_modules/.bin/mocha --opts mocha.opts test"
