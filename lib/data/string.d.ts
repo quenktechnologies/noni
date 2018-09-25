@@ -6,3 +6,8 @@ export declare const startsWith: (str: string, search: string, pos?: number) => 
  * endsWith polyfill.
  */
 export declare const endsWith: (str: string, search: string, this_len?: number) => number | boolean;
+/**
+ * contains uses String#indexOf to determine if a substring occurs
+ * in a string.
+ */
+export declare const contains: (str: string, match: string) => boolean;
