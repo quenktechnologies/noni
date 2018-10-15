@@ -2,7 +2,7 @@ import { Apply } from '../../src/control/apply';
 
 type F<A> = (a: A) => A;
 
-export type Eq<A> = (f: Apply<A>) => (g: Apply<A>) => boolean;
+export type Eq = (f: any) => (g: any) => any;
 
 /**
  * composition law.
@@ -11,8 +11,8 @@ export type Eq<A> = (f: Apply<A>) => (g: Apply<A>) => boolean;
  *
  */
 export const composition =
-  <A>(pure: <X>(x: X) => Apply<X>) => (eq: Eq<A>) => (f: F<A>) => 
-  (g: F<A>) =>      (x: A) => {
+    <A>(pure: <X>(x: X) => Apply<X>) => (eq: Eq) => (f: F<A>) =>
+        (g: F<A>) => (x: A) => {
 
             let a = pure(x);
             let b: Apply<F<A>> = pure(f);
@@ -20,7 +20,7 @@ export const composition =
 
             let l = a.ap(b.ap(
                 <Apply<(a: F<A>) => (x: A) => A>>c
-              .map(f => (g:(x:A)=>A) => (x: A) => f(g(x)))));
+                    .map(f => (g: (x: A) => A) => (x: A) => f(g(x)))));
 
             let r = a.ap(b).ap(c);
 

@@ -10,7 +10,7 @@ export interface TestOpts<A> {
 
     pure: <X>(x: X) => Monad<X>
 
-    eq: (m: Monad<A>) => (m: Monad<A>) => boolean
+    eq: (m: any) => (m: any) => any
 
     map: (a: A) => A
 
