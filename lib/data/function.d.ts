@@ -47,3 +47,7 @@ export declare const curry4: <A, B, C, D, E>(f: (a: A, b: B, c: C, d: D) => E) =
  * curry5 curries an ES function that accepts 5 parameters.
  */
 export declare const curry5: <A, B, C, D, E, F>(f: (a: A, b: B, c: C, d: D, e: E) => F) => (a: A) => (b: B) => (c: C) => (d: D) => (e: E) => F;
+/**
+ * noop function
+ */
+export declare const noop: () => undefined;

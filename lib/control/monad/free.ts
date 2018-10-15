@@ -145,7 +145,7 @@
  * ## Resources:
  * * [Running Free with the Monads](https://www.slideshare.net/kenbot/running-free-with-the-monads)
  * * [Free Monads for cheap interpreters](https://www.tweag.io/posts/2018-02-05-free-monads.html)
- * *[purescript-free](https://pursuit.purescript.org/packages/purescript-free/5.1.0)
+ * * [purescript-free](https://pursuit.purescript.org/packages/purescript-free/5.1.0)
  */
 import { Monad } from './';
 import { Functor } from '../../data/functor';
