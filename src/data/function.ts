@@ -74,3 +74,8 @@ export const curry4 = <A, B, C, D, E>
 export const curry5 = <A, B, C, D, E, F>
     (f: (a: A, b: B, c: C, d: D, e: E) => F) =>
     (a: A) => (b: B) => (c: C) => (d: D) => (e: E) => f(a, b, c, d, e);
+
+/**
+ * noop function
+ */
+export const noop = () => void 0;
