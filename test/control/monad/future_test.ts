@@ -180,7 +180,20 @@ describe('future', () => {
                     .finally(() => pure(12)))
                     .then((n: number) => must(n).be(12)));
 
-        });
+        })
+
+        it('should not duplicate operations', () => {
+
+            let count = 0;
+            let m = () => { count = count + 1; return pure(count); };
+
+            return liftP(pure(0)
+                .chain(m)
+                .chain(m)
+                .chain(m))
+                .then(() => must(count).be(3));
+
+        })
 
     })
 
@@ -324,7 +337,7 @@ describe('future', () => {
             })
 
             return liftP(parallel([task(300), task(200), task(500), task(600)]))
-            .then((list:number[])=> must(list).eql([300,200,500,600]));
+                .then((list: number[]) => must(list).eql([300, 200, 500, 600]));
 
         });
 
