@@ -16,7 +16,8 @@ import {
     flatten,
     partition,
     group,
-    values
+    values,
+    contains
 } from '../../src/data/record';
 
 type A = { a: number };
@@ -421,5 +422,19 @@ describe('record', () => {
         });
 
     });
+
+    describe('contains', () => {
+
+        it('should work', () => {
+
+            let foo = { n: 12 };
+
+            must(contains(foo, 'n')).be(true);
+            must(contains(foo, 'x')).be(false);
+
+        });
+
+    });
+
 });
 

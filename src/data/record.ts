@@ -219,3 +219,8 @@ export const group = <A, R extends Record<A>>
 export const values = <A, R extends Record<A>>(r: R): A[] =>
     reduce(r, [], (p: A[], c) => concat(p)(<A>c));
 
+/**
+ * contains indicates whether a Record has a given key.
+ */
+export const contains = <A>(r: Record<A>, key: string): boolean =>
+    Object.hasOwnProperty.call(r, key);
