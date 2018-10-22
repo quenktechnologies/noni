@@ -11,6 +11,20 @@ import { Eq } from './eq';
 export interface Maybe<A> extends
     Monad<A>, Alt<A>, Plus<A>, Alternative<A>, Extend<A>, Eq<Maybe<A>> {
 
+    of(a: A): Maybe<A>;
+
+    map<B>(_: (a: A) => B): Maybe<B>;
+
+    ap<B>(_: Maybe<(a: A) => B>): Maybe<B>;
+
+    chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
+
+    alt(a: Maybe<A>): Maybe<A>;
+
+    empty(): Maybe<A>;
+
+    extend<B>(_: (ex: Maybe<A>) => B): Maybe<B>;
+
     /**
      * orJust is like applying map to the Nothing<A> side.
      */
@@ -258,12 +272,12 @@ export const of = <A>(a: A) => new Just(a);
 /**
  * nothing convenience constructor
  */
-export const nothing = <A>()=> new Nothing<A>();
+export const nothing = <A>() => new Nothing<A>();
 
 /**
  * just convenience constructor
  */
-export const just = <A>(a:A) => new Just(a);
+export const just = <A>(a: A) => new Just(a);
 
 /**
  * fromNullable constructs a Maybe from a value that may be null.
@@ -310,3 +324,7 @@ export const fromNumber = (n: number): Maybe<number> =>
  */
 export const fromNaN = (n: number): Maybe<number> =>
     isNaN(n) ? new Nothing<number>() : new Just(n);
+
+fromString('foo')
+    .map(s => `${s}poo`)
+    .orJust(() => 1);

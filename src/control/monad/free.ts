@@ -163,7 +163,6 @@ export class Step<F extends Functor<any>, A, B> {
 
 }
 
-
 /**
  * Free monad implementation.
  */
