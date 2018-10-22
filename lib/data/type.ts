@@ -109,7 +109,7 @@ export const show = <A>(value: A): string => {
         if (Array.isArray(value))
             return `[${value.map(show)}]`
         else if (value.constructor !== Object)
-            return value.constructor.name;
+            return ((<any>value.constructor).name || value.constructor);
         else
             return JSON.stringify(value);
 
