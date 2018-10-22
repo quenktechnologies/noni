@@ -24,6 +24,7 @@ export declare abstract class Either<L, R> implements Functor<R>, Apply<R>, Alt<
     abstract chain<B>(f: (r: R) => Either<L, B>): Either<L, B>;
     abstract ap<B>(e: Either<L, (r: R) => B>): Either<L, B>;
     abstract extend<B>(f: (_: Either<L, R>) => B): Either<L, B>;
+    abstract fold<B>(f: (l: L) => B, g: (r: R) => B): B;
     abstract eq(m: Either<L, R>): boolean;
     /**
      * orElse allows an alternative to be produced from a function

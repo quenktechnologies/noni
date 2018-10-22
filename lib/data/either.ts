@@ -45,6 +45,8 @@ export abstract class Either<L, R> implements
 
     abstract extend<B>(f: (_: Either<L, R>) => B): Either<L, B>;
 
+    abstract fold<B>(f: (l: L) => B, g: (r: R) => B): B;
+
     abstract eq(m: Either<L, R>): boolean;
 
     /**
