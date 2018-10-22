@@ -15,40 +15,47 @@ import { Eq } from './eq';
  * The Either concept is often used to accomodate error handling but there
  * are other places it may come in handy.
  */
-export interface Either<L, R> extends Functor<R>, Apply<R>, Alt<R>, Chain<R>, Monad<R>, Extend<R>, Eq<Either<L, R>> {
+export declare abstract class Either<L, R> implements Functor<R>, Apply<R>, Alt<R>, Chain<R>, Monad<R>, Extend<R>, Eq<Either<L, R>> {
+    of(value: R): Either<L, R>;
+    abstract map<B>(_: (r: R) => B): Either<L, B>;
+    abstract lmap<B>(f: (l: L) => B): Either<B, R>;
+    abstract bimap<A, B>(f: (l: L) => A, g: (r: R) => B): Either<A, B>;
+    abstract alt(a: Either<L, R>): Either<L, R>;
+    abstract chain<B>(f: (r: R) => Either<L, B>): Either<L, B>;
+    abstract ap<B>(e: Either<L, (r: R) => B>): Either<L, B>;
+    abstract extend<B>(f: (_: Either<L, R>) => B): Either<L, B>;
+    abstract eq(m: Either<L, R>): boolean;
     /**
      * orElse allows an alternative to be produced from a function
      * when the Either is Left.
      */
-    orElse(_: (l: L) => Either<L, R>): Either<L, R>;
+    abstract orElse(_: (l: L) => Either<L, R>): Either<L, R>;
     /**
      * orRight allows an alternative value to be produced from
      * a function when the Either is Right.
      */
-    orRight(_: (l: L) => R): Either<L, R>;
+    abstract orRight(_: (l: L) => R): Either<L, R>;
     /**
      * takeLeft extracts the value from the Left side.
      */
-    takeLeft(): L;
+    abstract takeLeft(): L;
     /**
      * takeRight extracts the value from the Right side.
      *
      * Will throw an error if the value is not Right.
      */
-    takeRight(): R;
+    abstract takeRight(): R;
 }
 /**
  * Left side of the Either implementation.
  */
-export declare class Left<L, R> implements Either<L, R> {
+export declare class Left<L, R> extends Either<L, R> {
     value: L;
     constructor(value: L);
-    of(value: R): Either<L, R>;
     map<B>(_: (r: R) => B): Either<L, B>;
     lmap<B>(f: (l: L) => B): Either<B, R>;
     bimap<A, B>(f: (l: L) => A, _: (r: R) => B): Either<A, B>;
     alt(a: Either<L, R>): Either<L, R>;
-    empty(): Either<L, R>;
     chain<B>(_: (r: R) => Either<L, B>): Either<L, B>;
     ap<B>(_: Either<L, (r: R) => B>): Either<L, B>;
     extend<B>(_: (_: Either<L, R>) => B): Either<L, B>;
@@ -62,10 +69,9 @@ export declare class Left<L, R> implements Either<L, R> {
 /**
  * Right side implementation.
  */
-export declare class Right<L, R> implements Either<L, R> {
+export declare class Right<L, R> extends Either<L, R> {
     value: R;
     constructor(value: R);
-    of(value: R): Right<L, R>;
     map<B>(f: (r: R) => B): Either<L, B>;
     lmap<B>(_: (l: L) => B): Either<B, R>;
     bimap<A, B>(_: (l: L) => A, g: (r: R) => B): Either<A, B>;

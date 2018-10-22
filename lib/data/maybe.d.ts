@@ -8,6 +8,13 @@ import { Eq } from './eq';
  * Maybe monad represents an optional or nullable value.
  */
 export interface Maybe<A> extends Monad<A>, Alt<A>, Plus<A>, Alternative<A>, Extend<A>, Eq<Maybe<A>> {
+    of(a: A): Maybe<A>;
+    map<B>(_: (a: A) => B): Maybe<B>;
+    ap<B>(_: Maybe<(a: A) => B>): Maybe<B>;
+    chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
+    alt(a: Maybe<A>): Maybe<A>;
+    empty(): Maybe<A>;
+    extend<B>(_: (ex: Maybe<A>) => B): Maybe<B>;
     /**
      * orJust is like applying map to the Nothing<A> side.
      */
