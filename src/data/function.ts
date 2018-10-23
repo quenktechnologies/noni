@@ -78,4 +78,4 @@ export const curry5 = <A, B, C, D, E, F>
 /**
  * noop function
  */
-export const noop = () => void 0;
+export const noop = () : void=> {};
