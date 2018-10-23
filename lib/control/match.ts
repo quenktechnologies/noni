@@ -1,5 +1,3 @@
-import {show} from '../data/type';
-
 /**
  * The match module provides a best effort pattern runtime pattern matching
  * framework for ECMAScript. 
@@ -24,7 +22,7 @@ import {show} from '../data/type';
  * allowed types).
  *
  */
-import { test } from '../data/type';
+import { test,show } from '../data/type';
 
 export type Cons<T> = { new(...args: any[]): T };
 

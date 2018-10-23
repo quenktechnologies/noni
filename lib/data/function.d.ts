@@ -50,4 +50,4 @@ export declare const curry5: <A, B, C, D, E, F>(f: (a: A, b: B, c: C, d: D, e: E
 /**
  * noop function
  */
-export declare const noop: () => undefined;
+export declare const noop: () => void;
