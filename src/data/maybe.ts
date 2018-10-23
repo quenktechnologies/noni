@@ -28,13 +28,13 @@ export interface Maybe<A> extends
     /**
      * orJust is like applying map to the Nothing<A> side.
      */
-    orJust<B>(_f: () => B): Maybe<A> | Maybe<B>;
+    orJust<B>(_f: () => B): Maybe<A | B>;
 
     /**
      * orElse allows for an alternative Maybe value to
      * be provided when Nothing<A> but using a function.
      */
-    orElse<B>(_f: () => Maybe<B>): Maybe<A> | Maybe<B>;
+    orElse<B>(f: () => Maybe<B>): Maybe<A|B>;
 
     /**
      * get the value from a Maybe.
@@ -324,7 +324,3 @@ export const fromNumber = (n: number): Maybe<number> =>
  */
 export const fromNaN = (n: number): Maybe<number> =>
     isNaN(n) ? new Nothing<number>() : new Just(n);
-
-fromString('foo')
-    .map(s => `${s}poo`)
-    .orJust(() => 1);
