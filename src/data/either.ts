@@ -1,4 +1,3 @@
-M
 import { Functor } from './functor';
 import { Apply } from '../control/apply';
 import { Alt } from '../control/alt';
@@ -6,6 +5,7 @@ import { Chain } from '../control/chain';
 import { Monad } from '../control/monad';
 import { Extend } from '../control/extend';
 import { Eq } from './eq';
+import { Maybe, nothing, just } from './maybe';
 
 /**
  * Either represents a value that may be one of two types.
@@ -73,6 +73,11 @@ export abstract class Either<L, R> implements
      * Will throw an error if the value is not Right.
      */
     abstract takeRight(): R
+
+    /**
+     * toMaybe transformation.
+     */
+    abstract toMaybe(): Maybe<R>;
 
 }
 
@@ -156,6 +161,12 @@ export class Left<L, R> extends Either<L, R> {
     takeRight(): R {
 
         throw new TypeError(`Not right!`);
+    }
+
+    toMaybe(): Maybe<R> {
+
+        return nothing();
+
     }
 
 }
@@ -242,6 +253,12 @@ export class Right<L, R> extends Either<L, R>  {
     takeRight(): R {
 
         return this.value;
+
+    }
+
+    toMaybe(): Maybe<R> {
+
+        return just(this.value);
 
     }
 
