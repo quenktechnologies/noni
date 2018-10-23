@@ -5,6 +5,7 @@ import { Chain } from '../control/chain';
 import { Monad } from '../control/monad';
 import { Extend } from '../control/extend';
 import { Eq } from './eq';
+import { Maybe } from './maybe';
 /**
  * Either represents a value that may be one of two types.
  *
@@ -46,6 +47,10 @@ export declare abstract class Either<L, R> implements Functor<R>, Apply<R>, Alt<
      * Will throw an error if the value is not Right.
      */
     abstract takeRight(): R;
+    /**
+     * toMaybe transformation.
+     */
+    abstract toMaybe(): Maybe<R>;
 }
 /**
  * Left side of the Either implementation.
@@ -66,6 +71,7 @@ export declare class Left<L, R> extends Either<L, R> {
     orRight(f: (l: L) => R): Either<L, R>;
     takeLeft(): L;
     takeRight(): R;
+    toMaybe(): Maybe<R>;
 }
 /**
  * Right side implementation.
@@ -86,6 +92,7 @@ export declare class Right<L, R> extends Either<L, R> {
     orRight(_: (l: L) => R): Either<L, R>;
     takeLeft(): L;
     takeRight(): R;
+    toMaybe(): Maybe<R>;
 }
 /**
  * left constructor helper.
