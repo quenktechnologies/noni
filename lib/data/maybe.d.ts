@@ -140,15 +140,15 @@ export declare class Just<A> implements Maybe<A> {
 /**
  * of
  */
-export declare const of: <A>(a: A) => Just<A>;
+export declare const of: <A>(a: A) => Maybe<A>;
 /**
  * nothing convenience constructor
  */
-export declare const nothing: <A>() => Nothing<A>;
+export declare const nothing: <A>() => Maybe<A>;
 /**
  * just convenience constructor
  */
-export declare const just: <A>(a: A) => Just<A>;
+export declare const just: <A>(a: A) => Maybe<A>;
 /**
  * fromNullable constructs a Maybe from a value that may be null.
  */
