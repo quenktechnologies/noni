@@ -1,3 +1,4 @@
+import * as must from 'must/register';
 import * as json from '../../src/data/json';
 
 export const anObject: json.Object = {
@@ -19,10 +20,32 @@ export const aBoolean: json.Boolean = true;
 
 export const aNull: json.Null = null;
 
-describe('json', function() {
+describe('json', () => {
 
-    it('should compile', function() {
+    describe('types', () => {
 
-    });
+        it('should compile', () => { })
+
+    })
+
+    describe('parse', () => {
+
+        it('should be safe', () => {
+
+            must(json
+                .parse('{"n":1, "b":2, "c":3}')
+                .takeRight()).eql({ n: 1, b: 2, c: 3 });
+
+            must(
+                json
+                    .parse('{ vanku, []}^')
+                    .takeLeft()).be.instanceOf(Error);
+
+
+        })
+
+    })
+
+
 
 });
