@@ -34,7 +34,7 @@ export interface Maybe<A> extends
      * orElse allows for an alternative Maybe value to
      * be provided when Nothing<A> but using a function.
      */
-    orElse<B>(f: () => Maybe<B>): Maybe<A|B>;
+    orElse<B>(f: () => Maybe<B>): Maybe<A | B>;
 
     /**
      * get the value from a Maybe.
@@ -267,17 +267,17 @@ export class Just<A> implements Maybe<A> {
 /**
  * of
  */
-export const of = <A>(a: A) => new Just(a);
+export const of = <A>(a: A) : Maybe<A> => new Just(a);
 
 /**
  * nothing convenience constructor
  */
-export const nothing = <A>() => new Nothing<A>();
+export const nothing = <A>() : Maybe<A> => new Nothing<A>();
 
 /**
  * just convenience constructor
  */
-export const just = <A>(a: A) => new Just(a);
+export const just = <A>(a: A) : Maybe<A> => new Just(a);
 
 /**
  * fromNullable constructs a Maybe from a value that may be null.

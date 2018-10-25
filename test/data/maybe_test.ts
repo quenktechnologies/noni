@@ -147,4 +147,22 @@ describe('maybe', () => {
 
     });
 
+    describe('Maybe', () => {
+
+        describe('orElse', () => {
+
+            it('should not cause #3', () => {
+
+                fromBoolean(true)
+                    .orElse(() => just('foo'))
+                    .map(() => 'bar')
+
+                must(true).be(true);
+
+            });
+
+        });
+
+    });
+
 });
