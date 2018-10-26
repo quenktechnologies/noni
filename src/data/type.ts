@@ -16,6 +16,11 @@ export type Pattern
 const prims = ['string', 'number', 'boolean'];
 
 /**
+ * Any is a class used to represent typescript's "any" type.
+ */
+export class Any { }
+
+/**
  * isObject test.
  *
  * Does not consider an Array an object.
@@ -84,6 +89,7 @@ export const test = <V>(value: V, t: Pattern): boolean =>
                 ((<Function>t === Number) && (typeof value === 'number')) ||
                 ((<Function>t === Boolean) && (typeof value === 'boolean')) ||
                 ((<Function>t === Array) && (Array.isArray(value))) ||
+                (<Function>t === Any) ||
                 (value instanceof <Function>t))) ?
             true :
             ((t instanceof RegExp) && ((typeof value === 'string') && t.test(value))) ?

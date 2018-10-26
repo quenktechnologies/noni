@@ -1,5 +1,5 @@
 import * as must from 'must/register';
-import { test } from '../../src/data/type';
+import { Any, test } from '../../src/data/type';
 
 class Point {
 
@@ -49,8 +49,17 @@ describe('test', function() {
 
     it('should match regular expressions', function() {
 
-        must(test('Do you know the movie jaws?', /^jaws/ )).be(false);
-        must(test( 'jaws? yeah I know it.', /^jaws/ )).be(true);
+        must(test('Do you know the movie jaws?', /^jaws/)).be(false);
+        must(test('jaws? yeah I know it.', /^jaws/)).be(true);
+
+    });
+
+    it('should match Any', function() {
+
+        must(test('A string', Any)).be(true);
+        must(test(12, Any)).be(true);
+        must(test(false, Any)).be(true);
+        must(test({}, Any)).be(true);
 
     });
 
