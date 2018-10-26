@@ -152,7 +152,7 @@ export declare const just: <A>(a: A) => Maybe<A>;
 /**
  * fromNullable constructs a Maybe from a value that may be null.
  */
-export declare const fromNullable: <A>(a: A) => Maybe<A>;
+export declare const fromNullable: <A>(a: A | null | undefined) => Maybe<A>;
 /**
  * fromArray checks an array to see if it's empty
  *

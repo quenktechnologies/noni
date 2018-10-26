@@ -282,7 +282,7 @@ export const just = <A>(a: A) : Maybe<A> => new Just(a);
 /**
  * fromNullable constructs a Maybe from a value that may be null.
  */
-export const fromNullable = <A>(a: A): Maybe<A> => a == null ?
+export const fromNullable = <A>(a: A|undefined|null): Maybe<A> => a == null ?
     new Nothing<A>() : new Just(a);
 
 /**
