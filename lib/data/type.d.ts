@@ -8,6 +8,11 @@ export declare type Pattern = string | number | boolean | object | {
     new (...args: any[]): object;
 };
 /**
+ * Any is a class used to represent typescript's "any" type.
+ */
+export declare class Any {
+}
+/**
  * isObject test.
  *
  * Does not consider an Array an object.
