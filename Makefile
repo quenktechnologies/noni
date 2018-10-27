@@ -8,6 +8,11 @@ lib: $(shell find src -type f)
 # Generate typedoc documentation.
 .PHONY: docs
 docs: lib
-	./node_modules/.bin/typedoc --mode modules --out $@ \
-	--tsconfig lib/tsconfig.json --theme minimal lib && \
+	./node_modules/.bin/typedoc \
+	--mode modules \
+	--out $@ \
+	--tsconfig lib/tsconfig.json \
+	--theme minimal lib  \
+	--excludeNotExported \
+	--excludePrivate && \
 	echo "" > docs/.nojekyll
