@@ -35,6 +35,12 @@ export declare type Job<A> = (c: Supervisor<A>) => Aborter;
  * Callback in node platform style for asynchronous effects.
  */
 export declare type Callback<A> = (e?: Error, a?: A) => void;
+/**
+ * CallBackReceiver type takes a node style callback
+ * and performs some side-effect.
+ */
+export declare type CallbackReceiver<A> = (cb: Callback<A>) => void;
+export declare type T<A> = (f: (cb: Callback<A>) => void) => Future<A>;
 export declare abstract class Future<A> implements Monad<A> {
     of(a: A): Future<A>;
     map<B>(f: (a: A) => B): Future<B>;
@@ -187,13 +193,13 @@ export declare const attempt: <A>(f: () => A) => Run<A>;
  *
  * Note: The function used here is not called in the "next tick".
  */
-export declare const fromAbortable: <A>(abort: Aborter) => (f: (cb: Callback<A>) => void) => Future<A>;
+export declare const fromAbortable: <A>(abort: Aborter) => (f: CallbackReceiver<A>) => Future<A>;
 /**
  * fromCallback produces a Future from a node style async function.
  *
  * Note: The function used here is not called in the "next tick".
  */
-export declare const fromCallback: (f: (cb: Callback<{}>) => void) => Future<{}>;
+export declare const fromCallback: <A>(f: CallbackReceiver<A>) => Future<{}>;
 /**
  * parallel runs a list of Futures in parallel failing if any
  * fail and succeeding with a list of successful values.
