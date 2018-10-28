@@ -2,6 +2,8 @@ import { tick } from '../timer';
 import { Monad } from './';
 import { noop } from '../../data/function';
 
+
+
 /**
  * OnError callback function type.
  */
@@ -45,6 +47,14 @@ export type Job<A> = (c: Supervisor<A>) => Aborter;
  * Callback in node platform style for asynchronous effects.
  */
 export type Callback<A> = (e?: Error, a?: A) => void;
+
+/**
+ * CallBackReceiver type takes a node style callback 
+ * and performs some side-effect.
+ */
+export type CallbackReceiver<A> = (cb: Callback<A>) => void;
+
+export type T<A> = (f: (cb: Callback<A>) => void) => Future<A>;
 
 export abstract class Future<A> implements Monad<A> {
 
@@ -382,7 +392,7 @@ export const attempt = <A>(f: () => A) => new Run((s: Supervisor<A>) => {
  *
  * Note: The function used here is not called in the "next tick".
  */
-export const fromAbortable = <A>(abort: Aborter) => (f: (cb: Callback<A>) => void)
+export const fromAbortable = <A>(abort: Aborter) => (f: CallbackReceiver<A>)
     : Future<A> => new Run((s: Supervisor<A>) => {
 
         f((err?: Error, a?: A) => (err != null) ? s.onError(err) : s.onSuccess(<A>a));
@@ -395,7 +405,8 @@ export const fromAbortable = <A>(abort: Aborter) => (f: (cb: Callback<A>) => voi
  *
  * Note: The function used here is not called in the "next tick".
  */
-export const fromCallback = fromAbortable(noop);
+export const fromCallback = <A>(f:CallbackReceiver<A>) => 
+  fromAbortable(noop)(f);
 
 class Tag<A> {
 
@@ -446,18 +457,18 @@ export const race = <A>(list: Future<A>[]) => new Run((s: Supervisor<A>) => {
             f
                 .map((value: A) => new Tag(index, value))
                 .fork(
-                  e => { 
-                    
-                    abortAll(comps); 
-                    s.onError(e); 
-                  
-                  },
-                  t => { 
-                    
-                    abortExcept(comps, t.index); 
-                    s.onSuccess(t.value); 
-                  
-                  }
+                    e => {
+
+                        abortAll(comps);
+                        s.onError(e);
+
+                    },
+                    t => {
+
+                        abortExcept(comps, t.index);
+                        s.onSuccess(t.value);
+
+                    }
                 ));
 
     return () => { abortAll(comps); }
@@ -468,5 +479,3 @@ const abortAll = <A>(comps: Compute<A>[]) => comps.map(c => c.abort());
 
 const abortExcept = <A>(comps: Compute<A>[], index: number) =>
     comps.map((c, i) => (i !== index) ? c.abort() : undefined);
-
-
