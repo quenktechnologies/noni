@@ -1,12 +1,44 @@
 import { Either, left, right } from '../data/either';
 
 /**
+ * Err describes the JS Error interface independant
+ * of the default Error machinery.
+ * 
+ * This is done to avoid hacks required when extending the Error constructor.
+ */
+export interface Err {
+
+    /**
+     * message describing the error that occured.
+     */
+    message: string
+
+    /**
+     * stack contains the call stack on platforms where available.
+     */
+    stack?: string
+
+}
+
+/**
  * raise the supplied Error.
  *
  * This function exists to maintain a functional style in situations where 
  * you may actually want to throw an error.
  */
-export const raise = (e: Error) => { throw e; }
+export const raise = (e: Err) => {
+
+    if (e instanceof Error) {
+
+        throw e;
+
+    } else {
+
+        throw new Error(e.message);
+
+    }
+
+}
 
 /**
  * attempt a synchronous computation that may throw an exception.
