@@ -371,7 +371,7 @@ export const pure = <A>(a: A): Future<A> => new Pure(a);
  *
  * This future will be considered a failure.
  */
-export const raise = (e: Error) => new Raise(e);
+export const raise = <A>(e: Error) : Future<A> => new Raise(e);
 
 /**
  * attempt a syncronous task, trapping any thrown errors in the Future.
@@ -403,8 +403,8 @@ export const fromAbortable = <A>(abort: Aborter) => (f: CallbackReceiver<A>)
  *
  * Note: The function used here is not called in the "next tick".
  */
-export const fromCallback = <A>(f:CallbackReceiver<A>) => 
-  fromAbortable(noop)(f);
+export const fromCallback = <A>(f: CallbackReceiver<A>) =>
+    fromAbortable(noop)(f);
 
 class Tag<A> {
 
