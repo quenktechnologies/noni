@@ -199,14 +199,14 @@ export declare const fromAbortable: <A>(abort: Aborter) => (f: CallbackReceiver<
  *
  * Note: The function used here is not called in the "next tick".
  */
-export declare const fromCallback: <A>(f: CallbackReceiver<A>) => Future<{}>;
+export declare const fromCallback: <A>(f: CallbackReceiver<A>) => Future<A>;
 /**
  * parallel runs a list of Futures in parallel failing if any
  * fail and succeeding with a list of successful values.
  */
-export declare const parallel: <A>(list: Future<A>[]) => Run<A[]>;
+export declare const parallel: <A>(list: Future<A>[]) => Future<A[]>;
 /**
  * race given a list of Futures, will return a Future that is settled by
  * the first error or success to occur.
  */
-export declare const race: <A>(list: Future<A>[]) => Run<A>;
+export declare const race: <A>(list: Future<A>[]) => Future<A>;

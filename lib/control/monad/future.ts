@@ -371,7 +371,7 @@ export const pure = <A>(a: A): Future<A> => new Pure(a);
  *
  * This future will be considered a failure.
  */
-export const raise = <A>(e: Error) : Future<A> => new Raise(e);
+export const raise = <A>(e: Error): Future<A> => new Raise(e);
 
 /**
  * attempt a syncronous task, trapping any thrown errors in the Future.
@@ -403,8 +403,8 @@ export const fromAbortable = <A>(abort: Aborter) => (f: CallbackReceiver<A>)
  *
  * Note: The function used here is not called in the "next tick".
  */
-export const fromCallback = <A>(f: CallbackReceiver<A>) =>
-    fromAbortable(noop)(f);
+export const fromCallback = <A>(f: CallbackReceiver<A>) 
+  : Future<A> => fromAbortable<A>(noop)(f);
 
 class Tag<A> {
 
@@ -416,39 +416,41 @@ class Tag<A> {
  * parallel runs a list of Futures in parallel failing if any 
  * fail and succeeding with a list of successful values.
  */
-export const parallel = <A>(list: Future<A>[]) => new Run((s: Supervisor<A[]>) => {
+export const parallel = <A>(list: Future<A>[])
+    : Future<A[]> => new Run((s: Supervisor<A[]>) => {
 
-    let done: Tag<A>[] = [];
+        let done: Tag<A>[] = [];
 
-    let comps = list.map((f: Future<A>, index: number) =>
-        f
-            .map((value: A) => new Tag(index, value))
-            .fork(
-                e => {
+        let comps = list.map((f: Future<A>, index: number) =>
+            f
+                .map((value: A) => new Tag(index, value))
+                .fork(
+                    e => {
 
-                    abortAll(comps);
-                    s.onError(e);
+                        abortAll(comps);
+                        s.onError(e);
 
-                },
-                t => {
+                    },
+                    t => {
 
-                    done.push(t);
+                        done.push(t);
 
-                    if (done.length === comps.length)
-                        s.onSuccess(done.sort((a, b) => a.index - b.index)
-                            .map(t => t.value));
+                        if (done.length === comps.length)
+                            s.onSuccess(done.sort((a, b) => a.index - b.index)
+                                .map(t => t.value));
 
-                }));
+                    }));
 
-    return () => { abortAll(comps) };
+        return () => { abortAll(comps) };
 
-});
+    });
 
 /**
  * race given a list of Futures, will return a Future that is settled by
  * the first error or success to occur.
  */
-export const race = <A>(list: Future<A>[]) => new Run((s: Supervisor<A>) => {
+export const race = <A>(list: Future<A>[]) 
+  : Future<A> => new Run((s: Supervisor<A>) => {
 
     let comps = list
         .map((f: Future<A>, index: number) =>
