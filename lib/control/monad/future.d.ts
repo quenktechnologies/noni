@@ -182,7 +182,7 @@ export declare const pure: <A>(a: A) => Future<A>;
  *
  * This future will be considered a failure.
  */
-export declare const raise: (e: Error) => Raise<{}>;
+export declare const raise: <A>(e: Error) => Future<A>;
 /**
  * attempt a syncronous task, trapping any thrown errors in the Future.
  */
