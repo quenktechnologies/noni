@@ -96,7 +96,7 @@ export declare const group: <A, R extends Record<A>>(r: R) => (f: (a: A, k: stri
 /**
  * values returns a shallow array of the values of a record.
  */
-export declare const values: <A, R extends Record<A>>(r: R) => A[];
+export declare const values: <A>(r: Record<A>) => A[];
 /**
  * contains indicates whether a Record has a given key.
  */
