@@ -2,8 +2,6 @@ import { tick } from '../timer';
 import { Monad } from './';
 import { noop } from '../../data/function';
 
-
-
 /**
  * OnError callback function type.
  */
