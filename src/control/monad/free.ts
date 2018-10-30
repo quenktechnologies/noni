@@ -2,16 +2,17 @@
  * This is a basic, somewhat naive implementation of a Free monad devoid 
  * of stack safety.
  *
- * As far as the library is concerned, a [[Free]] provides a [[Monad]] structure
- * that can be used for creating first-class DSL from [[Functors]]
- * without the overhead parsing and compilation.
+ * As far as the library is concerned, a [[Free]] provides a [[Monad]] 
+ * that can be used for creating first-class DSL from [[Functor]]s
+ * without parsing overhead.
  *
- * Instead, the overhead incurred depends on the method use to interpret
- * the Free based DSL.
+ * It is probably not very efficient to have a very large Free based DSL using
+ * this implementation.
  *
- * A Free monad encases any [[Functor]] effectively promoting it to a monad.
- * These Functors represent your DSL and can be sequenced together via
- * Free#chain.
+ * A Free monad wraps up any [[Functor]] implementation which
+ * has the effect of prompoting it to a monad. These Functors are your
+ * DSL productions and can be sequenced together like regular monads using
+ * `Free#chain`.
  *
  * Think of each as a line of instruction in an assembly type program.
  *
@@ -20,19 +21,17 @@
  * ### Performance 
  *
  * As mentioned before this is a naive impementation, future versions may
- * introduce stack safety.
+ * introduce stack safety but for now, assume none exists.
  *
  * ### Type System
  * TypeScript does not have Higher Kinded Types (HKT) or as the author
  * understands; generic types that can themeselves have type parameters.
  *
  * Due to this fact, implementing a Free and related functions is probably
- * impossible without breaking typesafety via any. This is evident in the
- * use of any for the Functor constraint type parameter.
+ * impossible without breaking typesafety via `any`. This is evident in the
+ * use of `any` for the Functor type parameter.
  *
- * ### Example
- *
- * This example can be seen in the tests for this module.
+ * ## Example
  *
  * Start by describing your API via a sum type:
  *
@@ -45,10 +44,11 @@
  *  ; 
  *
  * ```
- * The <N> type parameter is the next link in the Free chain however seeing that
- * our API members need to be Functors we leave it generic.
+ * The `N` type parameter is actually the next step in the chain.
+ * It is a Functor wrapped in some [[Free]]. Since we don't have HKT we just 
+ * leave it generic otherwise we would lose vital information during chaining.
  *
- * Now we declare our API clases.
+ * Declare our API clases:
  *
  * ```typescript
  *
@@ -91,25 +91,24 @@
  * ```
  *
  * In order to chain the API members together with Free, we need to "lift"
- * them into the Free monad thus prompting them to [[Monads]]s this is done
- * via the [[liftF]] function:
+ * them into the Free monad thus prompting them. This is done  via the 
+ * [[liftF]] function:
  *
  * ```typescript
- *
  * let m: Free<API<any>, undefined> = liftF(new Put('key', 'value', undefined));
  *
  * ```
  *
- * Note the use of API<any> here. Any is used as the type parameter because
+ * Note the use of `API<any>` here. `any` is used as the type parameter because
  * the typescript compiler will not keep track of our API Functors as we 
  * nest them (no HKT). 
  *
- * The second type parameter to Free is undefined. This is the final result
+ * The second type parameter to Free is `undefined`. This is the final result
  * of our Free program. We use undefined because we have no "next" value as
- * yet and thus interpreting our variable `m` would result in undefined.
+ * yet and thus interpreting our variable `m` would result in the effect
+ * of a Put followed by nothing.
  *
- * As we chain Free's together this may change but generally we are 
- * not interested in this result in the first place.
+ * Generally we are not interested in the final value in the first place.
  *
  * Let us create some helper functions to make using our api easier:
  *
@@ -126,7 +125,7 @@
  * Get class uses a function to provide it's next value, this is how an
  * API command makes a value available to the next one in the chain.
  *
- * Putting it all thogether we can now do this:
+ * We can now use our API as follows:
  *
  * ```typescript
  *
@@ -135,33 +134,25 @@
  *         .chain(() => get('num'))
  *         .chain((n: string) => remove(n));
  *
- * ```typescript
+ * ```
  *
- * The variable `x` is now our DSL program represented as a Free Monad.
+ * The variable `x` is now a program represented in out Free DSL.
  *
- * `x` can now be interpreted makind use of the foldFree or run methods
- * or one of the helper functions this module provides.
+ * `x` can now be interpreted making use of the `fold` or `run` method.
  *
  * ## Resources:
  * * [Running Free with the Monads](https://www.slideshare.net/kenbot/running-free-with-the-monads)
  * * [Free Monads for cheap interpreters](https://www.tweag.io/posts/2018-02-05-free-monads.html)
  * * [purescript-free](https://pursuit.purescript.org/packages/purescript-free/5.1.0)
  */
+
+/** imports **/
 import { Monad } from './';
 import { Functor } from '../../data/functor';
 import { Either, Left, Right, left, right } from '../../data/either';
 import { Identity } from '../../data/indentity';
 import { Eq } from '../../data/eq';
 import { tail } from '../../data/array';
-
-/**
- * Step in the reduction of a [[Free]] chain to a single value. 
- */
-export class Step<F extends Functor<any>, A, B> {
-
-    constructor(public value: B, public next: Free<F, A>) { }
-
-}
 
 /**
  * Free monad implementation.
@@ -321,6 +312,15 @@ export class Return<F extends Functor<any>, A> extends Free<F, A> {
             f.eq(this);
 
     }
+
+}
+
+/**
+ * Step in the reduction of a [[Free]] chain to a single value. 
+ */
+export class Step<F extends Functor<any>, A, B> {
+
+    constructor(public value: B, public next: Free<F, A>) { }
 
 }
 
