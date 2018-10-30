@@ -934,6 +934,122 @@ img { max-width: 100%; }
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-comment">
+			<div class="tsd-comment tsd-typography">
+				<div class="lead">
+					<p>This is a basic, somewhat naive implementation of a Free monad devoid
+					of stack safety.</p>
+				</div>
+				<p>As far as the library is concerned, a <a href="../classes/_control_monad_free_.free.html">Free</a> provides a <a href="../interfaces/_control_monad_index_.monad.html">Monad</a>
+					that can be used for creating first-class DSL from <a href="../interfaces/_data_functor_.functor.html">Functor</a>s
+				without parsing overhead.</p>
+				<p>It is probably not very efficient to have a very large Free based DSL using
+				this implementation.</p>
+				<p>A Free monad wraps up any <a href="../interfaces/_data_functor_.functor.html">Functor</a> implementation which
+					has the effect of prompoting it to a monad. These Functors are your
+					DSL productions and can be sequenced together like regular monads using
+				<code>Free#chain</code>.</p>
+				<p>Think of each as a line of instruction in an assembly type program.</p>
+				<h2 id="limitations">Limitations</h2>
+				<h3 id="performance">Performance</h3>
+				<p>As mentioned before this is a naive impementation, future versions may
+				introduce stack safety but for now, assume none exists.</p>
+				<h3 id="type-system">Type System</h3>
+				<p>TypeScript does not have Higher Kinded Types (HKT) or as the author
+				understands; generic types that can themeselves have type parameters.</p>
+				<p>Due to this fact, implementing a Free and related functions is probably
+					impossible without breaking typesafety via <code>any</code>. This is evident in the
+				use of <code>any</code> for the Functor type parameter.</p>
+				<h2 id="example">Example</h2>
+				<p>Start by describing your API via a sum type:</p>
+				<pre><code class="language-typescript">
+<span class="hljs-keyword">type</span> API&lt;N&gt;
+ = Put&lt;N&gt;
+ | Get&lt;N&gt;
+ | Remove&lt;N&gt;
+ ;
+</code></pre>
+				<p>The <code>N</code> type parameter is actually the next step in the chain.
+					It is a Functor wrapped in some <a href="../classes/_control_monad_free_.free.html">Free</a>. Since we don&#39;t have HKT we just
+				leave it generic otherwise we would lose vital information during chaining.</p>
+				<p>Declare our API clases:</p>
+				<pre><code class="language-typescript">
+ <span class="hljs-keyword">class</span> Put&lt;N&gt; {
+
+ <span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> key: <span class="hljs-built_in">string</span>, <span class="hljs-keyword">public</span> value: <span class="hljs-built_in">string</span>, <span class="hljs-keyword">public</span> next: N</span>) { }
+
+ map&lt;B&gt;<span class="hljs-function">(<span class="hljs-params">f: (<span class="hljs-params">a: N</span>) =&gt; B</span>): <span class="hljs-params">Put</span>&lt;<span class="hljs-params">B</span>&gt; {
+
+     <span class="hljs-params">return</span> <span class="hljs-params">new</span> <span class="hljs-params">Put</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>.key, <span class="hljs-keyword">this</span>.value, f(<span class="hljs-params"><span class="hljs-keyword">this</span>.next</span>)</span>);
+
+ }
+
+}
+
+<span class="hljs-params">class</span> <span class="hljs-params">Get</span>&lt;<span class="hljs-params">N</span>&gt; {
+
+ <span class="hljs-params">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> key: <span class="hljs-built_in">string</span>, <span class="hljs-keyword">public</span> next: (<span class="hljs-params">s: <span class="hljs-built_in">string</span></span>) =&gt; N</span>) { }
+
+ <span class="hljs-params">map</span>&lt;<span class="hljs-params">B</span>&gt;(<span class="hljs-params">f: (<span class="hljs-params">a: N</span>) =&gt; B</span>): <span class="hljs-params">Get</span>&lt;<span class="hljs-params">B</span>&gt; {
+
+     <span class="hljs-params">return</span> <span class="hljs-params">new</span> <span class="hljs-params">Get</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>.key, (<span class="hljs-params">a: <span class="hljs-built_in">string</span></span>) =&gt; f(<span class="hljs-params"><span class="hljs-keyword">this</span>.next(<span class="hljs-params">a</span>)</span>)</span>);
+
+ }
+
+}
+
+<span class="hljs-params">class</span> <span class="hljs-params">Remove</span>&lt;<span class="hljs-params">N</span>&gt; {
+
+ <span class="hljs-params">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> key: <span class="hljs-built_in">string</span>, <span class="hljs-keyword">public</span> next: N</span>) { }
+
+ <span class="hljs-params">map</span>&lt;<span class="hljs-params">B</span>&gt;(<span class="hljs-params">f: (<span class="hljs-params">a: N</span>) =&gt; B</span>): <span class="hljs-params">Remove</span>&lt;<span class="hljs-params">B</span>&gt; {
+
+     <span class="hljs-params">return</span> <span class="hljs-params">new</span> <span class="hljs-params">Remove</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>.key, f(<span class="hljs-params"><span class="hljs-keyword">this</span>.next</span>)</span>);
+
+ }
+
+}
+</span></code></pre>
+				<p>In order to chain the API members together with Free, we need to &quot;lift&quot;
+					them into the Free monad thus prompting them. This is done  via the
+				<a href="_control_monad_free_.html#liftf">liftF</a> function:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> m: Free&lt;API&lt;<span class="hljs-built_in">any</span>&gt;, <span class="hljs-literal">undefined</span>&gt; = liftF(<span class="hljs-keyword">new</span> Put(<span class="hljs-string">'key'</span>, <span class="hljs-string">'value'</span>, <span class="hljs-literal">undefined</span>));
+</code></pre>
+				<p>Note the use of <code>API&lt;any&gt;</code> here. <code>any</code> is used as the type parameter because
+					the typescript compiler will not keep track of our API Functors as we
+				nest them (no HKT).</p>
+				<p>The second type parameter to Free is <code>undefined</code>. This is the final result
+					of our Free program. We use undefined because we have no &quot;next&quot; value as
+					yet and thus interpreting our variable <code>m</code> would result in the effect
+				of a Put followed by nothing.</p>
+				<p>Generally we are not interested in the final value in the first place.</p>
+				<p>Let us create some helper functions to make using our api easier:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> put = <span class="hljs-function">(<span class="hljs-params">key: <span class="hljs-built_in">string</span>, value: <span class="hljs-built_in">string</span></span>) =&gt;</span> liftF&lt;API&lt;<span class="hljs-built_in">any</span>&gt;, <span class="hljs-literal">undefined</span>&gt;(<span class="hljs-keyword">new</span> Put(key, value, _));
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">get</span> = <span class="hljs-function">(<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) =&gt;</span> liftF&lt;API&lt;<span class="hljs-built_in">string</span>&gt;, <span class="hljs-literal">undefined</span>&gt;<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">new</span> Get(<span class="hljs-params">key, (<span class="hljs-params">s: <span class="hljs-built_in">string</span></span>) =&gt; s</span>)</span>);
+
+<span class="hljs-params">const</span> <span class="hljs-params">remove</span> = (<span class="hljs-params">key: <span class="hljs-built_in">string</span></span>) =&gt;</span> liftF&lt;API&lt;<span class="hljs-built_in">any</span>&gt;, <span class="hljs-literal">undefined</span>&gt;(<span class="hljs-keyword">new</span> Remove(key, _));
+</code></pre>
+				<p>We now have a set of functions for working with our DSL. Not that the
+					Get class uses a function to provide it&#39;s next value, this is how an
+				API command makes a value available to the next one in the chain.</p>
+				<p>We can now use our API as follows:</p>
+				<pre><code class="language-typescript">
+<span class="hljs-keyword">let</span> x: Free&lt;API&lt;<span class="hljs-built_in">any</span>&gt;, <span class="hljs-literal">undefined</span>&gt; =
+        put(<span class="hljs-string">'num'</span>, <span class="hljs-string">'12'</span>)
+        .chain(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">get</span>(<span class="hljs-string">'num'</span>))
+        .chain(<span class="hljs-function">(<span class="hljs-params">n: <span class="hljs-built_in">string</span></span>) =&gt;</span> remove(n));
+</code></pre>
+				<p>The variable <code>x</code> is now a program represented in out Free DSL.</p>
+				<p><code>x</code> can now be interpreted making use of the <code>fold</code> or <code>run</code> method.</p>
+				<h2 id="resources-">Resources:</h2>
+				<ul>
+					<li><a href="https://www.slideshare.net/kenbot/running-free-with-the-monads">Running Free with the Monads</a></li>
+					<li><a href="https://www.tweag.io/posts/2018-02-05-free-monads.html">Free Monads for cheap interpreters</a></li>
+					<li><a href="https://pursuit.purescript.org/packages/purescript-free/5.1.0">purescript-free</a></li>
+				</ul>
+			</div>
+		</section>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
@@ -970,7 +1086,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/3fa7214/lib/control/monad/free.ts#L336">control/monad/free.ts:336</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/1cf4b1c/lib/control/monad/free.ts#L336">control/monad/free.ts:336</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1007,7 +1123,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/3fa7214/lib/control/monad/free.ts#L330">control/monad/free.ts:330</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/1cf4b1c/lib/control/monad/free.ts#L330">control/monad/free.ts:330</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1044,7 +1160,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/3fa7214/lib/control/monad/free.ts#L366">control/monad/free.ts:366</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/1cf4b1c/lib/control/monad/free.ts#L366">control/monad/free.ts:366</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
