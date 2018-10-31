@@ -200,7 +200,8 @@ export abstract class Free<F extends Functor<any>, A>
     /**
      * foldM folds a Free monad into another monad.
      */
-    abstract foldM<M extends Monad<any>>(f: (a: A) => M, g: (f: F) => M): M;
+    abstract foldM<M extends Monad<A>>
+        (f: (a: A) => M, g: (f: F) => Monad<Free<F, A>>): M;
 
     /**
      * run the computations of the [[Free]] to completion.
@@ -246,7 +247,7 @@ export class Suspend<F extends Functor<any>, A> extends Free<F, A> {
 
     }
 
-    foldM<M extends Monad<any>>(f: (a: A) => M, g: (f: F) => M): M {
+    foldM<M extends Monad<A>>(f: (a: A) => M, g: (f: F) => Monad<Free<F, A>>): M {
 
         return <M>g(this.value).chain(free => free.foldM(f, g));
 
@@ -309,7 +310,7 @@ export class Pure<F extends Functor<any>, A> extends Free<F, A> {
 
     }
 
-    foldM<M extends Monad<any>>(f: (a: A) => M, _: (f: F) => M): M {
+    foldM<M extends Monad<A>>(f: (a: A) => M, _: (f: F) => Monad<Free<F, A>>): M {
 
         return f(this.value);
 
