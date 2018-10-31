@@ -150,14 +150,8 @@
 import { Monad } from './';
 import { Functor } from '../../data/functor';
 import { Either, Left, Right, left, right } from '../../data/either';
-import { Identity } from '../../data/indentity';
 import { Eq } from '../../data/eq';
 import { tail } from '../../data/array';
-
-/**
- * FoldFreeFunction
- */
-export type FoldFreeFunction<A> = (func: Functor<A>) => Monad<A>;
 
 /**
  * Free monad implementation.
@@ -170,7 +164,7 @@ export abstract class Free<F extends Functor<any>, A>
      */
     of(a: A): Free<F, A> {
 
-        return new Return<F, A>(a);
+        return new Pure<F, A>(a);
 
     }
 
@@ -179,7 +173,7 @@ export abstract class Free<F extends Functor<any>, A>
      */
     map<B>(f: (a: A) => B): Free<F, B> {
 
-        return this.chain((a: A) => new Return(f(a)));
+        return this.chain((a: A) => new Pure(f(a)));
 
     }
 
@@ -284,10 +278,10 @@ export class Suspend<F extends Functor<any>, A> extends Free<F, A> {
 }
 
 /**
- * Return constructor.
+ * Pure constructor.
  * @private
  */
-export class Return<F extends Functor<any>, A> extends Free<F, A> {
+export class Pure<F extends Functor<any>, A> extends Free<F, A> {
 
     constructor(public value: A) { super(); }
 
@@ -329,7 +323,7 @@ export class Return<F extends Functor<any>, A> extends Free<F, A> {
 
     eq(f: Free<F, A>): boolean {
 
-        return (f instanceof Return) ?
+        return (f instanceof Pure) ?
             (this.value === f.value) :
             f.eq(this);
 
@@ -350,7 +344,12 @@ export class Step<F extends Functor<any>, A, B> {
  * liftF a Functor into a Free.
  */
 export const liftF = <F extends Functor<any>, A>(f: F): Free<F, A> =>
-    new Suspend(<F>f.map(a => new Return(a)));
+    new Suspend(<F>f.map(a => new Pure(a)));
+
+/**
+ * pure wraps a value in a Pure
+ */
+export const pure = <F extends Functor<any>, A>(a: A): Free<F, A> => new Pure(a);
 
 /**
  * flatten a Free chain into a single level array.

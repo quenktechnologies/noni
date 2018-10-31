@@ -151,10 +151,6 @@ import { Functor } from '../../data/functor';
 import { Either } from '../../data/either';
 import { Eq } from '../../data/eq';
 /**
- * FoldFreeFunction
- */
-export declare type FoldFreeFunction<A> = (func: Functor<A>) => Monad<A>;
-/**
  * Free monad implementation.
  */
 export declare abstract class Free<F extends Functor<any>, A> implements Monad<A>, Eq<Free<F, A>> {
@@ -214,10 +210,10 @@ export declare class Suspend<F extends Functor<any>, A> extends Free<F, A> {
     eq(f: Free<F, A>): boolean;
 }
 /**
- * Return constructor.
+ * Pure constructor.
  * @private
  */
-export declare class Return<F extends Functor<any>, A> extends Free<F, A> {
+export declare class Pure<F extends Functor<any>, A> extends Free<F, A> {
     value: A;
     constructor(value: A);
     chain<B>(f: (a: A) => Free<F, B>): Free<F, B>;
@@ -240,6 +236,10 @@ export declare class Step<F extends Functor<any>, A, B> {
  * liftF a Functor into a Free.
  */
 export declare const liftF: <F extends Functor<any>, A>(f: F) => Free<F, A>;
+/**
+ * pure wraps a value in a Pure
+ */
+export declare const pure: <F extends Functor<any>, A>(a: A) => Free<F, A>;
 /**
  * flatten a Free chain into a single level array.
  */

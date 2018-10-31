@@ -154,11 +154,6 @@ import { Eq } from '../../data/eq';
 import { tail } from '../../data/array';
 
 /**
- * FoldFreeFunction
- */
-export type FoldFreeFunction<A> = (func: Functor<A>) => Monad<A>;
-
-/**
  * Free monad implementation.
  */
 export abstract class Free<F extends Functor<any>, A>
@@ -350,6 +345,11 @@ export class Step<F extends Functor<any>, A, B> {
  */
 export const liftF = <F extends Functor<any>, A>(f: F): Free<F, A> =>
     new Suspend(<F>f.map(a => new Pure(a)));
+
+/**
+ * pure wraps a value in a Pure
+ */
+export const pure = <F extends Functor<any>, A>(a: A): Free<F, A> => new Pure(a);
 
 /**
  * flatten a Free chain into a single level array.
