@@ -155,9 +155,9 @@ import { Eq } from '../../data/eq';
 import { tail } from '../../data/array';
 
 /**
- * FoldFreeFunc
+ * FoldFreeFunction
  */
-export type FoldFreeFunc<A> = (func: Functor<A>) => Monad<A>;
+export type FoldFreeFunction<A> = (func: Functor<A>) => Monad<A>;
 
 /**
  * Free monad implementation.
@@ -199,9 +199,14 @@ export abstract class Free<F extends Functor<any>, A>
     abstract resume(): Either<F, A>;
 
     /**
-     * foldFree transforms a [[Free]] into the [[Monad]] of choice.
+     * fold a Free monad into a single value.
      */
-    abstract foldFree<M extends Monad<A>>(f: FoldFreeFunc<any>): M;
+    abstract fold<B>(f: (a: A) => B, g: (f: F) => B): B;
+
+    /**
+     * foldM folds a Free monad into another monad.
+     */
+    abstract foldM<M extends Monad<any>>(f: (a: A) => M, g: (f: F) => M): M;
 
     /**
      * run the computations of the [[Free]] to completion.
@@ -241,9 +246,15 @@ export class Suspend<F extends Functor<any>, A> extends Free<F, A> {
 
     }
 
-    foldFree<M extends Monad<A>>(f: FoldFreeFunc<any>): M {
+    fold<B>(f: (a: A) => B, g: (f: F) => B): B {
 
-        return <M>f(this.value).chain(free => free.foldFree(f));
+        return g(<F>this.value.map(free => free.fold(f, g)));
+
+    }
+
+    foldM<M extends Monad<any>>(f: (a: A) => M, g: (f: F) => M): M {
+
+        return <M>g(this.value).chain(free => free.foldM(f, g));
 
     }
 
@@ -298,9 +309,15 @@ export class Return<F extends Functor<any>, A> extends Free<F, A> {
 
     }
 
-    foldFree<M extends Monad<A>>(f: FoldFreeFunc<any>): M {
+    fold<B>(f: (a: A) => B, _: (f: F) => B): B {
 
-        return <M>f(new Identity(this.value))
+        return f(this.value);
+
+    }
+
+    foldM<M extends Monad<any>>(f: (a: A) => M, _: (f: F) => M): M {
+
+        return f(this.value);
 
     }
 

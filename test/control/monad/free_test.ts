@@ -1,6 +1,7 @@
 import * as must from 'must/register';
 import * as checks from '../../checks';
 import { Functor } from '../../../src/data/functor';
+import { Identity } from '../../../src/data/indentity';
 import { Free, Step, liftF, flatten, reduce } from '../../../src/control/monad/free';
 
 const _ = undefined;
@@ -67,7 +68,7 @@ const value = new Put('n', '12', _);
 
 const put = (key: string, value: string) => liftF<API<any>, undefined>(new Put(key, value, _));
 
-const get = (key: string) => liftF<API<string>, undefined>(new Get(key, (s: string) => s));
+const get = (key: string) => liftF<API<string>, string>(new Get(key, (s: string) => s));
 
 const remove = (key: string) => liftF<API<any>, undefined>(new Remove(key, _));
 
@@ -154,15 +155,93 @@ describe('free', () => {
 
                     }
 
-                });
+                })
 
                 must(l).eql(["PUT 'num' '12'", "GET 'num'", "REMOVE 'num'"]);
 
-            });
+            })
 
-        });
+        })
 
-    });
+        describe('fold', () => {
+
+            it('should fold a Free into a single value', () => {
+
+                let store: { [key: string]: string } = { n: '12' };
+
+                let chain =
+                    put('a', '11')
+                        .chain(() => get('n'))
+                        .chain(n => put('b', n))
+                        .chain(() => remove('n'));
+
+                let r = chain.fold(() => store, (a: API<any>) => {
+
+                    if (a instanceof Get) {
+
+                        a.next(store[a.key]);
+
+                    } else if (a instanceof Put) {
+
+                        store[a.key] = a.value;
+
+                    } else if (a instanceof Remove) {
+
+                        delete store[a.key];
+
+                    }
+
+                    return store;
+
+                });
+
+                must(r).eql({ a: '11', b: '12' });
+
+            })
+
+        })
+
+        describe('foldM', () => {
+
+            it('should fold a free into a monad', () => {
+
+                let store: { [key: string]: string } = { n: '12' };
+
+                let chain =
+                    put('a', '11')
+                        .chain(() => get('n'))
+                        .chain(n => put('b', n))
+                        .chain(() => remove('n'));
+
+                let r = chain.foldM(() => new Identity(store), (a: API<any>) => {
+
+                    if (a instanceof Get) {
+
+                        return new Identity(a.next(store[a.key]));
+
+                    } else if (a instanceof Put) {
+
+                        store[a.key] = a.value;
+                        return new Identity(a.next);
+
+                    } else if (a instanceof Remove) {
+
+                        delete store[a.key];
+                        return new Identity(a.next);
+
+                    }
+
+                    throw new Error('era');
+
+                })
+
+                must(r.value).eql({ a: '11', b: '12' });
+
+            })
+
+        })
+
+    })
 
     describe('flatten', () => {
 
