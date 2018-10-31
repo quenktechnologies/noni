@@ -376,7 +376,7 @@ export const raise = <A>(e: Error): Future<A> => new Raise(e);
 /**
  * attempt a syncronous task, trapping any thrown errors in the Future.
  */
-export const attempt = <A>(f: () => A) => new Run((s: Supervisor<A>) => {
+export const attempt = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) => {
 
     tick(() => { try { s.onSuccess(f()); } catch (e) { s.onError(e); } });
 
@@ -403,8 +403,8 @@ export const fromAbortable = <A>(abort: Aborter) => (f: CallbackReceiver<A>)
  *
  * Note: The function used here is not called in the "next tick".
  */
-export const fromCallback = <A>(f: CallbackReceiver<A>) 
-  : Future<A> => fromAbortable<A>(noop)(f);
+export const fromCallback = <A>(f: CallbackReceiver<A>)
+    : Future<A> => fromAbortable<A>(noop)(f);
 
 class Tag<A> {
 
@@ -449,31 +449,31 @@ export const parallel = <A>(list: Future<A>[])
  * race given a list of Futures, will return a Future that is settled by
  * the first error or success to occur.
  */
-export const race = <A>(list: Future<A>[]) 
-  : Future<A> => new Run((s: Supervisor<A>) => {
+export const race = <A>(list: Future<A>[])
+    : Future<A> => new Run((s: Supervisor<A>) => {
 
-    let comps = list
-        .map((f: Future<A>, index: number) =>
-            f
-                .map((value: A) => new Tag(index, value))
-                .fork(
-                    e => {
+        let comps = list
+            .map((f: Future<A>, index: number) =>
+                f
+                    .map((value: A) => new Tag(index, value))
+                    .fork(
+                        e => {
 
-                        abortAll(comps);
-                        s.onError(e);
+                            abortAll(comps);
+                            s.onError(e);
 
-                    },
-                    t => {
+                        },
+                        t => {
 
-                        abortExcept(comps, t.index);
-                        s.onSuccess(t.value);
+                            abortExcept(comps, t.index);
+                            s.onSuccess(t.value);
 
-                    }
-                ));
+                        }
+                    ));
 
-    return () => { abortAll(comps); }
+        return () => { abortAll(comps); }
 
-});
+    });
 
 const abortAll = <A>(comps: Compute<A>[]) => comps.map(c => c.abort());
 
