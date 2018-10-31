@@ -150,7 +150,6 @@
 import { Monad } from './';
 import { Functor } from '../../data/functor';
 import { Either, Left, Right, left, right } from '../../data/either';
-import { Identity } from '../../data/indentity';
 import { Eq } from '../../data/eq';
 import { tail } from '../../data/array';
 
