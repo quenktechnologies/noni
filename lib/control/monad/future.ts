@@ -431,25 +431,24 @@ export const parallel = <A>(list: Future<A>[])
 
         let done: Tag<A>[] = [];
 
-        let comps = list.map((f: Future<A>, index: number) =>
-            f
-                .map((value: A) => new Tag(index, value))
-                .fork(
-                    e => {
+        let comps =
+            list.reduce((p: Compute<Tag<A>>[], f: Future<A>, index: number) => {
 
-                        abortAll(comps);
-                        s.onError(e);
+                p.push(f
+                    .map((value: A) => new Tag(index, value))
+                    .fork(e => { abortAll(p); s.onError(e); },
+                        t => {
 
-                    },
-                    t => {
+                            done.push(t);
 
-                        done.push(t);
+                            if (done.length === list.length)
+                                s.onSuccess(done.sort((a, b) => a.index - b.index)
+                                    .map(t => t.value));
 
-                        if (done.length === comps.length)
-                            s.onSuccess(done.sort((a, b) => a.index - b.index)
-                                .map(t => t.value));
+                        }));
 
-                    }));
+                return p;
+            }, []);
 
         if (comps.length === 0)
             s.onSuccess([]);
@@ -465,24 +464,18 @@ export const parallel = <A>(list: Future<A>[])
 export const race = <A>(list: Future<A>[])
     : Future<A> => new Run((s: Supervisor<A>) => {
 
-        let comps = list
-            .map((f: Future<A>, index: number) =>
-                f
-                    .map((value: A) => new Tag(index, value))
-                    .fork(
-                        e => {
+        let comps =
+            list
+                .reduce((p: Compute<Tag<A>>[], f: Future<A>, index: number) => {
 
-                            abortAll(comps);
-                            s.onError(e);
+                    p.push(f
+                        .map((value: A) => new Tag(index, value))
+                        .fork(e => { abortAll(p); s.onError(e); },
+                            t => { abortExcept(p, t.index); s.onSuccess(t.value); }));
 
-                        },
-                        t => {
+                    return p;
 
-                            abortExcept(comps, t.index);
-                            s.onSuccess(t.value);
-
-                        }
-                    ));
+                }, []);
 
         if (comps.length === 0)
             s.onError(new Error(`race(): Cannot race an empty list!`));
@@ -491,7 +484,7 @@ export const race = <A>(list: Future<A>[])
 
     });
 
-const abortAll = <A>(comps: Compute<A>[]) => comps.map(c => c.abort());
+const abortAll = <A>(comps: Compute<A>[]) => tick(() => comps.map(c => c.abort()));
 
 const abortExcept = <A>(comps: Compute<A>[], index: number) =>
-    comps.map((c, i) => (i !== index) ? c.abort() : undefined);
+    tick(() => comps.map((c, i) => (i !== index) ? c.abort() : undefined));
