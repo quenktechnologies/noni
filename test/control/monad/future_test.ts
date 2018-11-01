@@ -17,6 +17,7 @@ import {
     delay,
     fromAbortable,
     fromCallback,
+    raise,
     parallel,
     race
 } from '../../../src/control/monad/future';
@@ -358,6 +359,20 @@ describe('future', () => {
 
         });
 
+        it('should work with a list of pure values', () => {
+
+            return liftP(parallel([pure(1), pure(2), pure(3)]))
+                .then((list: number[]) => must(list).eql([1, 2, 3]));
+
+        });
+
+        it('should work with a list of failed values', () => {
+
+          return liftP(parallel([raise(new Error('1')), raise(new Error('2'))]))
+            .catch((e:Error)=> must(e.message).be('1'));
+
+        });
+
     });
 
     describe('race', () => {
@@ -395,6 +410,20 @@ describe('future', () => {
             return liftP(race([]))
                 .then(() => { throw new Error('bleh'); })
                 .catch((e: Error) => must(e.message).be('race(): Cannot race an empty list!'));
+
+        });
+
+        it('should work with a list of pure values', () => {
+
+            return liftP(race([pure(1), pure(2), pure(3)]))
+                .then((list: number[]) => must(list).eql(1));
+
+        });
+
+        it('should work with a list of failed values', () => {
+
+          return liftP(race([raise(new Error('1')), raise(new Error('2'))]))
+            .catch((e:Error)=> must(e.message).be('1'));
 
         });
 
