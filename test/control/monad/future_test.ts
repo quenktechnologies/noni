@@ -14,6 +14,7 @@ import {
     Compute,
     pure,
     attempt,
+    delay,
     fromAbortable,
     fromCallback,
     parallel,
@@ -275,6 +276,15 @@ describe('future', () => {
 
     });
 
+    describe('delay', () => {
+
+        it('should work', () =>
+            liftP(delay(() => 11)
+                .chain(inc))
+                .then((n: number) => must(n).be(12)))
+
+    });
+
     describe('fromAbortable', () => {
 
         it('should invoke abort function', cb => {
@@ -341,6 +351,13 @@ describe('future', () => {
 
         });
 
+        it('should work when the list is empty', () => {
+
+            return liftP(parallel([]))
+                .then((list: any[]) => must(list).eql([]));
+
+        });
+
     });
 
     describe('race', () => {
@@ -359,7 +376,7 @@ describe('future', () => {
 
         })
 
-        it('should succeed with the first successfull promise', () => {
+        it('should succeed with the first successfull value', () => {
 
             let task = (n: number) => new Run((s: Supervisor<any>) => {
 
@@ -371,7 +388,15 @@ describe('future', () => {
             return liftP(race([task(1000), task(2000), task(500), task(200), task(800)]))
                 .then((n: number) => must(n).be(200))
 
-        })
+        });
+
+        it('should fail when the list is empty', () => {
+
+            return liftP(race([]))
+                .then(() => { throw new Error('bleh'); })
+                .catch((e: Error) => must(e.message).be('race(): Cannot race an empty list!'));
+
+        });
 
     });
 

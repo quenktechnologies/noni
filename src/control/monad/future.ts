@@ -379,7 +379,17 @@ export const raise = <A>(e: Error): Future<A> => new Raise(e);
 export const attempt = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) => {
 
     tick(() => { try { s.onSuccess(f()); } catch (e) { s.onError(e); } });
+    return noop;
 
+});
+
+/**
+ * delay a task by running it in the "next tick" without attempting
+ * to trap any thrown errors.
+ */
+export const delay = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) => {
+
+    tick(() => s.onSuccess(f()));
     return noop;
 
 });
@@ -441,6 +451,9 @@ export const parallel = <A>(list: Future<A>[])
 
                     }));
 
+        if (comps.length === 0)
+            s.onSuccess([]);
+
         return () => { abortAll(comps) };
 
     });
@@ -470,6 +483,9 @@ export const race = <A>(list: Future<A>[])
 
                         }
                     ));
+
+        if (comps.length === 0)
+            s.onError(new Error(`race(): Cannot race an empty list!`));
 
         return () => { abortAll(comps); }
 
