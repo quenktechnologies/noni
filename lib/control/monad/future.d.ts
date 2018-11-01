@@ -186,7 +186,12 @@ export declare const raise: <A>(e: Error) => Future<A>;
 /**
  * attempt a syncronous task, trapping any thrown errors in the Future.
  */
-export declare const attempt: <A>(f: () => A) => Run<A>;
+export declare const attempt: <A>(f: () => A) => Future<A>;
+/**
+ * delay a task by running it in the "next tick" without attempting
+ * to trap any thrown errors.
+ */
+export declare const delay: <A>(f: () => A) => Future<A>;
 /**
  * fromAbortable takes an Aborter and a node style async function and
  * produces a Future.
