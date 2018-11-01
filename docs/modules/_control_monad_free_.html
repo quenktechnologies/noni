@@ -913,7 +913,7 @@ img { max-width: 100%; }
 			<a href="../classes/_control_monad_free_.free.html" class="tsd-kind-icon">Free</a>
 		</li>
 		<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-private">
-			<a href="../classes/_control_monad_free_.return.html" class="tsd-kind-icon">Return</a>
+			<a href="../classes/_control_monad_free_.pure.html" class="tsd-kind-icon">Pure</a>
 		</li>
 		<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="../classes/_control_monad_free_.step.html" class="tsd-kind-icon">Step</a>
@@ -921,14 +921,14 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-private">
 			<a href="../classes/_control_monad_free_.suspend.html" class="tsd-kind-icon">Suspend</a>
 		</li>
-		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-			<a href="_control_monad_free_.html#foldfreefunc" class="tsd-kind-icon">Fold<wbr>Free<wbr>Func</a>
-		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_free_.html#flatten" class="tsd-kind-icon">flatten</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_free_.html#liftf" class="tsd-kind-icon">liftF</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_monad_free_.html#pure-1" class="tsd-kind-icon">pure</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_free_.html#reduce" class="tsd-kind-icon">reduce</a>
@@ -1061,15 +1061,9 @@ img { max-width: 100%; }
 						<h3>Classes</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter"><a href="../classes/_control_monad_free_.free.html" class="tsd-kind-icon">Free</a></li>
-							<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-private"><a href="../classes/_control_monad_free_.return.html" class="tsd-kind-icon">Return</a></li>
+							<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-private"><a href="../classes/_control_monad_free_.pure.html" class="tsd-kind-icon">Pure</a></li>
 							<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter"><a href="../classes/_control_monad_free_.step.html" class="tsd-kind-icon">Step</a></li>
 							<li class="tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-private"><a href="../classes/_control_monad_free_.suspend.html" class="tsd-kind-icon">Suspend</a></li>
-						</ul>
-					</section>
-					<section class="tsd-index-section ">
-						<h3>Type aliases</h3>
-						<ul class="tsd-index-list">
-							<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_control_monad_free_.html#foldfreefunc" class="tsd-kind-icon">Fold<wbr>Free<wbr>Func</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
@@ -1077,54 +1071,10 @@ img { max-width: 100%; }
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_free_.html#flatten" class="tsd-kind-icon">flatten</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_free_.html#liftf" class="tsd-kind-icon">liftF</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_free_.html#pure-1" class="tsd-kind-icon">pure</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_free_.html#reduce" class="tsd-kind-icon">reduce</a></li>
 						</ul>
 					</section>
-				</div>
-			</section>
-		</section>
-		<section class="tsd-panel-group tsd-member-group ">
-			<h2>Type aliases</h2>
-			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
-				<a name="foldfreefunc" class="tsd-anchor"></a>
-				<h3>Fold<wbr>Free<wbr>Func</h3>
-				<div class="tsd-signature tsd-kind-icon">Fold<wbr>Free<wbr>Func<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/f3d488d/lib/control/monad/free.ts#L160">control/monad/free.ts:160</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>FoldFreeFunc</p>
-					</div>
-				</div>
-				<div class="tsd-type-declaration">
-					<h4>Type declaration</h4>
-					<ul class="tsd-parameters">
-						<li class="tsd-parameter-siganture">
-							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-has-type-parameter tsd-is-not-exported">
-								<li class="tsd-signature tsd-kind-icon">&lt;F&gt;<span class="tsd-signature-symbol">(</span>func<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">F</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_control_monad_index_.monad.html" class="tsd-signature-type">Monad</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
-							</ul>
-							<ul class="tsd-descriptions">
-								<li class="tsd-description">
-									<h4 class="tsd-type-parameters-title">Type parameters</h4>
-									<ul class="tsd-type-parameters">
-										<li>
-											<h4>F<span class="tsd-signature-symbol">: </span><a href="../interfaces/_data_functor_.functor.html" class="tsd-signature-type">Functor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-										</li>
-									</ul>
-									<h4 class="tsd-parameters-title">Parameters</h4>
-									<ul class="tsd-parameters">
-										<li>
-											<h5>func: <span class="tsd-signature-type">F</span></h5>
-										</li>
-									</ul>
-									<h4 class="tsd-returns-title">Returns <a href="../interfaces/_control_monad_index_.monad.html" class="tsd-signature-type">Monad</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-								</li>
-							</ul>
-						</li>
-					</ul>
 				</div>
 			</section>
 		</section>
@@ -1140,7 +1090,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/f3d488d/lib/control/monad/free.ts#L341">control/monad/free.ts:341</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/free.ts#L358">control/monad/free.ts:358</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1177,7 +1127,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/f3d488d/lib/control/monad/free.ts#L335">control/monad/free.ts:335</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/free.ts#L347">control/monad/free.ts:347</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1205,6 +1155,43 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="pure-1" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> pure</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class="tsd-signature tsd-kind-icon">pure&lt;F, A&gt;<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_free_.free.html" class="tsd-signature-type">Free</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">F</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/free.ts#L353">control/monad/free.ts:353</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>pure wraps a value in a Pure</p>
+							</div>
+						</div>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>F<span class="tsd-signature-symbol">: </span><a href="../interfaces/_data_functor_.functor.html" class="tsd-signature-type">Functor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							</li>
+							<li>
+								<h4>A</h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>a: <span class="tsd-signature-type">A</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../classes/_control_monad_free_.free.html" class="tsd-signature-type">Free</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">F</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 				<a name="reduce" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> reduce</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
@@ -1214,7 +1201,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/f3d488d/lib/control/monad/free.ts#L371">control/monad/free.ts:371</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/free.ts#L388">control/monad/free.ts:388</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
