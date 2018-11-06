@@ -215,3 +215,10 @@ export declare const parallel: <A>(list: Future<A>[]) => Future<A[]>;
  * the first error or success to occur.
  */
 export declare const race: <A>(list: Future<A>[]) => Future<A>;
+/**
+ * liftP lifts a Future into a Promise.
+ *
+ * This function depends on the global promise constructor and
+ * will fail if the enviornment does not provide one.
+ */
+export declare const liftP: <A>(ft: Future<A>) => Promise<A>;

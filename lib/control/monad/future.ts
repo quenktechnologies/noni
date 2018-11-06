@@ -488,3 +488,12 @@ const abortAll = <A>(comps: Compute<A>[]) => tick(() => comps.map(c => c.abort()
 
 const abortExcept = <A>(comps: Compute<A>[], index: number) =>
     tick(() => comps.map((c, i) => (i !== index) ? c.abort() : undefined));
+
+/**
+ * liftP lifts a Future into a Promise.
+ *
+ * This function depends on the global promise constructor and 
+ * will fail if the enviornment does not provide one.
+ */
+export const liftP = <A>(ft: Future<A>): Promise<A> => new Promise((yes, no) =>
+  ft.fork(no, yes));
