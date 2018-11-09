@@ -1,22 +1,23 @@
 {
-  "name": "@quenk/noni",
-  "version": "1.2.4",
-  "description": "Commons library used by Quenk Technologies everywhere.",
-  "scripts": {
-    "test": "./node_modules/.bin/mocha --opts mocha.opts test"
-  },
-  "author": "Quenk Technologies Limited <info@quenk.com> (http://quenk.com)",
-  "license": "Apache-2.0",
-  "main": "lib",
-  "types": "lib/index.d.ts",
-  "devDependencies": {
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^8.10.36",
-    "bluebird": "^3.5.2",
-    "mocha": "^3.3.0",
-    "must": "^0.13.4",
-    "ts-node": "^7.0.0",
-    "typedoc": "^0.12.0",
-    "typescript": "^2.9.2"
-  }
+    "name": "@quenk/noni",
+    "version": "1.2.4",
+    "description": "Commons library used by Quenk Technologies everywhere.",
+    "scripts": {
+        "test": "./node_modules/.bin/mocha --opts mocha.opts test"
+    },
+    "author": "Quenk Technologies Limited <info@quenk.com> (http://quenk.com)",
+    "license": "Apache-2.0",
+    "files": ["lib"],
+    "main": "lib",
+    "types": "lib/index.d.ts",
+    "devDependencies": {
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^8.10.36",
+        "bluebird": "^3.5.2",
+        "mocha": "^3.3.0",
+        "must": "^0.13.4",
+        "ts-node": "^7.0.0",
+        "typedoc": "^0.12.0",
+        "typescript": "^2.9.2"
+    }
 }
