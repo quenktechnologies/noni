@@ -1,13 +1,15 @@
 {
     "name": "@quenk/noni",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "description": "Commons library used by Quenk Technologies everywhere.",
     "scripts": {
         "test": "./node_modules/.bin/mocha --opts mocha.opts test"
     },
     "author": "Quenk Technologies Limited <info@quenk.com> (http://quenk.com)",
     "license": "Apache-2.0",
-    "files": ["lib"],
+    "files": [
+        "lib"
+    ],
     "main": "lib",
     "types": "lib/index.d.ts",
     "devDependencies": {
