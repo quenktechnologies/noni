@@ -1,4 +1,17 @@
+/**
+ * This module provides functions and types to make dealing with ES errors
+ * easier.
+ */
+
+/** imports */
 import { Either, left, right } from '../data/either';
+
+/**
+ * Except type represents a value that may fail with an error.
+ *
+ * It is a specific version of Either.
+ */
+export type Except<A> = Either<Err, A>;
 
 /**
  * Err describes the JS Error interface independant
@@ -19,6 +32,12 @@ export interface Err {
     stack?: string
 
 }
+
+/** 
+ * convert an Err to an Error.
+ */
+export const convert = (e: Err) : Error =>
+  (e instanceof Error) ? e : new Error(e.message);
 
 /**
  * raise the supplied Error.
@@ -43,7 +62,7 @@ export const raise = (e: Err) => {
 /**
  * attempt a synchronous computation that may throw an exception.
  */
-export const attempt = <A>(f: () => A): Either<Error, A> => {
+export const attempt = <A>(f: () => A): Except<A> => {
 
     try { return right(f()); } catch (e) { return left(e); }
 
