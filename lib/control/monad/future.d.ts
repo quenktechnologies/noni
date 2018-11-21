@@ -1,4 +1,5 @@
 import { Monad } from './';
+import { Err } from '../error';
 /**
  * OnError callback function type.
  */
@@ -63,8 +64,8 @@ export declare class Pure<A> extends Future<A> {
  * Raise constructor.
  */
 export declare class Raise<A> extends Future<A> {
-    value: Error;
-    constructor(value: Error);
+    value: Err;
+    constructor(value: Err);
     map<B>(_: (a: A) => B): Future<B>;
     ap<B>(_: Future<(a: A) => B>): Future<B>;
     chain<B>(_: (a: A) => Future<B>): Future<B>;
@@ -182,7 +183,7 @@ export declare const pure: <A>(a: A) => Future<A>;
  *
  * This future will be considered a failure.
  */
-export declare const raise: <A>(e: Error) => Future<A>;
+export declare const raise: <A>(e: Err) => Future<A>;
 /**
  * attempt a syncronous task, trapping any thrown errors in the Future.
  */
@@ -216,9 +217,13 @@ export declare const parallel: <A>(list: Future<A>[]) => Future<A[]>;
  */
 export declare const race: <A>(list: Future<A>[]) => Future<A>;
 /**
- * liftP lifts a Future into a Promise.
+ * toPromise transforms a Future into a Promise.
  *
  * This function depends on the global promise constructor and
  * will fail if the enviornment does not provide one.
  */
-export declare const liftP: <A>(ft: Future<A>) => Promise<A>;
+export declare const toPromise: <A>(ft: Future<A>) => Promise<A>;
+/**
+ * fromExcept converts an Except to a Future.
+ */
+export declare const fromExcept: <A>(e: import("../data/either").Either<Err, A>) => Future<A>;

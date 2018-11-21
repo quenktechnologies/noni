@@ -1,6 +1,7 @@
 import { tick } from '../timer';
 import { Monad } from './';
 import { noop } from '../../data/function';
+import { Err, Except, convert } from '../error';
 
 /**
  * OnError callback function type.
@@ -128,7 +129,7 @@ export class Pure<A> extends Future<A> {
  */
 export class Raise<A> extends Future<A> {
 
-    constructor(public value: Error) { super(); }
+    constructor(public value: Err) { super(); }
 
     map<B>(_: (a: A) => B): Future<B> {
 
@@ -339,10 +340,12 @@ export class Compute<A> implements Supervisor<A> {
                     this.stack.push(new Step(<Finalizer<A>>this.finalizers.pop()));
 
                 if (this.handlers.length > 0)
-                    this.stack.push((<ErrorHandler<A>>this.handlers.pop())(next.value));
+                    this.stack.push(
+                        (<ErrorHandler<A>>this.handlers.pop())(convert(next.value))
+                    );
 
                 if (this.stack.length === 0)
-                    return this.exitError(next.value); //end on unhandled error
+                    return this.exitError(convert(next.value)); //end on unhandled error
 
             } else if (next instanceof Run) {
 
@@ -371,7 +374,7 @@ export const pure = <A>(a: A): Future<A> => new Pure(a);
  *
  * This future will be considered a failure.
  */
-export const raise = <A>(e: Error): Future<A> => new Raise(e);
+export const raise = <A>(e: Err): Future<A> => new Raise(e);
 
 /**
  * attempt a syncronous task, trapping any thrown errors in the Future.
@@ -490,10 +493,16 @@ const abortExcept = <A>(comps: Compute<A>[], index: number) =>
     tick(() => comps.map((c, i) => (i !== index) ? c.abort() : undefined));
 
 /**
- * liftP lifts a Future into a Promise.
+ * toPromise transforms a Future into a Promise.
  *
  * This function depends on the global promise constructor and 
  * will fail if the enviornment does not provide one.
  */
-export const liftP = <A>(ft: Future<A>): Promise<A> => new Promise((yes, no) =>
-  ft.fork(no, yes));
+export const toPromise = <A>(ft: Future<A>): Promise<A> => new Promise((yes, no) =>
+    ft.fork(no, yes));
+
+/**
+ * fromExcept converts an Except to a Future.
+ */
+export const fromExcept = <A>(e: Except<A>): Future<A> =>
+    e.fold(e => raise(e), a => pure(a)); 
