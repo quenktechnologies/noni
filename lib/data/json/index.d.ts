@@ -1,3 +1,4 @@
+import { Err } from '../../control/error';
 /**
  * Provides typescript definitions for JSON strings unserialzed into JavaScript objects.
  */
@@ -7,4 +8,4 @@ export { JSONValue as Value, JSONObject as Object, JSONArray as Array, JSONStrin
 /**
  * parse a string as JSON safely.
  */
-export declare const parse: (s: string) => Either<Error, JSONValue>;
+export declare const parse: (s: string) => Either<Err, JSONValue>;
