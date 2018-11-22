@@ -1,4 +1,4 @@
-import { attempt } from '../../control/error';
+import { Err, attempt } from '../../control/error';
 
 /**
  * Provides typescript definitions for JSON strings unserialzed into JavaScript objects.
@@ -27,5 +27,5 @@ export {
 /**
  * parse a string as JSON safely.
  */
-export const parse = (s: string): Either<Error, JSONValue> =>
+export const parse = (s: string): Either<Err, JSONValue> =>
     attempt(() => JSON.parse(s));
