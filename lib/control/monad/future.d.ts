@@ -226,4 +226,4 @@ export declare const toPromise: <A>(ft: Future<A>) => Promise<A>;
 /**
  * fromExcept converts an Except to a Future.
  */
-export declare const fromExcept: <A>(e: import("../data/either").Either<Err, A>) => Future<A>;
+export declare const fromExcept: <A>(e: import("../../data/either").Either<Err, A>) => Future<A>;

@@ -1,4 +1,4 @@
-import * as must from 'must/register';
+import { must } from '@quenk/must';
 import * as tests from '../checks';
 import {
     Either,
@@ -16,7 +16,7 @@ const value = 12;
 
 describe('either', () => {
 
-    describe('Left', tests.isMonad({
+    describe('Left', tests.isMonad<number>({
         pure: right,
         eq,
         bind: (n: number) => left(n + 1),
@@ -36,9 +36,9 @@ describe('either', () => {
 
         it('should be nothing with false', function() {
 
-            must(fromBoolean(false) instanceof Left).be(true);
+            must(fromBoolean(false) instanceof Left).equal(true);
 
-            must(fromBoolean(true) instanceof Right).be(true);
+            must(fromBoolean(true) instanceof Right).equal(true);
 
         });
 
@@ -54,8 +54,8 @@ describe('either', () => {
             let g = (_: boolean) => '12';
             let test = either<boolean, boolean, string>(f)(g);
 
-            must(test(l)).be('false');
-            must(test(r)).be('12');
+            must(test(l)).equal('false');
+            must(test(r)).equal('12');
 
         });
 

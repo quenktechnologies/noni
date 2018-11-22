@@ -1,5 +1,5 @@
-import * as must from 'must/register';
 import * as json from '../../src/data/json';
+import {must} from '@quenk/must';
 
 export const anObject: json.Object = {
     string: 'String',
@@ -34,13 +34,12 @@ describe('json', () => {
 
             must(json
                 .parse('{"n":1, "b":2, "c":3}')
-                .takeRight()).eql({ n: 1, b: 2, c: 3 });
+                .takeRight()).equate({ n: 1, b: 2, c: 3 });
 
             must(
                 json
                     .parse('{ vanku, []}^')
-                    .takeLeft()).be.instanceOf(Error);
-
+                    .takeLeft()).be.instance.of(Error);
 
         })
 

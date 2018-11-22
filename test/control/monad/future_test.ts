@@ -1,10 +1,9 @@
-import * as must from 'must/register';
-import * as Promise from 'bluebird';
 import * as functor from '../../checks/functor';
 import * as apply from '../../checks/apply';
 import * as applicative from '../../checks//applicative';
 import * as chain from '../../checks/chain';
 import * as monad from '../../checks/monad';
+import { must } from '@quenk/must';
 import { tick } from '../../../src/control/timer';
 import { noop } from '../../../src/data/function';
 import {
@@ -19,19 +18,17 @@ import {
     fromCallback,
     raise,
     parallel,
+    toPromise as liftP,
     race
 } from '../../../src/control/monad/future';
 
 const value = 12;
 
-const liftP = <A>(ft: Future<A>) =>
-    new Promise((res: any, rej: any) => ft.fork(rej, res));
-
 const eq = <A>(f1: Future<A>) => (f2: Future<A>) =>
-    liftP(f1)
+    liftP<A>(f1)
         .then((a: A) =>
-            liftP(f2)
-                .then((b: A) => must(a).eql(b)));
+            liftP<A>(f2)
+                .then((b: A) => must(<any>a).equate(<any>b)));
 
 const map = (n: number) => n * 2;
 
@@ -61,14 +58,14 @@ describe('future', () => {
                 functor.identity(pure)(eq)(value))
 
             it('should obey the composition law', () =>
-                (functor.composition(pure)(eq)(map)(map)(value)))
+                (functor.composition<number>(pure)(eq)(map)(map)(value)))
 
         })
 
         describe('Apply', () => {
 
             it('should obey the composition law', () =>
-                (apply.composition(pure)(eq)(map)(map)(value)))
+                (apply.composition<number>(pure)(eq)(map)(map)(value)))
 
         })
 
@@ -92,7 +89,7 @@ describe('future', () => {
         describe('Monad', () => {
 
             it('should obey the left identity law', () =>
-                (monad.leftIdentity(pure)(eq)(bind)(value)))
+                (monad.leftIdentity<number>(pure)(eq)(bind)(value)))
 
         })
 
@@ -101,12 +98,12 @@ describe('future', () => {
             let msg = 'error';
 
             it('should provide the final value', () =>
-                (new Promise((res: any, rej: any) => inc(0).fork(rej, res)))
-                    .then((value: number) => must(value).be(1)));
+                (new Promise<number>((res: any, rej: any) => inc(0).fork(rej, res)))
+                    .then((value: number) => must(value).equal(1)));
 
             it('should provide the error', () =>
                 (new Promise((res: any, rej: any) => err(msg).fork(rej, res)))
-                    .catch((e: Error) => must(e.message).be(msg)))
+                    .catch((e: Error) => must(e.message).equal(msg)))
 
         })
 
@@ -118,7 +115,7 @@ describe('future', () => {
                     .chain((n: number) => err(`error: ${n}`))
                     .map(map))
                     .then(() => Promise.reject('Map did not reject!'))
-                    .catch((e: Error) => must(e.message).be('error: 2')));
+                    .catch((e: Error) => must(e.message).equal('error: 2')));
 
         })
 
@@ -132,7 +129,7 @@ describe('future', () => {
                     .chain((n: number) => err(`error: ${n}`))
                     .ap(ap))
                     .then(() => Promise.reject('Ap did not reject!'))
-                    .catch((e: Error) => must(e.message).be('error: 2')));
+                    .catch((e: Error) => must(e.message).equal('error: 2')));
 
         })
 
@@ -143,7 +140,7 @@ describe('future', () => {
                     .chain((n: number) => err(`error: ${n}`))
                     .chain(inc))
                     .then(() => Promise.reject('Chain did not reject!'))
-                    .catch((e: Error) => must(e.message).be('error: 1')));
+                    .catch((e: Error) => must(e.message).equal('error: 1')));
 
         })
 
@@ -154,15 +151,15 @@ describe('future', () => {
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(must(e.message).be('foo')))))
+                    .catch((e: Error) => pure(must(e.message).equal('foo')))))
 
             it('should not duplicate errors', () =>
                 liftP(inc(0)
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(must(e.message).be('foo')))
-                    .catch((e: Error) => pure(must(e).be('foo')))));
+                    .catch((e: Error) => pure(must(e.message).equal('foo')))
+                    .catch((e: Error) => pure(must(e).equal('foo')))));
 
         });
 
@@ -172,15 +169,15 @@ describe('future', () => {
                 liftP(inc(0)
                     .chain(inc)
                     .finally(() => pure(12)))
-                    .then((n: number) => must(n).be(12)));
+                    .then((n: number) => must(n).equal(12)));
 
             it('should run after failure', () =>
                 liftP(inc(0)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(must(e.message).be('foo')))
+                    .catch((e: Error) => pure(must(e.message).equal('foo')))
                     .finally(() => pure(12)))
-                    .then((n: number) => must(n).be(12)));
+                    .then((n: number) => must(n).equal(12)));
 
         })
 
@@ -193,7 +190,7 @@ describe('future', () => {
                 .chain(m)
                 .chain(m)
                 .chain(m))
-                .then(() => must(count).be(3));
+                .then(() => must(count).equal(3));
 
         })
 
@@ -236,7 +233,7 @@ describe('future', () => {
 
                 let success = () => {
 
-                    must(seq).eql([1, 4, 5, 11, 3, 2]); //stack grows downward
+                    must(seq).equate([1, 4, 5, 11, 3, 2]); //stack grows downward
 
                     cb();
 
@@ -268,12 +265,12 @@ describe('future', () => {
             liftP(attempt(() => { throw new Error('foo'); })
                 .chain(inc)
                 .catch((e: Error) => pure(e.message)))
-                .then((s: string) => must(s).be('foo')));
+                .then((s: string) => must(s).equal('foo')));
 
         it('should work', () =>
             liftP(attempt(() => 11)
                 .chain(inc))
-                .then((n: number) => must(n).be(12)))
+                .then((n: number) => must(n).equal(12)))
 
     });
 
@@ -282,7 +279,7 @@ describe('future', () => {
         it('should work', () =>
             liftP(delay(() => 11)
                 .chain(inc))
-                .then((n: number) => must(n).be(12)))
+                .then((n: number) => must(n).equal(12)))
 
     });
 
@@ -307,7 +304,7 @@ describe('future', () => {
 
             let raise = (e: Error) => { cb(e); }
 
-            let success = (n: any) => { must(n).be(12); cb(); }
+            let success = (n: any) => { must(n).equal(12); cb(); }
 
             fromCallback(cb => f(cb)).fork(raise, success);
 
@@ -334,7 +331,7 @@ describe('future', () => {
             })
 
             return liftP(race([task(1000), err('m', 2000), err('foo', 500), task(200)]))
-                .catch((e: Error) => must(e.message).be('foo'));
+                .catch((e: Error) => must(e.message).equal('foo'));
 
         });
 
@@ -348,28 +345,28 @@ describe('future', () => {
             })
 
             return liftP(parallel([task(300), task(200), task(500), task(600)]))
-                .then((list: number[]) => must(list).eql([300, 200, 500, 600]));
+                .then((list: number[]) => must(list).equate([300, 200, 500, 600]));
 
         });
 
         it('should work when the list is empty', () => {
 
             return liftP(parallel([]))
-                .then((list: any[]) => must(list).eql([]));
+                .then((list: any[]) => must(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
             return liftP(parallel([pure(1), pure(2), pure(3)]))
-                .then((list: number[]) => must(list).eql([1, 2, 3]));
+                .then((list: number[]) => must(list).equate([1, 2, 3]));
 
         });
 
         it('should work with a list of failed values', () => {
 
-          return liftP(parallel([raise(new Error('1')), raise(new Error('2'))]))
-            .catch((e:Error)=> must(e.message).be('1'));
+            return liftP(parallel([raise(new Error('1')), raise(new Error('2'))]))
+                .catch((e: Error) => must(e.message).equal('1'));
 
         });
 
@@ -387,7 +384,7 @@ describe('future', () => {
             });
 
             return liftP(race([task(1000), task(2000), task(500), task(200), task(800)]))
-                .catch((e: Error) => must(e.message).be('200'))
+                .catch((e: Error) => must(e.message).equal('200'))
 
         })
 
@@ -401,7 +398,7 @@ describe('future', () => {
             });
 
             return liftP(race([task(1000), task(2000), task(500), task(200), task(800)]))
-                .then((n: number) => must(n).be(200))
+                .then((n: number) => must(n).equal(200))
 
         });
 
@@ -409,21 +406,21 @@ describe('future', () => {
 
             return liftP(race([]))
                 .then(() => { throw new Error('bleh'); })
-                .catch((e: Error) => must(e.message).be('race(): Cannot race an empty list!'));
+                .catch((e: Error) => must(e.message).equal('race(): Cannot race an empty list!'));
 
         });
 
         it('should work with a list of pure values', () => {
 
-            return liftP(race([pure(1), pure(2), pure(3)]))
-                .then((list: number[]) => must(list).eql(1));
+            return liftP<number>(race([pure(1), pure(2), pure(3)]))
+                .then((list: number) => must(list).equal(1));
 
         });
 
         it('should work with a list of failed values', () => {
 
-          return liftP(race([raise(new Error('1')), raise(new Error('2'))]))
-            .catch((e:Error)=> must(e.message).be('1'));
+            return liftP(race([raise(new Error('1')), raise(new Error('2'))]))
+                .catch((e: Error) => must(e.message).equal('1'));
 
         });
 

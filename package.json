@@ -3,7 +3,7 @@
     "version": "1.2.5",
     "description": "Commons library used by Quenk Technologies everywhere.",
     "scripts": {
-        "test": "./node_modules/.bin/mocha --opts mocha.opts test"
+        "test": "./node_modules/.bin/mocha --recursive --opts mocha.opts $(find -name *_test.ts)"
     },
     "author": "Quenk Technologies Limited <info@quenk.com> (http://quenk.com)",
     "license": "Apache-2.0",
@@ -13,13 +13,14 @@
     "main": "lib",
     "types": "lib/index.d.ts",
     "devDependencies": {
-        "@types/mocha": "^2.2.42",
-        "@types/node": "^8.10.36",
-        "bluebird": "^3.5.2",
-        "mocha": "^3.3.0",
-        "must": "^0.13.4",
-        "ts-node": "^7.0.0",
-        "typedoc": "^0.12.0",
-        "typescript": "^2.9.2"
+        "@quenk/must": "^1.0.4",
+        "@types/bluebird": "^3.5.24",
+        "@types/mocha": "^5.2.5",
+        "@types/node": "^10.12.10",
+        "bluebird": "^3.5.3",
+        "mocha": "^5.2.0",
+        "ts-node": "^7.0.1",
+        "typedoc": "^0.13.0",
+        "typescript": "^3.1.6"
     }
 }

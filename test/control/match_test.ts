@@ -1,4 +1,4 @@
-import * as must from 'must/register';
+import {must} from '@quenk/must';
 import { match } from '../../src/control/match';
 
 class ClassA { constructor(public a: string) { } }
@@ -21,7 +21,7 @@ describe('match', function() {
                 .orElse(() => new Date())
                 .end();
 
-        must((<ClassD>result).d).eql(12);
+        must((<ClassD>result).d).equal(12);
 
     })
 
@@ -34,7 +34,7 @@ describe('match', function() {
                 .orElse(() => Date)
                 .end();
 
-        must(result).be(Date);
+        must(result).equal(Date);
 
     });
 
