@@ -1,4 +1,4 @@
-import * as must  from 'must/register';
+import { must } from '@quenk/must';
 import { attempt } from '../../src/control/error';
 
 describe('error', () => {
@@ -10,8 +10,8 @@ describe('error', () => {
             let _throw = () => { throw new Error('foo'); }
             let _noes = () => 12;
 
-            must(attempt(_throw).takeLeft().message).be('foo');
-            must(attempt(_noes).takeRight()).be(12);
+            must(attempt(_throw).takeLeft().message).equal('foo');
+            must(attempt(_noes).takeRight()).equal(12);
 
         })
     })

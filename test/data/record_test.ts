@@ -1,4 +1,4 @@
-import * as must from 'must/register';
+import {must} from '@quenk/must';
 import {
     Record,
     keys,
@@ -109,7 +109,7 @@ describe('record', () => {
 
         it('should provide a list of a Record keys', () => {
 
-            must(keys({ a: 1, b: 2, c: { d: 1, e: { f: 'g' } } })).eql(['a', 'b', 'c']);
+            must(keys({ a: 1, b: 2, c: { d: 1, e: { f: 'g' } } })).equate(['a', 'b', 'c']);
 
         })
     })
@@ -121,7 +121,7 @@ describe('record', () => {
             must(map({ a: 1, b: 2, c: 3 },
                 (value: number, key: string, rec: Record<number>) =>
                     `${key}-${value}-${keys(rec).length}`))
-                .eql({ a: 'a-1-3', b: 'b-2-3', c: 'c-3-3' });
+                .equate({ a: 'a-1-3', b: 'b-2-3', c: 'c-3-3' });
 
         })
     })
@@ -132,7 +132,7 @@ describe('record', () => {
 
             must(reduce({ a: 1, b: 2, c: 3 }, 0,
                 (p: number, c: number, _: string) => p + c))
-                .eql(6);
+                .equate(6);
 
         })
     })
@@ -144,7 +144,7 @@ describe('record', () => {
             let r: { a: number, b: number, c: number, e: { f: 'g' } | number } =
                 merge({ a: 1, b: 2, c: 3, e: { f: 'g' } }, { c: 4, e: 4 });
 
-            must(r).eql({ a: 1, b: 2, c: 4, e: 4 });
+            must(r).equate({ a: 1, b: 2, c: 4, e: 4 });
 
         })
     })
@@ -155,7 +155,7 @@ describe('record', () => {
 
             let r: A & B & C = merge3(a, b, c);
 
-            must(r).eql({ a: 1, b: 2, c: 3 });
+            must(r).equate({ a: 1, b: 2, c: 3 });
 
         });
 
@@ -167,7 +167,7 @@ describe('record', () => {
 
             let r: A & B & C & D = merge4(a, b, c, d);
 
-            must(r).eql({ a: 1, b: 2, c: 3, d: 4 });
+            must(r).equate({ a: 1, b: 2, c: 3, d: 4 });
 
         });
 
@@ -179,7 +179,7 @@ describe('record', () => {
 
             let r: A & B & C & D & E = merge5(a, b, c, d, e);
 
-            must(r).eql({ a: 1, b: 2, c: 3, d: 4, e: { f: 'g' } });
+            must(r).equate({ a: 1, b: 2, c: 3, d: 4, e: { f: 'g' } });
 
         });
 
@@ -191,7 +191,7 @@ describe('record', () => {
 
             let r: RA & RB = rmerge(ra, rb);
 
-            must(r).eql(
+            must(r).equate(
                 {
                     a: 1,
                     b: '2',
@@ -211,7 +211,7 @@ describe('record', () => {
 
             let r: RA & RB & RC = rmerge3(ra, rb, rc);
 
-            must(r).eql(
+            must(r).equate(
                 {
                     a: 1,
                     b: '2',
@@ -232,7 +232,7 @@ describe('record', () => {
 
             let r: RA & RB & RC & RD = rmerge4(ra, rb, rc, rd);
 
-            must(r).eql(
+            must(r).equate(
                 {
                     a: 1,
                     b: '2',
@@ -254,7 +254,7 @@ describe('record', () => {
 
             let r: RA & RB & RC & RD & RE = rmerge5(ra, rb, rc, rd, re);
 
-            must(r).eql(
+            must(r).equate(
                 {
                     a: 1,
                     b: {
@@ -305,7 +305,7 @@ describe('record', () => {
                     a: {}
                 });
 
-            must(r).eql(
+            must(r).equate(
                 {
                     a: {},
                     b: { bv: 'b2' },
@@ -325,11 +325,11 @@ describe('record', () => {
         it('should remove unwanted keys', () => {
 
             must(exclude({ one: 1, two: 2, three: 3 }, 'two'))
-                .eql({ one: 1, three: 3 });
+                .equate({ one: 1, three: 3 });
 
             must(exclude({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 },
                 ['one', 'two', 'three']))
-                .eql({ four: 4, five: 5, six: 6 });
+                .equate({ four: 4, five: 5, six: 6 });
 
         })
     })
@@ -347,7 +347,7 @@ describe('record', () => {
                 'options.flags': { version: 'v22' },
                 level: 'master'
 
-            })).eql({
+            })).equate({
 
                 'name.first': 'Lasana',
                 'name.last': 'Murray',
@@ -368,7 +368,7 @@ describe('record', () => {
             let f = (n: number) => ((n % 2) === 0)
             let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 }, { a: 1, c: 3, e: 5, g: 7, i: 9 }];
 
-            must(partition<number, Record<number>>(m)(f)).eql(r);
+            must(partition<number, Record<number>>(m)(f)).equate(r);
 
         });
     })
@@ -407,7 +407,7 @@ describe('record', () => {
                 }
             }
 
-            must(group(m)(f)).eql(r);
+            must(group(m)(f)).equate(r);
 
         });
 
@@ -417,7 +417,8 @@ describe('record', () => {
 
         it('should return a shallow array', () => {
 
-            must(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' })).eql([1, [22], { n: 1 }, 'e']);
+          must(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' }))
+            .equate([1, [22], { n: 1 }, 'e']);
 
         });
 
@@ -429,12 +430,11 @@ describe('record', () => {
 
             let foo = { n: 12 };
 
-            must(contains(foo, 'n')).be(true);
-            must(contains(foo, 'x')).be(false);
+            must(contains(foo, 'n')).equal(true);
+            must(contains(foo, 'x')).equal(false);
 
         });
 
     });
 
 });
-

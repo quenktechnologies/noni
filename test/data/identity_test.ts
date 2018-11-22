@@ -1,4 +1,3 @@
-import * as must from 'must/register';
 import * as tests from '../checks';
 import { Identity } from '../../src/data/indentity';
 

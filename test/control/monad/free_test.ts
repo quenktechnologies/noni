@@ -1,4 +1,4 @@
-import * as must from 'must/register';
+import { must } from '@quenk/must';
 import * as checks from '../../checks';
 import { Functor } from '../../../src/data/functor';
 import { Identity } from '../../../src/data/indentity';
@@ -76,7 +76,7 @@ describe('free', () => {
 
     describe('Free', () => {
 
-        it('should be a Monad', checks.isMonad({
+        it('should be a Monad', checks.isMonad<any>({
             pure: <A>(a: A) => liftF(new F(a)),
             eq,
             bind: (n: number) => liftF(new F(n + 1)),
@@ -98,7 +98,8 @@ describe('free', () => {
                         .resume()
                         .takeLeft())
                     .be
-                    .instanceof(Put);
+                    .instance
+                    .of(Put);
 
                 must(
                     x
@@ -108,7 +109,8 @@ describe('free', () => {
                         .resume()
                         .takeLeft())
                     .be
-                    .instanceof(Get);
+                    .instance
+                    .of(Get);
 
                 must(
                     x.resume()
@@ -119,7 +121,8 @@ describe('free', () => {
                         .resume()
                         .takeLeft())
                     .be
-                    .instanceof(Remove);
+                    .instance
+                    .of(Remove);
 
             });
 
@@ -157,7 +160,7 @@ describe('free', () => {
 
                 })
 
-                must(l).eql(["PUT 'num' '12'", "GET 'num'", "REMOVE 'num'"]);
+                must(l).equate(["PUT 'num' '12'", "GET 'num'", "REMOVE 'num'"]);
 
             })
 
@@ -195,7 +198,7 @@ describe('free', () => {
 
                 });
 
-                must(r).eql({ a: '11', b: '12' });
+                must(r).equate({ a: '11', b: '12' });
 
             })
 
@@ -213,7 +216,7 @@ describe('free', () => {
                         .chain(n => put('b', n))
                         .chain(() => remove('n'));
 
-                let r = chain.foldM(() => new Identity(store), (a: API<any>) => {
+                let r = chain.foldM(() => new Identity<any>(store), (a: API<any>) => {
 
                     if (a instanceof Get) {
 
@@ -235,7 +238,7 @@ describe('free', () => {
 
                 })
 
-                must(r.value).eql({ a: '11', b: '12' });
+                must(r.value).equate({ a: '11', b: '12' });
 
             })
 
@@ -256,10 +259,10 @@ describe('free', () => {
             let aray = flatten(chain)((a: API<any>) => (typeof a.next === 'function') ?
                 a.next() : a.next);
 
-            must(aray[0]).be.instanceof(Put);
-            must(aray[1]).be.instanceof(Get);
-            must(aray[2]).be.instanceof(Remove);
-            must(aray[3]).be.instanceof(Put);
+            must(aray[0]).be.instance.of(Put);
+            must(aray[1]).be.instance.of(Get);
+            must(aray[2]).be.instance.of(Remove);
+            must(aray[3]).be.instance.of(Put);
 
         });
 
@@ -275,12 +278,12 @@ describe('free', () => {
                     .chain((n: string) => remove(n))
                     .chain(() => put('num', '12'));
 
-            let r = reduce(chain)([])((p: string[], curr: API<any>) =>
+            let r = reduce < any, any> (chain)([])((p: string[], curr: API<any>) =>
                 new Step(p.concat((<any>curr.constructor).name),
                     (typeof curr.next === 'function') ?
                         curr.next() : curr.next));
 
-            must(r).eql(['Put', 'Get', 'Remove', 'Put']);
+            must(r).equate(['Put', 'Get', 'Remove', 'Put']);
 
         });
 

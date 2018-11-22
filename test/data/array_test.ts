@@ -1,4 +1,4 @@
-import * as must from 'must/register';
+import { must } from '@quenk/must';
 import {
     head,
     tail,
@@ -15,7 +15,7 @@ describe('array', () => {
 
         it('should return the first element', () => {
 
-            must(head([9, 4, 3, 29, 9, 8])).be(9);
+            must(head([9, 4, 3, 29, 9, 8])).equal(9);
 
         });
 
@@ -25,7 +25,7 @@ describe('array', () => {
 
         it('should return the last element', () => {
 
-            must(tail([349, 434, 1341, 2, 12])).be(12);
+            must(tail([349, 434, 1341, 2, 12])).equal(12);
 
         });
 
@@ -35,8 +35,8 @@ describe('array', () => {
 
         it('should work', () => {
 
-            must(contains([1, 2, 3])(2)).be(true);
-            must(contains([1, 2, 3])(4)).be(false);
+            must(contains([1, 2, 3])(2)).equal(true);
+            must(contains([1, 2, 3])(4)).equal(false);
 
         });
 
@@ -46,8 +46,8 @@ describe('array', () => {
 
         it('should work', () => {
 
-            must(empty([])).be(true);
-            must(empty([1, 2, 3])).be(false);
+            must(empty([])).equal(true);
+            must(empty([1, 2, 3])).equal(false);
 
         });
 
@@ -57,7 +57,7 @@ describe('array', () => {
 
         it('should map over all elements', () => {
 
-            must(map(([2, 4, 6]))((n: number) => n * n)).eql([4, 16, 36]);
+            must(map(([2, 4, 6]))((n: number) => n * n)).equate([4, 16, 36]);
 
         });
 
@@ -71,13 +71,13 @@ describe('array', () => {
             let f = (n: number) => ((n % 2) === 0)
             let r = [[2, 4, 6, 8, 10], [1, 3, 5, 7, 9]];
 
-            must(partition(m)(f)).eql(r);
+            must(partition(m)(f)).equate(r);
 
         });
 
         it('should not blow up on empty arrays', () => {
 
-            must(partition([])((n: number) => n > 1)).eql([[], []]);
+            must(partition([])((n: number) => n > 1)).equate([[], []]);
 
         });
 
@@ -95,7 +95,7 @@ describe('array', () => {
                 object: [{ n: 'o' }]
             }
 
-            must(group(m)(f)).eql(r);
+            must(group(m)(f)).equate(r);
 
         })
     })
