@@ -217,7 +217,7 @@ export const group = <A, R extends Record<A>>
  * values returns a shallow array of the values of a record.
  */
 export const values = <A >(r: Record<A>): A[] =>
-    reduce(r, [], (p: A[], c) => concat(p)(<A>c));
+    reduce(r, [], (p: A[], c) => concat(p,<A>c));
 
 /**
  * contains indicates whether a Record has a given key.

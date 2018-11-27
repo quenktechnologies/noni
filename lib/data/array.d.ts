@@ -27,7 +27,7 @@ export declare const map: <A, B>(list: A[]) => (f: (a: A) => B) => B[];
  * concat concatenates an element to an array without destructuring
  * the element if itself is an array.
  */
-export declare const concat: <A>(list: A[]) => (a: A) => A[];
+export declare const concat: <A>(list: A[], a: A) => A[];
 /**
  * partition an array into two using a partitioning function.
  *
@@ -39,3 +39,8 @@ export declare const partition: <A>(list: A[]) => (f: (a: A, i: number, l: A[]) 
  * function.
  */
 export declare const group: <A>(list: A[]) => (f: (a: A, i: number, r: A[]) => string) => Record<A[]>;
+/**
+ * distribute breaks an array into an array of equally (approximate) sized
+ * smaller arrays.
+ */
+export declare const distribute: <A>(list: A[], size: number) => A[][];
