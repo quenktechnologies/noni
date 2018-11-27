@@ -6,7 +6,8 @@ import {
     empty,
     map,
     partition,
-    group
+    group,
+    distribute
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -98,5 +99,43 @@ describe('array', () => {
             must(group(m)(f)).equate(r);
 
         })
-    })
+    });
+
+    describe('distribtue', () => {
+
+        it('should work when array length is a multiple', () => {
+
+            must(distribute([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 3))
+                .equate([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]);
+
+        });
+
+        it('should work when array length is not a multiple', () => {
+
+            must(distribute([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 5))
+                .equate([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10], [11, 12]]);
+
+        });
+
+        it('should work when array length is less than the size', () => {
+
+            must(distribute([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 20))
+                .equate([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]);
+
+        });
+
+        it('should work with empty arrays', () => {
+
+            must(distribute([], 3)).equate([]);
+
+        });
+
+      it('should work with odd numbered arrays', () => {
+
+        must(distribute([1,2,3,4], 3))
+        .equate([[1,2,3], [4]]);
+          
+        });
+
+    });
 })
