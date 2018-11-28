@@ -17,6 +17,8 @@ import {
     fromAbortable,
     fromCallback,
     raise,
+    sequential,
+    parallelN,
     parallel,
     toPromise as liftP,
     race
@@ -311,6 +313,173 @@ describe('future', () => {
         });
 
     });
+
+    describe('sequential', () => {
+
+        let tags: string[] = [];
+
+        let task = (tag: string, n: number) =>
+            new Run((s: Supervisor<any>) => {
+
+                setTimeout(() => {
+                    s.onSuccess(n);
+                    tags.push(tag);
+                }, n);
+                return noop;
+
+            });
+
+        let err = (m: string, n: number) => new Run((s: Supervisor<any>) => {
+
+            setTimeout(() => {
+                s.onError(new Error(m));
+                tags.push(m)
+            }, n);
+            return noop;
+        });
+
+        it('should fail if any fail', () => {
+
+            tags = [];
+
+            return liftP(sequential([
+                task('a', 1000),
+                err('m', 2000),
+                err('foo', 500),
+                task('d', 200)]))
+                .catch((e: Error) => {
+
+                    must(e.message).equal('m');
+                    must(tags).equate(['a', 'm']);
+
+                });
+
+        });
+
+        it('should succeed with all results', () => {
+
+            tags = [];
+
+            return liftP(sequential([
+                task('a', 300),
+                task('b', 200),
+                task('c', 500),
+                task('d', 600)]))
+                .then((list: number[]) => must(list).equate([300, 200, 500, 600]))
+                .then(() => must(tags).equate(['a', 'b', 'c', 'd']));
+
+        });
+
+        it('should work when the list is empty', () => {
+
+            return liftP(sequential([]))
+                .then((list: any[]) => must(list).equate([]));
+
+        });
+
+        it('should work with a list of pure values', () => {
+
+            return liftP(sequential([pure(1), pure(2), pure(3)]))
+                .then((list: number[]) => must(list).equate([1, 2, 3]));
+
+        });
+
+        it('should work with a list of failed values', () => {
+
+            return liftP(sequential([raise(new Error('1')), raise(new Error('2'))]))
+                .catch((e: Error) => must(e.message).equal('1'));
+
+        });
+
+    });
+
+    describe('parallelN', () => {
+
+        let tags: string[] = [];
+
+        let task = (tag: string, n: number) =>
+            new Run((s: Supervisor<any>) => {
+
+                setTimeout(() => {
+                    s.onSuccess(n);
+                    tags.push(tag);
+                }, n);
+                return noop;
+
+            });
+
+        let err = (m: string, n: number) => new Run((s: Supervisor<any>) => {
+
+            setTimeout(() => {
+                s.onError(new Error(m));
+                tags.push(m)
+            }, n);
+            return noop;
+        });
+
+        it('should fail if any fail', () => {
+
+            tags = [];
+
+            return liftP(parallelN([
+                [task('a', 1000), task('a', 2000)],
+                [err('m', 1000)],
+                [err('foo', 500)],
+                [task('d', 200)]]))
+                .catch((e: Error) => {
+
+                    must(e.message).equal('m');
+                    must(tags).equate(['a', 'a', 'm']);
+
+                });
+
+        });
+
+        it('should succeed with all results', () => {
+
+            tags = [];
+
+            return liftP(parallelN([
+                [task('a', 300), task('a', 600), task('a', 100)],
+                [task('b', 200)],
+                [task('c', 300), task('c', 500)],
+                [task('d', 200), task('d', 600)]]))
+                .then((list: number[][]) =>
+                    must(list)
+                        .equate([
+                            [300, 600, 100],
+                            [200],
+                            [300, 500],
+                            [200, 600]]))
+                .then(() =>
+                    must(tags).equate([
+                        'a', 'a', 'a', 'b', 'c', 'c', 'd', 'd'
+                    ]));
+
+        });
+
+        it('should work when the list is empty', () => {
+
+            return liftP(parallelN([]))
+                .then((list: any[]) => must(list).equate([]));
+
+        });
+
+        it('should work with a list of pure values', () => {
+
+            return liftP(parallelN([[pure(1), pure(2)], [pure(3)]]))
+                .then((list: number[][]) => must(list).equate([[1, 2], [3]]));
+
+        });
+
+        it('should work with a list of failed values', () => {
+
+            return liftP(sequential([raise(new Error('1')), raise(new Error('2'))]))
+                .catch((e: Error) => must(e.message).equal('1'));
+
+        });
+
+    })
 
     describe('parallel', () => {
 

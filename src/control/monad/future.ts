@@ -101,6 +101,12 @@ export abstract class Future<A> implements Monad<A> {
 
     }
 
+    /**
+     * exec
+     * @private
+     */
+    abstract exec(c: Compute<A>): boolean;
+
 }
 
 /**
@@ -119,6 +125,94 @@ export class Pure<A> extends Future<A> {
     ap<B>(ft: Future<(a: A) => B>): Future<B> {
 
         return ft.map(f => f(this.value));
+
+    }
+
+    exec(c: Compute<A>): boolean {
+
+        c.value = this.value;
+        tick(() => c.run());
+        return false;
+
+    }
+
+}
+
+/**
+ * Bind constructor.
+ * @private
+ */
+export class Bind<A, B> extends Future<B> {
+
+    constructor(
+        public future: Future<A>,
+        public func: (a: A) => Future<B>) { super(); }
+
+
+    exec(c: Compute<B>): boolean {
+
+        //XXX: find a way to do this without any someday.
+        c.stack.push(new Step(<any>this.func));
+        c.stack.push(<any>this.future);
+        return true;
+
+    }
+
+}
+
+/**
+ * Step constructor.
+ * @private
+ */
+export class Step<A> extends Future<A> {
+
+    constructor(public value: (a: A) => Future<A>) { super(); }
+
+    exec(c: Compute<A>): boolean {
+
+        c.stack.push(this.value(c.value));
+        return true;
+
+    }
+
+}
+
+/**
+ * Catch constructor.
+ * @private
+ */
+export class Catch<A> extends Future<A> {
+
+    constructor(
+        public future: Future<A>,
+        public func: (e: Error) => Future<A>) { super(); }
+
+    exec(c: Compute<A>): boolean {
+
+        c.handlers.push(this.func);
+        c.stack.push(this.future);
+        return true;
+
+    }
+
+}
+
+/**
+ * Finally constructor.
+ * @private
+ */
+export class Finally<A> extends Future<A> {
+
+    constructor(
+        public future: Future<A>,
+        public func: () => Future<A>) { super(); }
+
+    exec(c: Compute<A>): boolean {
+
+        c.finalizers.push(this.func);
+        c.stack.push(new Step(this.func));
+        c.stack.push(this.future);
+        return true;
 
     }
 
@@ -149,51 +243,26 @@ export class Raise<A> extends Future<A> {
 
     }
 
-}
+    exec(c: Compute<A>): boolean {
 
-/**
- * Bind constructor.
- * @private
- */
-export class Bind<A, B> extends Future<B> {
+        c.stack = []; //clear the stack;
 
-    constructor(
-        public future: Future<A>,
-        public func: (a: A) => Future<B>) { super(); }
+        if (c.finalizers.length > 0)
+            c.stack.push(new Step(<Finalizer<A>>c.finalizers.pop()));
 
-}
+        if (c.handlers.length > 0)
+            c.stack.push(
+                (<ErrorHandler<A>>c.handlers.pop())(convert(this.value))
+            );
 
-/**
- * Step constructor.
- * @private
- */
-export class Step<A> extends Future<A> {
+        if (c.stack.length === 0) {
+            c.exitError(convert(this.value)); //end on unhandled error
+            return false;
+        }
 
-    constructor(public value: (a: A) => Future<A>) { super(); }
+        return true;
 
-}
-
-/**
- * Catch constructor.
- * @private
- */
-export class Catch<A> extends Future<A> {
-
-    constructor(
-        public future: Future<A>,
-        public func: (e: Error) => Future<A>) { super(); }
-
-}
-
-/**
- * Finally constructor.
- * @private
- */
-export class Finally<A> extends Future<A> {
-
-    constructor(
-        public future: Future<A>,
-        public func: () => Future<A>) { super(); }
+    }
 
 }
 
@@ -204,6 +273,14 @@ export class Finally<A> extends Future<A> {
 export class Run<A> extends Future<A> {
 
     constructor(public value: Job<A>) { super(); }
+
+    exec(c: Compute<A>): boolean {
+
+        c.running = true;
+        c.canceller = this.value(c);
+        return false;
+
+    }
 
 }
 
@@ -299,61 +376,13 @@ export class Compute<A> implements Supervisor<A> {
 
     }
 
-    /**
-     * run this Compute.
-     */
     run(): void {
 
         while (this.stack.length > 0) {
 
-            let next = this.stack.pop();
+            let next = <Future<A>>this.stack.pop();
 
-            if (next instanceof Pure) {
-
-                this.value = next.value;
-
-            } else if (next instanceof Bind) {
-
-                this.stack.push(new Step(next.func));
-                this.stack.push(next.future);
-
-            } else if (next instanceof Step) {
-
-                this.stack.push(next.value(this.value));
-
-            } else if (next instanceof Catch) {
-
-                this.handlers.push(next.func);
-                this.stack.push(next.future);
-
-            } else if (next instanceof Finally) {
-
-                this.finalizers.push(next.func);
-                this.stack.push(new Step(next.func));
-                this.stack.push(next.future);
-
-            } else if (next instanceof Raise) {
-
-                this.stack = []; //clear the stack;
-
-                if (this.finalizers.length > 0)
-                    this.stack.push(new Step(<Finalizer<A>>this.finalizers.pop()));
-
-                if (this.handlers.length > 0)
-                    this.stack.push(
-                        (<ErrorHandler<A>>this.handlers.pop())(convert(next.value))
-                    );
-
-                if (this.stack.length === 0)
-                    return this.exitError(convert(next.value)); //end on unhandled error
-
-            } else if (next instanceof Run) {
-
-                this.running = true;
-                this.canceller = next.value(this);
-                return; //short-circuit and continue in a new call-stack
-
-            }
+            if (!next.exec(this)) return; // short-circuit
 
         }
 
@@ -426,6 +455,12 @@ class Tag<A> {
 }
 
 /**
+ * parallelN runs a list of batched Futures one batch at a time.
+ */
+export const parallelN = <A>(list: Future<A>[][]) =>
+    sequential(list.map(w => parallel(w)));
+
+/**
  * parallel runs a list of Futures in parallel failing if any 
  * fail and succeeding with a list of successful values.
  */
@@ -459,6 +494,35 @@ export const parallel = <A>(list: Future<A>[])
         return () => { abortAll(comps) };
 
     });
+
+/**
+ * sequential execution of a list of futures.
+ * 
+ * This function succeeds with a list of all results or fails on the first
+ * error.
+ */
+export const sequential = <A>(list: Future<A>[]): Future<A[]> => new Run(s => {
+
+    let i = 0;
+    let r: A[] = [];
+    let onErr = (e: Error) => s.onError(e);
+    let onSuccess = (a: A) => { r.push(a); next(); };
+    let abort: Compute<A>;
+
+    let next = () => {
+
+        if (i < list.length)
+            abort = list[i].fork(onErr, onSuccess);
+        else
+            s.onSuccess(r);
+        i++;
+
+    }
+    next();
+
+    return () => { if (abort) abort.abort(); }
+
+});
 
 /**
  * race given a list of Futures, will return a Future that is settled by
