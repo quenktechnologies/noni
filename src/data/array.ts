@@ -80,3 +80,10 @@ export const distribute = <A>(list: A[], size: number): A[][] => {
   return (r[1].length === 0)  ? r[0] : concat(r[0], r[1]);
 
 }
+
+/**
+ * dedupe an array by filtering out elements
+ * that appear twice.
+ */
+export const dedupe = <A>(list: A[]) : A[] =>
+  list.filter((e,i,l)=> l.indexOf(e) === i);

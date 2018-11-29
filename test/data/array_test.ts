@@ -7,7 +7,8 @@ import {
     map,
     partition,
     group,
-    distribute
+  distribute,
+  dedupe
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -137,5 +138,23 @@ describe('array', () => {
           
         });
 
+    });
+
+    describe('dedupe', () => {
+
+        it('should remove duplicates', () => {
+
+          must(dedupe([1,2,3,44,5,6,7,1,2,3,6,7,4]))
+          .equate([1,2,3,44,5,6,7,4]);
+          
+        });
+
+        it('should not change already deduped arrays', () => {
+
+          must(dedupe([1,2,3,4,5,6,7,8,9]))
+          .equate([1,2,3,4,5,6,7,8,9]);
+          
+        });
+      
     });
 })
