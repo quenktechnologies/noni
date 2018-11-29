@@ -1,3 +1,6 @@
+/**
+ *  Common functions used to manipulate strings.
+ */
 
 /**
  * startsWith polyfill.
@@ -34,6 +37,18 @@ export const camelCase = (str: string): string =>
         .replace(/(\-|_|\s)+(.)?/g, (_, __, c) =>
             (c ? c.toUpperCase() : ''));
 
-console.log(camel(process.argv[2]));
+/**
+ * capitalize a string.
+ *
+ * Note: spaces are treated as part of the string.
+ */
+export const capitalize = (str:string) : string => 
+`${str[0].toUpperCase()}${str.slice(1)}`;
 
-
+/**
+ * uncapitalize a string.
+ *
+ * Note: spaces are treated as part of the string.
+ */
+export const uncapitalize = (str:string): string =>
+  `${str[0].toLowerCase()}${str.slice(1)}`;
