@@ -11,3 +11,7 @@ export declare const endsWith: (str: string, search: string, this_len?: number) 
  * in a string.
  */
 export declare const contains: (str: string, match: string) => boolean;
+/**
+ * camelCase transforms a string into CamelCase.
+ */
+export declare const camelCase: (str: string) => string;
