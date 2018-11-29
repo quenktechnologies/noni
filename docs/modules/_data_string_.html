@@ -910,6 +910,12 @@ img { max-width: 100%; }
 <nav class="tsd-navigation secondary">
 	<ul>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_data_string_.html#camelcase" class="tsd-kind-icon">camel<wbr>Case</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_data_string_.html#capitalize" class="tsd-kind-icon">capitalize</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="_data_string_.html#contains" class="tsd-kind-icon">contains</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
@@ -918,10 +924,20 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="_data_string_.html#startswith" class="tsd-kind-icon">starts<wbr>With</a>
 		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_data_string_.html#uncapitalize" class="tsd-kind-icon">uncapitalize</a>
+		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-comment">
+			<div class="tsd-comment tsd-typography">
+				<div class="lead">
+					<p> Common functions used to manipulate strings.</p>
+				</div>
+			</div>
+		</section>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
@@ -929,9 +945,12 @@ img { max-width: 100%; }
 					<section class="tsd-index-section ">
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#camelcase" class="tsd-kind-icon">camel<wbr>Case</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#capitalize" class="tsd-kind-icon">capitalize</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#contains" class="tsd-kind-icon">contains</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#endswith" class="tsd-kind-icon">ends<wbr>With</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#startswith" class="tsd-kind-icon">starts<wbr>With</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#uncapitalize" class="tsd-kind-icon">uncapitalize</a></li>
 						</ul>
 					</section>
 				</div>
@@ -939,6 +958,63 @@ img { max-width: 100%; }
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Functions</h2>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="camelcase" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> camel<wbr>Case</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">camel<wbr>Case<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/data/string.ts#L30">data/string.ts:30</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>camelCase transforms a string into CamelCase.</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>str: <span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="capitalize" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> capitalize</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">capitalize<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/data/string.ts#L45">data/string.ts:45</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>capitalize a string.</p>
+							</div>
+							<p>Note: spaces are treated as part of the string.</p>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>str: <span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 				<a name="contains" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> contains</h3>
@@ -949,7 +1025,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/data/string.ts#L21">data/string.ts:21</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/data/string.ts#L24">data/string.ts:24</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -981,7 +1057,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/data/string.ts#L11">data/string.ts:11</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/data/string.ts#L14">data/string.ts:14</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1020,7 +1096,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/data/string.ts#L5">data/string.ts:5</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/data/string.ts#L8">data/string.ts:8</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1041,6 +1117,35 @@ img { max-width: 100%; }
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="uncapitalize" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> uncapitalize</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">uncapitalize<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/data/string.ts#L53">data/string.ts:53</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>uncapitalize a string.</p>
+							</div>
+							<p>Note: spaces are treated as part of the string.</p>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>str: <span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 					</li>
 				</ul>
 			</section>

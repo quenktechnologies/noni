@@ -982,7 +982,13 @@ img { max-width: 100%; }
 			<a href="_control_monad_future_.html#fromcallback" class="tsd-kind-icon">from<wbr>Callback</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_monad_future_.html#fromexcept" class="tsd-kind-icon">from<wbr>Except</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_future_.html#parallel" class="tsd-kind-icon">parallel</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_monad_future_.html#paralleln" class="tsd-kind-icon">parallelN</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_future_.html#pure-1" class="tsd-kind-icon">pure</a>
@@ -992,6 +998,12 @@ img { max-width: 100%; }
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_future_.html#raise-1" class="tsd-kind-icon">raise</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_monad_future_.html#sequential" class="tsd-kind-icon">sequential</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_monad_future_.html#topromise" class="tsd-kind-icon">to<wbr>Promise</a>
 		</li>
 	</ul>
 </nav>
@@ -1043,10 +1055,14 @@ img { max-width: 100%; }
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#delay" class="tsd-kind-icon">delay</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#fromabortable" class="tsd-kind-icon">from<wbr>Abortable</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#fromcallback" class="tsd-kind-icon">from<wbr>Callback</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#fromexcept" class="tsd-kind-icon">from<wbr>Except</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#parallel" class="tsd-kind-icon">parallel</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#paralleln" class="tsd-kind-icon">parallelN</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#pure-1" class="tsd-kind-icon">pure</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#race" class="tsd-kind-icon">race</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#raise-1" class="tsd-kind-icon">raise</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#sequential" class="tsd-kind-icon">sequential</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_future_.html#topromise" class="tsd-kind-icon">to<wbr>Promise</a></li>
 						</ul>
 					</section>
 				</div>
@@ -1060,7 +1076,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Aborter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L18">control/monad/future.ts:18</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L19">control/monad/future.ts:19</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1090,7 +1106,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Callback<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L47">control/monad/future.ts:47</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L48">control/monad/future.ts:48</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1129,7 +1145,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Callback<wbr>Receiver<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L53">control/monad/future.ts:53</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L54">control/monad/future.ts:54</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1166,7 +1182,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Error<wbr>Handler<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L25">control/monad/future.ts:25</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L26">control/monad/future.ts:26</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1203,7 +1219,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Finalizer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L32">control/monad/future.ts:32</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L33">control/monad/future.ts:33</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1234,7 +1250,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Job<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L42">control/monad/future.ts:42</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L43">control/monad/future.ts:43</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1270,7 +1286,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Node<wbr>Function<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L37">control/monad/future.ts:37</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L38">control/monad/future.ts:38</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1330,7 +1346,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">On<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L8">control/monad/future.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L9">control/monad/future.ts:9</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1366,7 +1382,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">On<wbr>Success<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L13">control/monad/future.ts:13</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L14">control/monad/future.ts:14</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1402,7 +1418,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">T<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L55">control/monad/future.ts:55</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L56">control/monad/future.ts:56</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1458,7 +1474,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L379">control/monad/future.ts:379</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L411">control/monad/future.ts:411</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1504,7 +1520,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L390">control/monad/future.ts:390</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L422">control/monad/future.ts:422</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1551,7 +1567,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L403">control/monad/future.ts:403</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L435">control/monad/future.ts:435</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1587,7 +1603,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L416">control/monad/future.ts:416</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L448">control/monad/future.ts:448</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1613,6 +1629,40 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="fromexcept" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> from<wbr>Except</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class="tsd-signature tsd-kind-icon">from<wbr>Except&lt;A&gt;<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><a href="_control_error_.html#except" class="tsd-signature-type">Except</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L571">control/monad/future.ts:571</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>fromExcept converts an Except to a Future.</p>
+							</div>
+						</div>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>A</h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>e: <a href="_control_error_.html#except" class="tsd-signature-type">Except</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 				<a name="parallel" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> parallel</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
@@ -1622,7 +1672,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L429">control/monad/future.ts:429</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L467">control/monad/future.ts:467</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1648,6 +1698,40 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="paralleln" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> parallelN</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class="tsd-signature tsd-kind-icon">parallelN&lt;A&gt;<span class="tsd-signature-symbol">(</span>list<span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L460">control/monad/future.ts:460</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>parallelN runs a list of batched Futures one batch at a time.</p>
+							</div>
+						</div>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>A</h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>list: <a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 				<a name="pure-1" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> pure</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
@@ -1657,7 +1741,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L367">control/monad/future.ts:367</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L399">control/monad/future.ts:399</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1691,7 +1775,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L465">control/monad/future.ts:465</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L531">control/monad/future.ts:531</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1720,13 +1804,13 @@ img { max-width: 100%; }
 				<a name="raise-1" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> raise</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
-					<li class="tsd-signature tsd-kind-icon">raise&lt;A&gt;<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">raise&lt;A&gt;<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><a href="../interfaces/_control_error_.err.html" class="tsd-signature-type">Err</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/monad/future.ts#L374">control/monad/future.ts:374</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L406">control/monad/future.ts:406</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1744,10 +1828,82 @@ img { max-width: 100%; }
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>e: <span class="tsd-signature-type">Error</span></h5>
+								<h5>e: <a href="../interfaces/_control_error_.err.html" class="tsd-signature-type">Err</a></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="sequential" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> sequential</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class="tsd-signature tsd-kind-icon">sequential&lt;A&gt;<span class="tsd-signature-symbol">(</span>list<span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L504">control/monad/future.ts:504</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>sequential execution of a list of futures.</p>
+							</div>
+							<p>This function succeeds with a list of all results or fails on the first
+							error.</p>
+						</div>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>A</h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>list: <a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="topromise" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> to<wbr>Promise</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class="tsd-signature tsd-kind-icon">to<wbr>Promise&lt;A&gt;<span class="tsd-signature-symbol">(</span>ft<span class="tsd-signature-symbol">: </span><a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/monad/future.ts#L565">control/monad/future.ts:565</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>toPromise transforms a Future into a Promise.</p>
+							</div>
+							<p>This function depends on the global promise constructor and
+							will fail if the enviornment does not provide one.</p>
+						</div>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>A</h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>ft: <a href="../classes/_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>

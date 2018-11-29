@@ -912,8 +912,14 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 			<a href="../interfaces/_control_error_.err.html" class="tsd-kind-icon">Err</a>
 		</li>
+		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_error_.html#except" class="tsd-kind-icon">Except</a>
+		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_error_.html#attempt" class="tsd-kind-icon">attempt</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_control_error_.html#convert" class="tsd-kind-icon">convert</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="_control_error_.html#raise" class="tsd-kind-icon">raise</a>
@@ -922,6 +928,14 @@ img { max-width: 100%; }
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-comment">
+			<div class="tsd-comment tsd-typography">
+				<div class="lead">
+					<p>This module provides functions and types to make dealing with ES errors
+					easier.</p>
+				</div>
+			</div>
+		</section>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
@@ -933,12 +947,38 @@ img { max-width: 100%; }
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
+						<h3>Type aliases</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_error_.html#except" class="tsd-kind-icon">Except</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_error_.html#attempt" class="tsd-kind-icon">attempt</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_control_error_.html#convert" class="tsd-kind-icon">convert</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_control_error_.html#raise" class="tsd-kind-icon">raise</a></li>
 						</ul>
 					</section>
+				</div>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Type aliases</h2>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="except" class="tsd-anchor"></a>
+				<h3>Except</h3>
+				<div class="tsd-signature tsd-kind-icon">Except<span class="tsd-signature-symbol">:</span> <a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_control_error_.err.html" class="tsd-signature-type">Err</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/error.ts#L14">control/error.ts:14</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Except type represents a value that may fail with an error.</p>
+					</div>
+					<p>It is a specific version of Either.</p>
 				</div>
 			</section>
 		</section>
@@ -948,13 +988,13 @@ img { max-width: 100%; }
 				<a name="attempt" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> attempt</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
-					<li class="tsd-signature tsd-kind-icon">attempt&lt;A&gt;<span class="tsd-signature-symbol">(</span>f<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">attempt&lt;A&gt;<span class="tsd-signature-symbol">(</span>f<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_control_error_.html#except" class="tsd-signature-type">Except</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/error.ts#L46">control/error.ts:46</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/error.ts#L65">control/error.ts:65</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -986,7 +1026,35 @@ img { max-width: 100%; }
 								</ul>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <a href="_control_error_.html#except" class="tsd-signature-type">Except</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="convert" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> convert</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">convert<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><a href="../interfaces/_control_error_.err.html" class="tsd-signature-type">Err</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/error.ts#L39">control/error.ts:39</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>convert an Err to an Error.</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>e: <a href="../interfaces/_control_error_.err.html" class="tsd-signature-type">Err</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Error</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -1000,7 +1068,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/78d447f/lib/control/error.ts#L29">control/error.ts:29</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/fefb362/lib/control/error.ts#L48">control/error.ts:48</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
