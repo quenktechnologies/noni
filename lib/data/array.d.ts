@@ -44,3 +44,8 @@ export declare const group: <A>(list: A[]) => (f: (a: A, i: number, r: A[]) => s
  * smaller arrays.
  */
 export declare const distribute: <A>(list: A[], size: number) => A[][];
+/**
+ * dedupe an array by filtering out elements
+ * that appear twice.
+ */
+export declare const dedupe: <A>(list: A[]) => A[];
