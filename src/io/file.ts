@@ -1,10 +1,9 @@
 import * as fs from 'fs';
+import {Stats} from 'fs';
 import { Future, pure, fromCallback } from '../control/monad/future';
 import { Maybe, just, nothing } from '../data/maybe';
 
-const Stats = fs.Stats;
-
-export { Stats };
+export {Stats};
 
 /**
  * Path to a file.
@@ -16,10 +15,10 @@ export type Path = string;
  */
 export type Contents
     = string
-    | Buffer
-    | NodeJS.TypedArray
     | DataView
+    | object
     ;
+
 
 /**
  * stat (safe) wrapper.

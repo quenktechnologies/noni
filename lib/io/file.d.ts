@@ -1,8 +1,8 @@
 /// <reference types="node" />
 import * as fs from 'fs';
+import { Stats } from 'fs';
 import { Future } from '../control/monad/future';
 import { Maybe } from '../data/maybe';
-declare const Stats: typeof fs.Stats;
 export { Stats };
 /**
  * Path to a file.
@@ -11,7 +11,7 @@ export declare type Path = string;
 /**
  * Contents of a file.
  */
-export declare type Contents = string | Buffer | NodeJS.TypedArray | DataView;
+export declare type Contents = string | DataView | object;
 /**
  * stat (safe) wrapper.
  */
