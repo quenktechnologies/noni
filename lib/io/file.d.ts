@@ -2,7 +2,6 @@
 import * as fs from 'fs';
 import { Stats } from 'fs';
 import { Future } from '../control/monad/future';
-import { Maybe } from '../data/maybe';
 export { Stats };
 /**
  * Path to a file.
@@ -19,7 +18,7 @@ export declare const stat: (path: string) => Future<fs.Stats>;
 /**
  * exists (safe) wrapper.
  */
-export declare const exists: (path: string) => Future<Maybe<string>>;
+export declare const exists: (path: string) => Future<boolean>;
 /**
  * isDirectory (safe) wrapper.
  */

@@ -1,9 +1,8 @@
 import * as fs from 'fs';
-import {Stats} from 'fs';
+import { Stats } from 'fs';
 import { Future, pure, fromCallback } from '../control/monad/future';
-import { Maybe, just, nothing } from '../data/maybe';
 
-export {Stats};
+export { Stats };
 
 /**
  * Path to a file.
@@ -29,10 +28,10 @@ export const stat = (path: Path): Future<fs.Stats> =>
 /**
  * exists (safe) wrapper.
  */
-export const exists = (path: Path): Future<Maybe<Path>> =>
+export const exists = (path: Path): Future<boolean> =>
     stat(path)
-        .map(() => just(path))
-        .catch(() => pure(nothing()));
+        .chain(() => pure(true))
+        .catch(() => pure(false));
 
 /**
  * isDirectory (safe) wrapper.
