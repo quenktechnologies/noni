@@ -2,7 +2,6 @@
 import * as fs from 'fs';
 import { Future } from '../control/monad/future';
 import { Maybe } from '../data/maybe';
-import { Either } from '../data/either';
 declare const Stats: typeof fs.Stats;
 export { Stats };
 /**
@@ -24,11 +23,11 @@ export declare const exists: (path: string) => Future<Maybe<string>>;
 /**
  * isDirectory (safe) wrapper.
  */
-export declare const isDirectory: (path: string) => Future<Either<boolean, boolean>>;
+export declare const isDirectory: (path: string) => Future<boolean>;
 /**
  * isFile (safe) wrapper.
  */
-export declare const isFile: (path: string) => Future<Either<boolean, boolean>>;
+export declare const isFile: (path: string) => Future<boolean>;
 /**
  * readdir (safe) wrapper
  */
