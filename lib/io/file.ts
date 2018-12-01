@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import { Future, pure, fromCallback } from '../control/monad/future';
 import { Maybe, just, nothing } from '../data/maybe';
-import { Either, fromBoolean } from '../data/either';
 
 const Stats = fs.Stats;
 
@@ -40,13 +39,13 @@ export const exists = (path: Path): Future<Maybe<Path>> =>
  * isDirectory (safe) wrapper.
  */
 export const isDirectory = (path: Path): Future<boolean> =>
-    stat(path)        .map(s => s.isDirectory());
+    stat(path).map(s => s.isDirectory());
 
 /**
  * isFile (safe) wrapper.
  */
 export const isFile = (path: Path): Future<boolean> =>
-    stat(path)        .map(s =>s.isFile());
+    stat(path).map(s => s.isFile());
 
 /**
  * readdir (safe) wrapper
