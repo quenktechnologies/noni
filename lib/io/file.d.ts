@@ -12,9 +12,20 @@ export declare type Path = string;
  */
 export declare type Contents = string | DataView | object;
 /**
+ * StatsM is a map of Stats where the key is the filename
+ * and the value the Stats.
+ */
+export interface StatsM {
+    [key: string]: Stats;
+}
+/**
  * stat (safe) wrapper.
  */
 export declare const stat: (path: string) => Future<fs.Stats>;
+/**
+ * statDir runs a `stat` on each file/directory found within a directory.
+ */
+export declare const statDir: (path: string) => Future<StatsM>;
 /**
  * exists (safe) wrapper.
  */
@@ -30,7 +41,7 @@ export declare const isFile: (path: string) => Future<boolean>;
 /**
  * readdir (safe) wrapper
  */
-export declare const readdir: (path: string) => Future<{}>;
+export declare const readdir: (path: string) => Future<string[]>;
 /**
  * readFile (safe) wrapper
  */
@@ -39,6 +50,16 @@ export declare const readFile: (path: string, options: string | object) => Futur
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
 export declare const readTextFile: (path: string) => Future<string>;
+/**
+ * listDirs reads a directory path and returns a list of
+ * all that are directories.
+ */
+export declare const listDirs: (path: string) => Future<string[]>;
+/**
+ * listFiles reads a directory path and returns a list of all
+ * that are files.
+ */
+export declare const listFiles: (path: string) => Future<string[]>;
 /**
  * writeFile (safe) wrapper.
  */
