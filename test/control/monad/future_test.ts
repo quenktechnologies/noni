@@ -561,6 +561,24 @@ describe('future', () => {
 
         });
 
+        it('should work with a list of raise values', () => {
+
+            let e = new Error('a');
+            let failed = false;
+
+            return liftP(parallel([raise(e), raise(e), raise(e)])
+                .catch((e: Error) => {
+
+                    if (e.message === 'a')
+                        failed = true;
+
+                    return pure(<{}[]>[]);
+
+                }))
+                .then(() => must(failed).be.true());
+
+        });
+
         it('should work with a list of failed values', () => {
 
             let failed = false;
@@ -606,8 +624,8 @@ describe('future', () => {
                     return pure(tags);
 
                 }))
-                .then((t) => {
-                    console.error('---> ', t);
+                .then(() => {
+
                     must(failed).be.true();
 
                 });
