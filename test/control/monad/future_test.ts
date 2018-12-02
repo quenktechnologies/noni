@@ -18,7 +18,7 @@ import {
     fromCallback,
     raise,
     sequential,
-    parallelN,
+    batch,
     parallel,
     toPromise as liftP,
     race
@@ -49,6 +49,29 @@ const err = (msg: string) => new Run((s: Supervisor<any>) => {
     return noop;
 
 });
+
+const errorTask = (m: string, delay: number, tags: string[]) =>
+    new Run((s: Supervisor<any>) => {
+
+        setTimeout(() => {
+            s.onError(new Error(m));
+            tags.push(m)
+        }, delay);
+
+        return noop;
+
+    });
+
+const tagTask = (tag: string, n: number, tags: string[]) =>
+    new Run((s: Supervisor<any>) => {
+
+        setTimeout(() => {
+            s.onSuccess(n);
+            tags.push(tag);
+        }, n);
+        return noop;
+
+    });
 
 describe('future', () => {
 
@@ -263,13 +286,12 @@ describe('future', () => {
     describe('attempt', () => {
 
         it('should trap errors', () =>
-
             liftP(attempt(() => { throw new Error('foo'); })
                 .chain(inc)
                 .catch((e: Error) => pure(e.message)))
                 .then((s: string) => must(s).equal('foo')));
 
-        it('should work', () =>
+        it('should work otherwise', () =>
             liftP(attempt(() => 11)
                 .chain(inc))
                 .then((n: number) => must(n).equal(12)))
@@ -278,7 +300,7 @@ describe('future', () => {
 
     describe('delay', () => {
 
-        it('should work', () =>
+        it('should delay results', () =>
             liftP(delay(() => 11)
                 .chain(inc))
                 .then((n: number) => must(n).equal(12)))
@@ -316,40 +338,27 @@ describe('future', () => {
 
     describe('sequential', () => {
 
-        let tags: string[] = [];
-
-        let task = (tag: string, n: number) =>
-            new Run((s: Supervisor<any>) => {
-
-                setTimeout(() => {
-                    s.onSuccess(n);
-                    tags.push(tag);
-                }, n);
-                return noop;
-
-            });
-
-        let err = (m: string, n: number) => new Run((s: Supervisor<any>) => {
-
-            setTimeout(() => {
-                s.onError(new Error(m));
-                tags.push(m)
-            }, n);
-            return noop;
-        });
-
         it('should fail if any fail', () => {
 
-            tags = [];
+            let tags: string[] = [];
+            let failed = false;
 
             return liftP(sequential([
-                task('a', 1000),
-                err('m', 2000),
-                err('foo', 500),
-                task('d', 200)]))
+                tagTask('a', 1000, tags),
+                errorTask('m', 2000, tags),
+                errorTask('foo', 500, tags),
+                tagTask('d', 200, tags)])
                 .catch((e: Error) => {
 
-                    must(e.message).equal('m');
+                    if (e.message === 'm')
+                        failed = true;
+
+                    return pure(tags);
+
+                }))
+                .then(() => {
+
+                    must(failed).be.true();
                     must(tags).equate(['a', 'm']);
 
                 });
@@ -358,13 +367,13 @@ describe('future', () => {
 
         it('should succeed with all results', () => {
 
-            tags = [];
+            let tags: string[] = [];
 
             return liftP(sequential([
-                task('a', 300),
-                task('b', 200),
-                task('c', 500),
-                task('d', 600)]))
+                tagTask('a', 300, tags),
+                tagTask('b', 200, tags),
+                tagTask('c', 500, tags),
+                tagTask('d', 600, tags)]))
                 .then((list: number[]) => must(list).equate([300, 200, 500, 600]))
                 .then(() => must(tags).equate(['a', 'b', 'c', 'd']));
 
@@ -386,49 +395,49 @@ describe('future', () => {
 
         it('should work with a list of failed values', () => {
 
-            return liftP(sequential([raise(new Error('1')), raise(new Error('2'))]))
-                .catch((e: Error) => must(e.message).equal('1'));
+            let failed = false;
+
+            return liftP(sequential([
+                raise(new Error('1')),
+                raise(new Error('2'))
+            ])
+                .catch((e: Error) => {
+
+                    if (e.message === '1')
+                        failed = true;
+
+                    return pure(<{}[]>[]);
+
+                }))
+                .then(() => must(failed).be.true())
 
         });
 
     });
 
-    describe('parallelN', () => {
-
-        let tags: string[] = [];
-
-        let task = (tag: string, n: number) =>
-            new Run((s: Supervisor<any>) => {
-
-                setTimeout(() => {
-                    s.onSuccess(n);
-                    tags.push(tag);
-                }, n);
-                return noop;
-
-            });
-
-        let err = (m: string, n: number) => new Run((s: Supervisor<any>) => {
-
-            setTimeout(() => {
-                s.onError(new Error(m));
-                tags.push(m)
-            }, n);
-            return noop;
-        });
+    describe('batch', () => {
 
         it('should fail if any fail', () => {
 
-            tags = [];
+            let tags: string[] = [];
+            let failed = false;
 
-            return liftP(parallelN([
-                [task('a', 1000), task('a', 2000)],
-                [err('m', 1000)],
-                [err('foo', 500)],
-                [task('d', 200)]]))
+            return liftP(batch([
+                [tagTask('a', 1000, tags), tagTask('a', 2000, tags)],
+                [errorTask('m', 1000, tags)],
+                [errorTask('foo', 500, tags)],
+                [tagTask('d', 200, tags)]])
                 .catch((e: Error) => {
 
-                    must(e.message).equal('m');
+                    if (e.message === 'm')
+                        failed = true;
+
+                    return pure([tags]);
+
+                }))
+                .then(() => {
+
+                    must(failed).be.true();
                     must(tags).equate(['a', 'a', 'm']);
 
                 });
@@ -437,13 +446,15 @@ describe('future', () => {
 
         it('should succeed with all results', () => {
 
-            tags = [];
+            let tags: string[] = [];
 
-            return liftP(parallelN([
-                [task('a', 300), task('a', 600), task('a', 100)],
-                [task('b', 200)],
-                [task('c', 300), task('c', 500)],
-                [task('d', 200), task('d', 600)]]))
+            return liftP(batch([
+                [tagTask('a', 300, tags),
+                tagTask('a', 600, tags),
+                tagTask('a', 100, tags)],
+                [tagTask('b', 200, tags)],
+                [tagTask('c', 300, tags), tagTask('c', 500, tags)],
+                [tagTask('d', 200, tags), tagTask('d', 600, tags)]]))
                 .then((list: number[][]) =>
                     must(list)
                         .equate([
@@ -460,22 +471,38 @@ describe('future', () => {
 
         it('should work when the list is empty', () => {
 
-            return liftP(parallelN([]))
+            return liftP(batch([]))
                 .then((list: any[]) => must(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
-            return liftP(parallelN([[pure(1), pure(2)], [pure(3)]]))
+            return liftP(batch([[pure(1), pure(2)], [pure(3)]]))
                 .then((list: number[][]) => must(list).equate([[1, 2], [3]]));
 
         });
 
         it('should work with a list of failed values', () => {
 
-            return liftP(sequential([raise(new Error('1')), raise(new Error('2'))]))
-                .catch((e: Error) => must(e.message).equal('1'));
+            let failed = false;
+
+            return liftP(sequential([
+                raise(new Error('1')),
+                raise(new Error('2'))])
+                .catch((e: Error) => {
+
+                    if (e.message === '1')
+                        failed = true;
+
+                    return pure(<any[]>[]);
+
+                }))
+                .then(() => {
+
+                    must(failed).be.true();
+
+                });
 
         });
 
@@ -485,36 +512,38 @@ describe('future', () => {
 
         it('should fail if any fail', () => {
 
-            let task = (n: number) => new Run((s: Supervisor<any>) => {
+            let failed = false;
+            let tags: string[] = [];
 
-                setTimeout(() => s.onSuccess(n), n);
-                return noop;
+            let tasks = [
+                tagTask('a', 1000, tags),
+                errorTask('m', 2000, tags),
+                errorTask('foo', 500, tags),
+                tagTask('bar', 200, tags)];
 
-            })
-
-            let err = (m: string, n: number) => new Run((s: Supervisor<any>) => {
-
-                setTimeout(() => s.onError(new Error(m)), n);
-                return noop;
-
-            })
-
-            return liftP(race([task(1000), err('m', 2000), err('foo', 500), task(200)]))
-                .catch((e: Error) => must(e.message).equal('foo'));
+            return liftP(parallel(tasks)
+                .catch((e: Error) => {
+                    if (e.message === 'foo')
+                        failed = true;
+                    return pure(<{}[]>[])
+                }))
+                .then(() => must(failed).equal(true));
 
         });
 
         it('should succeed with all results', () => {
 
-            let task = (n: number) => new Run((s: Supervisor<any>) => {
+            let tags: string[] = [];
 
-                setTimeout(() => s.onSuccess(n), n);
-                return noop;
-
-            })
-
-            return liftP(parallel([task(300), task(200), task(500), task(600)]))
-                .then((list: number[]) => must(list).equate([300, 200, 500, 600]));
+            return liftP(parallel([
+                tagTask('a', 300, tags),
+                tagTask('b', 200, tags),
+                tagTask('c', 500, tags),
+                tagTask('d', 300, tags),
+                tagTask('e', 600, tags)
+            ]))
+                .then((list: number[]) =>
+                    must(list).equate([300, 200, 500, 300, 600]));
 
         });
 
@@ -534,8 +563,23 @@ describe('future', () => {
 
         it('should work with a list of failed values', () => {
 
-            return liftP(parallel([raise(new Error('1')), raise(new Error('2'))]))
-                .catch((e: Error) => must(e.message).equal('1'));
+            let failed = false;
+
+            return liftP(
+                parallel([raise(new Error('1')), raise(new Error('2'))])
+                    .catch((e: Error) => {
+
+                        if (e.message === '1')
+                            failed = true;
+
+                        return pure(<any[]>[]);
+
+                    }))
+                .then(() => {
+
+                    must(failed).be.true();
+
+                });
 
         });
 
@@ -545,28 +589,39 @@ describe('future', () => {
 
         it('should fail on the first error', () => {
 
-            let task = (n: number) => new Run((s: Supervisor<any>) => {
+            let tags: string[] = [];
+            let failed = false;
 
-                setTimeout(() => s.onError(new Error(String(n))), n);
-                return noop;
+            return liftP(race([
+                tagTask('a', 1000, tags),
+                tagTask('b', 2000, tags),
+                errorTask('c', 100, tags),
+                tagTask('d', 200, tags),
+                tagTask('e', 800, tags)])
+                .catch((e: Error) => {
 
-            });
+                    if (e.message === '200')
+                        failed = true;
 
-            return liftP(race([task(1000), task(2000), task(500), task(200), task(800)]))
-                .catch((e: Error) => must(e.message).equal('200'))
+                    return pure(tags);
 
-        })
+                }))
+                .then(() => {
+
+                    must(failed).be.true();
+
+                });
+
+        });
 
         it('should succeed with the first successfull value', () => {
 
-            let task = (n: number) => new Run((s: Supervisor<any>) => {
-
-                setTimeout(() => s.onSuccess(n), n);
-                return noop;
-
-            });
-
-            return liftP(race([task(1000), task(2000), task(500), task(200), task(800)]))
+            return liftP(race([
+                tagTask('a', 1000, []),
+                tagTask('b', 2000, []),
+                tagTask('c', 500, []),
+                tagTask('d', 200, []),
+                tagTask('e', 800, [])]))
                 .then((n: number) => must(n).equal(200))
 
         });
@@ -575,7 +630,8 @@ describe('future', () => {
 
             return liftP(race([]))
                 .then(() => { throw new Error('bleh'); })
-                .catch((e: Error) => must(e.message).equal('race(): Cannot race an empty list!'));
+                .catch((e: Error) =>
+                    must(e.message).equal('race(): Cannot race an empty list!'));
 
         });
 
@@ -588,8 +644,25 @@ describe('future', () => {
 
         it('should work with a list of failed values', () => {
 
-            return liftP(race([raise(new Error('1')), raise(new Error('2'))]))
-                .catch((e: Error) => must(e.message).equal('1'));
+            let failed = false;
+
+            return liftP(race([
+                raise(new Error('1')),
+                raise(new Error('2'))
+            ])
+                .catch((e: Error) => {
+
+                    if (e.message === '1')
+                        failed = true;
+
+                    return pure(<any>[]);
+
+                }))
+                .then(() => {
+
+                    must(failed).be.true();
+
+                });
 
         });
 

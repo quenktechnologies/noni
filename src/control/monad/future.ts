@@ -455,9 +455,9 @@ class Tag<A> {
 }
 
 /**
- * parallelN runs a list of batched Futures one batch at a time.
+ * batch runs a list of batched Futures one batch at a time.
  */
-export const parallelN = <A>(list: Future<A>[][]) =>
+export const batch = <A>(list: Future<A>[][]) =>
     sequential(list.map(w => parallel(w)));
 
 /**
@@ -468,30 +468,47 @@ export const parallel = <A>(list: Future<A>[])
     : Future<A[]> => new Run((s: Supervisor<A[]>) => {
 
         let done: Tag<A>[] = [];
+        let failed = false;
+        let comps: Compute<Tag<A>>[] = [];
 
-        let comps =
-            list.reduce((p: Compute<Tag<A>>[], f: Future<A>, index: number) => {
+        let reconcile = () => done.sort(indexCmp).map(t => t.value);
 
-                p.push(f
-                    .map((value: A) => new Tag(index, value))
-                    .fork(e => { abortAll(p); s.onError(e); },
-                        t => {
+        let indexCmp = <A>(a: Tag<A>, b: Tag<A>) => a.index - b.index;
 
-                            done.push(t);
+        let onErr = (e: Error) => {
 
-                            if (done.length === list.length)
-                                s.onSuccess(done.sort((a, b) => a.index - b.index)
-                                    .map(t => t.value));
+            abortAll();
+            s.onError(e);
 
-                        }));
+        };
 
-                return p;
-            }, []);
+        let onSucc = (t: Tag<A>) => {
+
+            if (!failed) {
+
+                done.push(t);
+
+                if (done.length === list.length)
+                    s.onSuccess(reconcile());
+
+            }
+
+        };
+
+        let abortAll = () => {
+
+            comps.map(c => c.abort());
+            failed = true;
+
+        };
+
+        comps.push.apply(comps, list.map((f, i) =>
+            f.map((value: A) => new Tag(i, value)).fork(onErr, onSucc)));
 
         if (comps.length === 0)
             s.onSuccess([]);
 
-        return () => { abortAll(comps) };
+        return () => abortAll();
 
     });
 
@@ -531,30 +548,44 @@ export const sequential = <A>(list: Future<A>[]): Future<A[]> => new Run(s => {
 export const race = <A>(list: Future<A>[])
     : Future<A> => new Run((s: Supervisor<A>) => {
 
-        let comps =
-            list
-                .reduce((p: Compute<Tag<A>>[], f: Future<A>, index: number) => {
+        let comps: Compute<Tag<A>>[] = [];
+        let finished = false;
 
-                    p.push(f
-                        .map((value: A) => new Tag(index, value))
-                        .fork(e => { abortAll(p); s.onError(e); },
-                            t => { abortExcept(p, t.index); s.onSuccess(t.value); }));
+        let abortAll = () => {
 
-                    return p;
+            finished = true;
+            comps.map(c => c.abort());
 
-                }, []);
+        };
+
+        let onErr = (e: Error) => {
+
+            abortAll();
+            s.onError(e);
+
+        };
+
+        let onSucc = (t: Tag<A>) => {
+
+            if (!finished) {
+
+                finished = true;
+                comps.map((c, i) => (i !== t.index) ? c.abort() : undefined);
+                s.onSuccess(t.value);
+
+            }
+
+        };
+
+        comps.push.apply(comps, list.map((f, i) =>
+            f.map((value: A) => new Tag(i, value)).fork(onErr, onSucc)));
 
         if (comps.length === 0)
             s.onError(new Error(`race(): Cannot race an empty list!`));
 
-        return () => { abortAll(comps); }
+        return () =>  abortAll(); 
 
     });
-
-const abortAll = <A>(comps: Compute<A>[]) => tick(() => comps.map(c => c.abort()));
-
-const abortExcept = <A>(comps: Compute<A>[], index: number) =>
-    tick(() => comps.map((c, i) => (i !== index) ? c.abort() : undefined));
 
 /**
  * toPromise transforms a Future into a Promise.
