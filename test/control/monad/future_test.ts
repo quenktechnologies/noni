@@ -596,18 +596,18 @@ describe('future', () => {
                 tagTask('a', 1000, tags),
                 tagTask('b', 2000, tags),
                 errorTask('c', 100, tags),
-                tagTask('d', 200, tags),
+                tagTask('d', 500, tags),
                 tagTask('e', 800, tags)])
                 .catch((e: Error) => {
 
-                    if (e.message === '200')
+                    if (e.message === 'c')
                         failed = true;
 
                     return pure(tags);
 
                 }))
-                .then(() => {
-
+                .then((t) => {
+                    console.error('---> ', t);
                     must(failed).be.true();
 
                 });
