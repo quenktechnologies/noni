@@ -110,11 +110,11 @@ export const listFiles = (path: Path): Future<string[]> =>
  * writeFile (safe) wrapper.
  */
 export const writeFile = (path: Path, contents: Contents, options: string | object)
-    : Future<Contents> =>
+    : Future<void> =>
     fromCallback(cb => fs.writeFile(path, contents, options, cb));
 
 /**
  * writeTextFile writes the passed contents to a a file location.
  */
-export const writeTextFile = (path: Path, contents: string) =>
+export const writeTextFile = (path: Path, contents: string) : Future<void> =>
     writeFile(path, contents, 'utf8');

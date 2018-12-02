@@ -63,8 +63,8 @@ export declare const listFiles: (path: string) => Future<string[]>;
 /**
  * writeFile (safe) wrapper.
  */
-export declare const writeFile: (path: string, contents: Contents, options: string | object) => Future<Contents>;
+export declare const writeFile: (path: string, contents: Contents, options: string | object) => Future<void>;
 /**
  * writeTextFile writes the passed contents to a a file location.
  */
-export declare const writeTextFile: (path: string, contents: string) => Future<Contents>;
+export declare const writeTextFile: (path: string, contents: string) => Future<void>;
