@@ -216,9 +216,9 @@ export declare const fromAbortable: <A>(abort: Aborter) => (f: CallbackReceiver<
  */
 export declare const fromCallback: <A>(f: CallbackReceiver<A>) => Future<A>;
 /**
- * parallelN runs a list of batched Futures one batch at a time.
+ * batch runs a list of batched Futures one batch at a time.
  */
-export declare const parallelN: <A>(list: Future<A>[][]) => Future<A[][]>;
+export declare const batch: <A>(list: Future<A>[][]) => Future<A[][]>;
 /**
  * parallel runs a list of Futures in parallel failing if any
  * fail and succeeding with a list of successful values.
