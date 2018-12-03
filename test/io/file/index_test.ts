@@ -5,12 +5,15 @@ import {
     writeTextFile,
     statDir,
     listDirs,
-    listFiles
+  listFiles,
+  isFile,
+  isDirectory
 } from '../../../src/io/file';
 
 const ABOUT = 'This is a flag🇹.\n';
 const FIXTURES = `${__dirname}/fixtures`;
 const ABOUT_FILE = `${FIXTURES}/about`;
+const RANDOM_FILE = '/sdkhr34038hkc';
 
 describe('file', () => {
 
@@ -54,6 +57,22 @@ describe('file', () => {
             toPromise(listFiles(FIXTURES)
                 .map(l => must(l.sort()).equate(['about']))));
 
+    });
+
+  describe('isFile', () => {
+
+      it('should not fail if the file does not exist', () => 
+        toPromise(isFile(RANDOM_FILE)
+          .map(()=> must(true).equal(true))));
+        
+      });
+
+    describe('isDirectory', () => {
+
+      it('should not fail if the directory does not exist', () => 
+        toPromise(isDirectory(RANDOM_FILE)
+          .map(()=> must(true).equal(true))));
+          
     });
 
 });
