@@ -5,9 +5,9 @@ import {
     writeTextFile,
     statDir,
     listDirs,
-  listFiles,
-  isFile,
-  isDirectory
+    listFiles,
+    isFile,
+    isDirectory
 } from '../../../src/io/file';
 
 const ABOUT = 'This is a flag🇹.\n';
@@ -59,20 +59,20 @@ describe('file', () => {
 
     });
 
-  describe('isFile', () => {
+    describe('isFile', () => {
 
-      it('should not fail if the file does not exist', () => 
-        toPromise(isFile(RANDOM_FILE)
-          .map(()=> must(true).equal(true))));
-        
-      });
+        it('should not fail if the file does not exist', () =>
+            toPromise(isFile(RANDOM_FILE)
+                .map(yes => must(yes).be.false())));
 
-    describe('isDirectory', () => {
+});
 
-      it('should not fail if the directory does not exist', () => 
+describe('isDirectory', () => {
+
+    it('should not fail if the directory does not exist', () =>
         toPromise(isDirectory(RANDOM_FILE)
-          .map(()=> must(true).equal(true))));
-          
-    });
+            .map(yes => must(yes).be.false())));
+
+});
 
 });
