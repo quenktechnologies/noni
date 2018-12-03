@@ -1,11 +1,14 @@
 import { must } from '@quenk/must';
+import { isAbsolute } from 'path';
 import { toPromise } from '../../../src/control/monad/future';
 import {
     readTextFile,
     writeTextFile,
-    statDir,
-    listDirs,
-    listFiles,
+    list,
+    listD,
+    listDA,
+    listF,
+    listFA,
     isFile,
     isDirectory
 } from '../../../src/io/file';
@@ -34,28 +37,46 @@ describe('file', () => {
 
     });
 
-    describe('statDir', () => {
+    describe('list', () => {
 
         it('should stat all the directories in a directory', () =>
-            toPromise(statDir(FIXTURES)
+            toPromise(list(FIXTURES)
                 .map(d => must(Object.keys(d).sort())
                     .equate(['about', 'dira', 'dirb', 'dirc']))));
 
     });
 
-    describe('listDirs', () => {
+    describe('listD', () => {
 
         it('should list all the directories in a directory', () =>
-            toPromise(listDirs(FIXTURES)
+            toPromise(listD(FIXTURES)
                 .map(l => must(l.sort()).equate(['dira', 'dirb', 'dirc']))));
 
     });
 
-    describe('listFiles', () => {
+    describe('listDA', () => {
+
+        it('should list all the directories in a directory absolutely', () =>
+            toPromise(listDA(FIXTURES)
+                .map(l => must(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
+                    .true())))
+
+    });
+
+    describe('listF', () => {
 
         it('should list all files in a directory', () =>
-            toPromise(listFiles(FIXTURES)
+            toPromise(listF(FIXTURES)
                 .map(l => must(l.sort()).equate(['about']))));
+
+    });
+
+    describe('listFA', () => {
+
+        it('should list all files in a directory absolutely', () =>
+            toPromise(listFA(FIXTURES)
+                .map(l => must(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
+                    .true())))
 
     });
 
@@ -65,14 +86,14 @@ describe('file', () => {
             toPromise(isFile(RANDOM_FILE)
                 .map(yes => must(yes).be.false())));
 
-});
+    });
 
-describe('isDirectory', () => {
+    describe('isDirectory', () => {
 
-    it('should not fail if the directory does not exist', () =>
-        toPromise(isDirectory(RANDOM_FILE)
-            .map(yes => must(yes).be.false())));
+        it('should not fail if the directory does not exist', () =>
+            toPromise(isDirectory(RANDOM_FILE)
+                .map(yes => must(yes).be.false())));
 
-});
+    });
 
 });
