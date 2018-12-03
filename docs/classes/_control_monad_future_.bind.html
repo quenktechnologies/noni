@@ -921,6 +921,12 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="_control_monad_future_.bind.html#future" class="tsd-kind-icon">future</a>
 				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a href="_control_monad_future_.bind.html#__exec" class="tsd-kind-icon">__exec</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-private">
+					<a href="_control_monad_future_.bind.html#__trap" class="tsd-kind-icon">__trap</a>
+				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 					<a href="_control_monad_future_.bind.html#ap" class="tsd-kind-icon">ap</a>
 				</li>
@@ -929,9 +935,6 @@ img { max-width: 100%; }
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 					<a href="_control_monad_future_.bind.html#chain" class="tsd-kind-icon">chain</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-					<a href="_control_monad_future_.bind.html#exec" class="tsd-kind-icon">exec</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a href="_control_monad_future_.bind.html#finally" class="tsd-kind-icon">finally</a>
@@ -971,6 +974,9 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-private">
 			<a href="_control_monad_future_.step.html" class="tsd-kind-icon">Step</a>
 		</li>
+		<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-private">
+			<a href="_control_monad_future_.trap.html" class="tsd-kind-icon">Trap</a>
+		</li>
 		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="../interfaces/_control_monad_future_.supervisor.html" class="tsd-kind-icon">Supervisor</a>
 		</li>
@@ -1008,6 +1014,9 @@ img { max-width: 100%; }
 			<a href="../modules/_control_monad_future_.html#attempt" class="tsd-kind-icon">attempt</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="../modules/_control_monad_future_.html#batch" class="tsd-kind-icon">batch</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="../modules/_control_monad_future_.html#delay" class="tsd-kind-icon">delay</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
@@ -1021,9 +1030,6 @@ img { max-width: 100%; }
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="../modules/_control_monad_future_.html#parallel" class="tsd-kind-icon">parallel</a>
-		</li>
-		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
-			<a href="../modules/_control_monad_future_.html#paralleln" class="tsd-kind-icon">parallelN</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="../modules/_control_monad_future_.html#pure-1" class="tsd-kind-icon">pure</a>
@@ -1101,10 +1107,11 @@ img { max-width: 100%; }
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_control_monad_future_.bind.html#__exec" class="tsd-kind-icon">__exec</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-private"><a href="_control_monad_future_.bind.html#__trap" class="tsd-kind-icon">__trap</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="_control_monad_future_.bind.html#ap" class="tsd-kind-icon">ap</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_control_monad_future_.bind.html#catch" class="tsd-kind-icon">catch</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="_control_monad_future_.bind.html#chain" class="tsd-kind-icon">chain</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_control_monad_future_.bind.html#exec" class="tsd-kind-icon">exec</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_control_monad_future_.bind.html#finally" class="tsd-kind-icon">finally</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_control_monad_future_.bind.html#fork" class="tsd-kind-icon">fork</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="_control_monad_future_.bind.html#map" class="tsd-kind-icon">map</a></li>
@@ -1126,7 +1133,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L145">control/monad/future.ts:145</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L155">control/monad/future.ts:155</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1169,7 +1176,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">func<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L149">control/monad/future.ts:149</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L159">control/monad/future.ts:159</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1200,13 +1207,69 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">future<span class="tsd-signature-symbol">:</span> <a href="_control_monad_future_.future.html" class="tsd-signature-type">Future</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L148">control/monad/future.ts:148</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L158">control/monad/future.ts:158</a></li>
 					</ul>
 				</aside>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+				<a name="__exec" class="tsd-anchor"></a>
+				<h3>__exec</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<li class="tsd-signature tsd-kind-icon">__exec<span class="tsd-signature-symbol">(</span>c<span class="tsd-signature-symbol">: </span><a href="_control_monad_future_.compute.html" class="tsd-signature-type">Compute</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">B</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Overrides <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#__exec">__exec</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L162">control/monad/future.ts:162</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>c: <a href="_control_monad_future_.compute.html" class="tsd-signature-type">Compute</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">B</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-private">
+				<a name="__trap" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagPrivate">Private</span> __trap</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-private">
+					<li class="tsd-signature tsd-kind-icon">__trap<span class="tsd-signature-symbol">(</span>_<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span>, __<span class="tsd-signature-symbol">: </span><a href="_control_monad_future_.compute.html" class="tsd-signature-type">Compute</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">B</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#__trap">__trap</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L114">control/monad/future.ts:114</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>__trap</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>_: <span class="tsd-signature-type">Error</span></h5>
+							</li>
+							<li>
+								<h5>__: <a href="_control_monad_future_.compute.html" class="tsd-signature-type">Compute</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">B</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 				<a name="ap" class="tsd-anchor"></a>
 				<h3>ap</h3>
@@ -1218,7 +1281,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#ap">ap</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L72">control/monad/future.ts:72</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L72">control/monad/future.ts:72</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1248,7 +1311,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#catch">catch</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L84">control/monad/future.ts:84</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L84">control/monad/future.ts:84</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1290,7 +1353,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#chain">chain</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L78">control/monad/future.ts:78</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L78">control/monad/future.ts:78</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1327,30 +1390,6 @@ img { max-width: 100%; }
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-				<a name="exec" class="tsd-anchor"></a>
-				<h3>exec</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-					<li class="tsd-signature tsd-kind-icon">exec<span class="tsd-signature-symbol">(</span>c<span class="tsd-signature-symbol">: </span><a href="_control_monad_future_.compute.html" class="tsd-signature-type">Compute</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">B</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<p>Overrides <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#exec">exec</a></p>
-							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L152">control/monad/future.ts:152</a></li>
-							</ul>
-						</aside>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>c: <a href="_control_monad_future_.compute.html" class="tsd-signature-type">Compute</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">B</span><span class="tsd-signature-symbol">&gt;</span></h5>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 				<a name="finally" class="tsd-anchor"></a>
 				<h3>finally</h3>
@@ -1362,7 +1401,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#finally">finally</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L90">control/monad/future.ts:90</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L90">control/monad/future.ts:90</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1398,7 +1437,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#fork">fork</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L96">control/monad/future.ts:96</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L96">control/monad/future.ts:96</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1425,7 +1464,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#map">map</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L66">control/monad/future.ts:66</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L66">control/monad/future.ts:66</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1474,7 +1513,7 @@ img { max-width: 100%; }
 							<p>Implementation of <a href="../interfaces/_control_monad_index_.monad.html">Monad</a>.<a href="../interfaces/_control_monad_index_.monad.html#of">of</a></p>
 							<p>Inherited from <a href="_control_monad_future_.future.html">Future</a>.<a href="_control_monad_future_.future.html#of">of</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/a57157d/lib/control/monad/future.ts#L60">control/monad/future.ts:60</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5282a33/lib/control/monad/future.ts#L60">control/monad/future.ts:60</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
