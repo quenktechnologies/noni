@@ -62,13 +62,19 @@ export const exists = (path: Path): Future<boolean> =>
  * isDirectory (safe) wrapper.
  */
 export const isDirectory = (path: Path): Future<boolean> =>
-    stat(path).map(s => s.isDirectory());
+    exists(path)
+        .chain(yes => yes ?
+            stat(path).map(s => s.isDirectory()) :
+            pure(false));
 
 /**
  * isFile (safe) wrapper.
  */
 export const isFile = (path: Path): Future<boolean> =>
-    stat(path).map(s => s.isFile());
+    exists(path)
+    .chain(yes => yes ?
+      stat(path)  .map(s => s.isFile()) :
+      pure(false));
 
 /**
  * readdir (safe) wrapper
@@ -116,5 +122,5 @@ export const writeFile = (path: Path, contents: Contents, options: string | obje
 /**
  * writeTextFile writes the passed contents to a a file location.
  */
-export const writeTextFile = (path: Path, contents: string) : Future<void> =>
+export const writeTextFile = (path: Path, contents: string): Future<void> =>
     writeFile(path, contents, 'utf8');
