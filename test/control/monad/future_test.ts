@@ -186,6 +186,20 @@ describe('future', () => {
                     .catch((e: Error) => pure(must(e.message).equal('foo')))
                     .catch((e: Error) => pure(must(e).equal('foo')))));
 
+          it('should not swallow further errors', cb => {
+
+                liftP(inc(0)
+                    .chain(inc)
+                    .chain(() => err('first'))
+                    .catch((_: Error) => inc(0))
+                    .chain(() => err('second')))
+                    .catch(e => {
+
+                        must(e.message).be.equal('second');
+                        cb();
+
+                    })});
+
         });
 
         describe('finally', () => {
