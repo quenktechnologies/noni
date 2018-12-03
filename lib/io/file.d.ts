@@ -23,10 +23,6 @@ export interface StatsM {
  */
 export declare const stat: (path: string) => Future<fs.Stats>;
 /**
- * statDir runs a `stat` on each file/directory found within a directory.
- */
-export declare const statDir: (path: string) => Future<StatsM>;
-/**
  * exists (safe) wrapper.
  */
 export declare const exists: (path: string) => Future<boolean>;
@@ -51,15 +47,27 @@ export declare const readFile: (path: string, options: string | object) => Futur
  */
 export declare const readTextFile: (path: string) => Future<string>;
 /**
- * listDirs reads a directory path and returns a list of
+ * list runs a `stat` on each file/directory found within a directory.
+ */
+export declare const list: (path: string) => Future<StatsM>;
+/**
+ * listD reads a directory path and returns a list of
  * all that are directories.
  */
-export declare const listDirs: (path: string) => Future<string[]>;
+export declare const listD: (path: string) => Future<string[]>;
 /**
- * listFiles reads a directory path and returns a list of all
+ * listDA is like listD but provides the absolute path of each directory.
+ */
+export declare const listDA: (path: string) => Future<string[]>;
+/**
+ * listF reads a directory path and returns a list of all
  * that are files.
  */
-export declare const listFiles: (path: string) => Future<string[]>;
+export declare const listF: (path: string) => Future<string[]>;
+/**
+ * listFA is like listF but provides the absoulte path of each file.
+ */
+export declare const listFA: (path: string) => Future<string[]>;
 /**
  * writeFile (safe) wrapper.
  */

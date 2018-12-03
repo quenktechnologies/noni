@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { Stats } from 'fs';
+import { join } from 'path';
 import { Future, pure, parallel, fromCallback } from '../control/monad/future';
 import { reduce } from '../data/record';
 
@@ -36,21 +37,6 @@ export const stat = (path: Path): Future<fs.Stats> =>
     fromCallback(cb => fs.stat(path, cb));
 
 /**
- * statDir runs a `stat` on each file/directory found within a directory. 
- */
-export const statDir = (path: Path): Future<StatsM> =>
-    readdir(path)
-        .chain(list =>
-            parallel(list.map(l => stat(`${path}/${l}`)))
-                .map(stats => stats.reduce((p, c, i) => {
-
-                    p[list[i]] = c;
-
-                    return p;
-
-                }, <StatsM>{})));
-
-/**
  * exists (safe) wrapper.
  */
 export const exists = (path: Path): Future<boolean> =>
@@ -72,9 +58,9 @@ export const isDirectory = (path: Path): Future<boolean> =>
  */
 export const isFile = (path: Path): Future<boolean> =>
     exists(path)
-    .chain(yes => yes ?
-      stat(path)  .map(s => s.isFile()) :
-      pure(false));
+        .chain(yes => yes ?
+            stat(path).map(s => s.isFile()) :
+            pure(false));
 
 /**
  * readdir (safe) wrapper
@@ -95,22 +81,52 @@ export const readTextFile = (path: Path): Future<string> =>
     <Future<string>>readFile(path, 'utf8');
 
 /**
- * listDirs reads a directory path and returns a list of 
+ * list runs a `stat` on each file/directory found within a directory. 
+ */
+export const list = (path: Path): Future<StatsM> =>
+    readdir(path)
+        .chain(list =>
+            parallel(list.map(l => stat(`${path}/${l}`)))
+                .map(stats => stats.reduce((p, c, i) => {
+
+                    p[list[i]] = c;
+
+                    return p;
+
+                }, <StatsM>{})));
+
+/**
+ * listD reads a directory path and returns a list of 
  * all that are directories.
  */
-export const listDirs = (path: Path): Future<string[]> =>
-    statDir(path)
+export const listD = (path: Path): Future<string[]> =>
+    list(path)
         .map(stats => reduce(stats, [], (p: string[], c, k) =>
             c.isDirectory() ? p.concat(k) : p));
 
 /**
- * listFiles reads a directory path and returns a list of all
+ * listDA is like listD but provides the absolute path of each directory.
+ */
+export const listDA = (path: Path): Future<Path[]> =>
+    listD(path).map(n => n.map(expand(path)));
+
+/**
+ * listF reads a directory path and returns a list of all
  * that are files.
  */
-export const listFiles = (path: Path): Future<string[]> =>
-    statDir(path)
+export const listF = (path: Path): Future<string[]> =>
+    list(path)
         .map(stats => reduce(stats, [], (p: string[], c, k) =>
             c.isFile() ? p.concat(k) : p));
+
+/**
+ * listFA is like listF but provides the absoulte path of each file.
+ */
+export const listFA = (path: Path): Future<string[]> =>
+    listF(path).map(n => n.map(expand(path)));
+
+const expand = (path: Path) => (name: string): Path =>
+    join(path, name);
 
 /**
  * writeFile (safe) wrapper.
