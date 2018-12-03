@@ -95,17 +95,27 @@ export abstract class Future<A> implements Monad<A> {
 
     fork(onError: OnError, onSuccess: OnSuccess<A>): Compute<A> {
 
-        let c = new Compute(<any>undefined, onError, onSuccess, [this], [], []);
+        let c = new Compute(<any>undefined, onError, onSuccess, [this]);
         c.run();
         return c;
 
     }
 
     /**
-     * exec
+     * __exec
      * @private
      */
-    abstract exec(c: Compute<A>): boolean;
+    abstract __exec(c: Compute<A>): boolean;
+
+    /**
+     * __trap
+     * @private
+     */
+    __trap(_: Error, __: Compute<A>): boolean {
+
+        return false;
+
+    }
 
 }
 
@@ -128,7 +138,7 @@ export class Pure<A> extends Future<A> {
 
     }
 
-    exec(c: Compute<A>): boolean {
+    __exec(c: Compute<A>): boolean {
 
         c.value = this.value;
         tick(() => c.run());
@@ -149,7 +159,7 @@ export class Bind<A, B> extends Future<B> {
         public func: (a: A) => Future<B>) { super(); }
 
 
-    exec(c: Compute<B>): boolean {
+    __exec(c: Compute<B>): boolean {
 
         //XXX: find a way to do this without any someday.
         c.stack.push(new Step(<any>this.func));
@@ -168,7 +178,7 @@ export class Step<A> extends Future<A> {
 
     constructor(public value: (a: A) => Future<A>) { super(); }
 
-    exec(c: Compute<A>): boolean {
+    __exec(c: Compute<A>): boolean {
 
         c.stack.push(this.value(c.value));
         return true;
@@ -187,9 +197,9 @@ export class Catch<A> extends Future<A> {
         public future: Future<A>,
         public func: (e: Error) => Future<A>) { super(); }
 
-    exec(c: Compute<A>): boolean {
+    __exec(c: Compute<A>): boolean {
 
-        c.handlers.push(this.func);
+        c.stack.push(new Trap(this.func));
         c.stack.push(this.future);
         return true;
 
@@ -207,11 +217,35 @@ export class Finally<A> extends Future<A> {
         public future: Future<A>,
         public func: () => Future<A>) { super(); }
 
-    exec(c: Compute<A>): boolean {
+    __exec(c: Compute<A>): boolean {
 
-        c.finalizers.push(this.func);
+        c.stack.push(new Trap(this.func));
         c.stack.push(new Step(this.func));
         c.stack.push(this.future);
+        return true;
+
+    }
+
+}
+
+/**
+ * Trap constructor.
+ * @private
+ */
+export class Trap<A> extends Future<A> {
+
+    constructor(
+        public func: (e: Error) => Future<A>) { super(); }
+
+    __exec(_: Compute<A>): boolean {
+
+        return true;
+
+    }
+
+    __trap(e: Error, c: Compute<A>): boolean {
+
+        c.stack.push(this.func(e));
         return true;
 
     }
@@ -243,24 +277,27 @@ export class Raise<A> extends Future<A> {
 
     }
 
-    exec(c: Compute<A>): boolean {
+    __exec(c: Compute<A>): boolean {
 
-        c.stack = []; //clear the stack;
+        let finished = false;
+        let e = convert(this.value);
 
-        if (c.finalizers.length > 0)
-            c.stack.push(new Step(<Finalizer<A>>c.finalizers.pop()));
+        while (!finished) {
 
-        if (c.handlers.length > 0)
-            c.stack.push(
-                (<ErrorHandler<A>>c.handlers.pop())(convert(this.value))
-            );
+            if (c.stack.length === 0) {
 
-        if (c.stack.length === 0) {
-            c.exitError(convert(this.value)); //end on unhandled error
-            return false;
+                c.exitError(e);
+                return false;
+
+            } else {
+
+                finished = (<Future<A>>c.stack.pop()).__trap(e, c);
+
+            }
+
         }
 
-        return true;
+        return finished;
 
     }
 
@@ -274,7 +311,7 @@ export class Run<A> extends Future<A> {
 
     constructor(public value: Job<A>) { super(); }
 
-    exec(c: Compute<A>): boolean {
+    __exec(c: Compute<A>): boolean {
 
         c.running = true;
         c.canceller = this.value(c);
@@ -324,9 +361,7 @@ export class Compute<A> implements Supervisor<A> {
         public value: A,
         public exitError: OnError,
         public exitSuccess: OnSuccess<A>,
-        public stack: Future<A>[],
-        public handlers: ErrorHandler<A>[],
-        public finalizers: Finalizer<A>[]) { }
+        public stack: Future<A>[]) { }
 
     /**
      * onError handler.
@@ -382,7 +417,7 @@ export class Compute<A> implements Supervisor<A> {
 
             let next = <Future<A>>this.stack.pop();
 
-            if (!next.exec(this)) return; // short-circuit
+            if (!next.__exec(this)) return; // short-circuit
 
         }
 
@@ -583,7 +618,7 @@ export const race = <A>(list: Future<A>[])
         if (comps.length === 0)
             s.onError(new Error(`race(): Cannot race an empty list!`));
 
-        return () =>  abortAll(); 
+        return () => abortAll();
 
     });
 
