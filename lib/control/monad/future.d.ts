@@ -51,10 +51,15 @@ export declare abstract class Future<A> implements Monad<A> {
     finally(f: () => Future<A>): Future<A>;
     fork(onError: OnError, onSuccess: OnSuccess<A>): Compute<A>;
     /**
-     * exec
+     * __exec
      * @private
      */
-    abstract exec(c: Compute<A>): boolean;
+    abstract __exec(c: Compute<A>): boolean;
+    /**
+     * __trap
+     * @private
+     */
+    __trap(_: Error, __: Compute<A>): boolean;
 }
 /**
  * Pure constructor.
@@ -64,7 +69,7 @@ export declare class Pure<A> extends Future<A> {
     constructor(value: A);
     map<B>(f: (a: A) => B): Future<B>;
     ap<B>(ft: Future<(a: A) => B>): Future<B>;
-    exec(c: Compute<A>): boolean;
+    __exec(c: Compute<A>): boolean;
 }
 /**
  * Bind constructor.
@@ -74,7 +79,7 @@ export declare class Bind<A, B> extends Future<B> {
     future: Future<A>;
     func: (a: A) => Future<B>;
     constructor(future: Future<A>, func: (a: A) => Future<B>);
-    exec(c: Compute<B>): boolean;
+    __exec(c: Compute<B>): boolean;
 }
 /**
  * Step constructor.
@@ -83,7 +88,7 @@ export declare class Bind<A, B> extends Future<B> {
 export declare class Step<A> extends Future<A> {
     value: (a: A) => Future<A>;
     constructor(value: (a: A) => Future<A>);
-    exec(c: Compute<A>): boolean;
+    __exec(c: Compute<A>): boolean;
 }
 /**
  * Catch constructor.
@@ -93,7 +98,7 @@ export declare class Catch<A> extends Future<A> {
     future: Future<A>;
     func: (e: Error) => Future<A>;
     constructor(future: Future<A>, func: (e: Error) => Future<A>);
-    exec(c: Compute<A>): boolean;
+    __exec(c: Compute<A>): boolean;
 }
 /**
  * Finally constructor.
@@ -103,7 +108,17 @@ export declare class Finally<A> extends Future<A> {
     future: Future<A>;
     func: () => Future<A>;
     constructor(future: Future<A>, func: () => Future<A>);
-    exec(c: Compute<A>): boolean;
+    __exec(c: Compute<A>): boolean;
+}
+/**
+ * Trap constructor.
+ * @private
+ */
+export declare class Trap<A> extends Future<A> {
+    func: (e: Error) => Future<A>;
+    constructor(func: (e: Error) => Future<A>);
+    __exec(_: Compute<A>): boolean;
+    __trap(e: Error, c: Compute<A>): boolean;
 }
 /**
  * Raise constructor.
@@ -114,7 +129,7 @@ export declare class Raise<A> extends Future<A> {
     map<B>(_: (a: A) => B): Future<B>;
     ap<B>(_: Future<(a: A) => B>): Future<B>;
     chain<B>(_: (a: A) => Future<B>): Future<B>;
-    exec(c: Compute<A>): boolean;
+    __exec(c: Compute<A>): boolean;
 }
 /**
  * Run constructor.
@@ -123,7 +138,7 @@ export declare class Raise<A> extends Future<A> {
 export declare class Run<A> extends Future<A> {
     value: Job<A>;
     constructor(value: Job<A>);
-    exec(c: Compute<A>): boolean;
+    __exec(c: Compute<A>): boolean;
 }
 /**
  * Supervisor for Computations.
@@ -156,11 +171,9 @@ export declare class Compute<A> implements Supervisor<A> {
     exitError: OnError;
     exitSuccess: OnSuccess<A>;
     stack: Future<A>[];
-    handlers: ErrorHandler<A>[];
-    finalizers: Finalizer<A>[];
     canceller: Aborter;
     running: boolean;
-    constructor(value: A, exitError: OnError, exitSuccess: OnSuccess<A>, stack: Future<A>[], handlers: ErrorHandler<A>[], finalizers: Finalizer<A>[]);
+    constructor(value: A, exitError: OnError, exitSuccess: OnSuccess<A>, stack: Future<A>[]);
     /**
      * onError handler.
      *
