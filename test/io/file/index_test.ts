@@ -1,6 +1,6 @@
 import { must } from '@quenk/must';
 import { isAbsolute } from 'path';
-import { toPromise } from '../../../src/control/monad/future';
+import { toPromise, pure } from '../../../src/control/monad/future';
 import { reduce } from '../../../src/data/record';
 import {
     readTextFile,
@@ -8,6 +8,7 @@ import {
     statDir,
     statDirAbs,
     statDirRec,
+    exists,
     list,
     listAbs,
     listRec,
@@ -16,9 +17,10 @@ import {
     listDirsRec,
     listFiles,
     listFilesAbs,
-  listFilesRec,
+    listFilesRec,
     isFile,
-    isDirectory
+    isDirectory,
+    unlink
 } from '../../../src/io/file';
 
 const ABOUT = 'This is a flag🇹.\n';
@@ -189,6 +191,20 @@ describe('file', () => {
         it('should not fail if the directory does not exist', () =>
             toPromise(isDirectory(RANDOM_FILE)
                 .map(yes => must(yes).be.false())));
+
+    });
+
+    describe('unlink', () => {
+
+      let dest = `${FIXTURES}/../unlinkable`;
+
+        toPromise(writeTextFile(dest, 'will delete')
+            .chain(() => readTextFile(dest))
+            .map(txt => must(txt).equal('will delete'))
+            .catch(() => pure(must(true).be.false()))
+            .chain(() => unlink(dest))
+            .chain(() => exists(dest))
+            .map(yes => must(yes).be.false()));
 
     });
 
