@@ -1,14 +1,22 @@
 import { must } from '@quenk/must';
 import { isAbsolute } from 'path';
 import { toPromise } from '../../../src/control/monad/future';
+import { reduce } from '../../../src/data/record';
 import {
     readTextFile,
     writeTextFile,
+    statDir,
+    statDirAbs,
+    statDirRec,
     list,
-    listD,
-    listDA,
-    listF,
-    listFA,
+    listAbs,
+    listRec,
+    listDirs,
+    listDirsAbs,
+    listDirsRec,
+    listFiles,
+    listFilesAbs,
+  listFilesRec,
     isFile,
     isDirectory
 } from '../../../src/io/file';
@@ -19,6 +27,41 @@ const ABOUT_FILE = `${FIXTURES}/about`;
 const RANDOM_FILE = '/sdkhr34038hkc';
 
 describe('file', () => {
+
+    describe('statDir', () => {
+
+        it('should stat everything in the path', () =>
+            toPromise(statDir(FIXTURES)
+                .map(d => must(Object.keys(d).sort())
+                    .equate(['about', 'dira', 'dirb', 'dirc']))));
+
+    });
+
+    describe('statDirAbs', () => {
+
+        it('should provide absolute paths', () =>
+            toPromise(statDirAbs(FIXTURES)
+                .map(m => must(reduce(m, true, (p, _, k) => !p ?
+                    p : isAbsolute(k))).true())));
+
+    });
+
+    describe('statDirRec', () => {
+
+        it('should provide absolute paths', () =>
+            toPromise(statDirRec(FIXTURES)
+                .map(stats => must(Object.keys(stats)
+                    .map(p => p.split(process.cwd()).sort().join(''))).equate([
+                        '/test/io/file/fixtures/about',
+                        '/test/io/file/fixtures/dira',
+                        '/test/io/file/fixtures/dirb',
+                        '/test/io/file/fixtures/dirc',
+                        '/test/io/file/fixtures/dira/dirab',
+                        '/test/io/file/fixtures/dirb/fileb',
+                        '/test/io/file/fixtures/dirc/filea'
+                    ]))));
+
+    });
 
     describe('readTextFile', () => {
 
@@ -41,42 +84,95 @@ describe('file', () => {
 
         it('should stat all the directories in a directory', () =>
             toPromise(list(FIXTURES)
-                .map(d => must(Object.keys(d).sort())
+                .map(d => must(d)
                     .equate(['about', 'dira', 'dirb', 'dirc']))));
 
     });
 
-    describe('listD', () => {
+    describe('listAbs', () => {
+
+        it('should list absolute paths', () =>
+            toPromise(listAbs(FIXTURES)
+                .map(m => must(m.reduce((p, c) =>
+                    (!p) ? p : isAbsolute(c), true)).true())));
+
+    });
+
+    describe('listRec', () => {
+
+        it('should provide paths recursively', () =>
+            toPromise(listRec(FIXTURES)
+                .map(list => must(list.map(p =>
+                    p.split(process.cwd()).join('')).sort()).equate([
+                        '/test/io/file/fixtures/about',
+                        '/test/io/file/fixtures/dira',
+                        '/test/io/file/fixtures/dira/dirab',
+                        '/test/io/file/fixtures/dirb',
+                        '/test/io/file/fixtures/dirb/fileb',
+                        '/test/io/file/fixtures/dirc',
+                        '/test/io/file/fixtures/dirc/filea'
+                    ]))));
+
+    });
+
+    describe('listDirs', () => {
 
         it('should list all the directories in a directory', () =>
-            toPromise(listD(FIXTURES)
+            toPromise(listDirs(FIXTURES)
                 .map(l => must(l.sort()).equate(['dira', 'dirb', 'dirc']))));
 
     });
 
-    describe('listDA', () => {
+    describe('listDirsAbs', () => {
 
         it('should list all the directories in a directory absolutely', () =>
-            toPromise(listDA(FIXTURES)
+            toPromise(listDirsAbs(FIXTURES)
                 .map(l => must(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
                     .true())))
 
     });
 
-    describe('listF', () => {
+    describe('listDirsRec', () => {
+
+        it('should provide paths recursively', () =>
+            toPromise(listDirsRec(FIXTURES)
+                .map(list => must(list.map(p =>
+                    p.split(process.cwd()).join('')).sort()).equate([
+                        '/test/io/file/fixtures/dira',
+                        '/test/io/file/fixtures/dira/dirab',
+                        '/test/io/file/fixtures/dirb',
+                        '/test/io/file/fixtures/dirc'
+                    ]))));
+
+    });
+
+    describe('listFiles', () => {
 
         it('should list all files in a directory', () =>
-            toPromise(listF(FIXTURES)
+            toPromise(listFiles(FIXTURES)
                 .map(l => must(l.sort()).equate(['about']))));
 
     });
 
-    describe('listFA', () => {
+    describe('listFilesAbs', () => {
 
         it('should list all files in a directory absolutely', () =>
-            toPromise(listFA(FIXTURES)
+            toPromise(listFilesAbs(FIXTURES)
                 .map(l => must(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
                     .true())))
+
+    });
+
+    describe('listFilesRec', () => {
+
+        it('should provide paths recursively', () =>
+            toPromise(listFilesRec(FIXTURES)
+                .map(list => must(list.map(p =>
+                    p.split(process.cwd()).join('')).sort()).equate([
+                        '/test/io/file/fixtures/about',
+                        '/test/io/file/fixtures/dirb/fileb',
+                        '/test/io/file/fixtures/dirc/filea'
+                    ]))));
 
     });
 
