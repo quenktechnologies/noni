@@ -207,3 +207,9 @@ export const writeFile = (path: Path, contents: Contents, options: string | obje
  */
 export const writeTextFile = (path: Path, contents: string): Future<void> =>
     writeFile(path, contents, 'utf8');
+
+/**
+ * unlink a path from the file system.
+ */
+export const unlink = (path:Path) : Future<void> => 
+  fromCallback(cb => fs.unlink(path,cb));

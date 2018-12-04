@@ -106,3 +106,7 @@ export declare const writeFile: (path: string, contents: Contents, options: stri
  * writeTextFile writes the passed contents to a a file location.
  */
 export declare const writeTextFile: (path: string, contents: string) => Future<void>;
+/**
+ * unlink a path from the file system.
+ */
+export declare const unlink: (path: string) => Future<void>;
