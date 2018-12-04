@@ -635,4 +635,17 @@ export const toPromise = <A>(ft: Future<A>): Promise<A> => new Promise((yes, no)
  * fromExcept converts an Except to a Future.
  */
 export const fromExcept = <A>(e: Except<A>): Future<A> =>
-    e.fold(e => raise(e), a => pure(a)); 
+    e.fold(e => raise(e), a => pure(a));
+
+/**
+ * liftP turns a function that produces a Promise into a Future.
+ */
+export const liftP = <A>(f: () => Promise<A>): Future<A> => new Run(s => {
+
+    f()
+        .then(a => s.onSuccess(a))
+        .catch(e => s.onError(e));
+
+    return noop;
+
+});

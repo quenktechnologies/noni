@@ -20,16 +20,17 @@ import {
     sequential,
     batch,
     parallel,
-    toPromise as liftP,
+    toPromise,
+    liftP,
     race
 } from '../../../src/control/monad/future';
 
 const value = 12;
 
 const eq = <A>(f1: Future<A>) => (f2: Future<A>) =>
-    liftP<A>(f1)
+    toPromise<A>(f1)
         .then((a: A) =>
-            liftP<A>(f2)
+            toPromise<A>(f2)
                 .then((b: A) => must(<any>a).equate(<any>b)));
 
 const map = (n: number) => n * 2;
@@ -72,6 +73,18 @@ const tagTask = (tag: string, n: number, tags: string[]) =>
         return noop;
 
     });
+
+const promiseTask = () => new Promise((y, _) => {
+
+    setTimeout(() => y(12), 1000);
+
+});
+
+const promiseErrTask = () => new Promise((_, n) => {
+
+    setTimeout(() => n(new Error('promise')), 500);
+
+});
 
 describe('future', () => {
 
@@ -135,7 +148,7 @@ describe('future', () => {
         describe('map', () => {
 
             it('should never result in error and success', () =>
-                liftP(inc(0)
+                toPromise(inc(0)
                     .map(map)
                     .chain((n: number) => err(`error: ${n}`))
                     .map(map))
@@ -149,7 +162,7 @@ describe('future', () => {
             let ap = pure(map);
 
             it('should never result in error and success', () =>
-                liftP(inc(0)
+                toPromise(inc(0)
                     .ap(ap)
                     .chain((n: number) => err(`error: ${n}`))
                     .ap(ap))
@@ -161,7 +174,7 @@ describe('future', () => {
         describe('chain', () => {
 
             it('should never result in error and success', () =>
-                liftP(inc(0)
+                toPromise(inc(0)
                     .chain((n: number) => err(`error: ${n}`))
                     .chain(inc))
                     .then(() => Promise.reject('Chain did not reject!'))
@@ -172,23 +185,23 @@ describe('future', () => {
         describe('catch', () => {
 
             it('should allow errors to be caught', () =>
-                liftP(inc(0)
+                toPromise(inc(0)
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
                     .catch((e: Error) => pure(must(e.message).equal('foo')))))
 
             it('should not duplicate errors', () =>
-                liftP(inc(0)
+                toPromise(inc(0)
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
                     .catch((e: Error) => pure(must(e.message).equal('foo')))
                     .catch((e: Error) => pure(must(e).equal('foo')))));
 
-          it('should not swallow further errors', cb => {
+            it('should not swallow further errors', cb => {
 
-                liftP(inc(0)
+                toPromise(inc(0)
                     .chain(inc)
                     .chain(() => err('first'))
                     .catch((_: Error) => inc(0))
@@ -198,20 +211,21 @@ describe('future', () => {
                         must(e.message).be.equal('second');
                         cb();
 
-                    })});
+                    })
+            });
 
         });
 
         describe('finally', () => {
 
             it('should run after success', () =>
-                liftP(inc(0)
+                toPromise(inc(0)
                     .chain(inc)
                     .finally(() => pure(12)))
                     .then((n: number) => must(n).equal(12)));
 
             it('should run after failure', () =>
-                liftP(inc(0)
+                toPromise(inc(0)
                     .chain(inc)
                     .chain(() => err('foo'))
                     .catch((e: Error) => pure(must(e.message).equal('foo')))
@@ -225,7 +239,7 @@ describe('future', () => {
             let count = 0;
             let m = () => { count = count + 1; return pure(count); };
 
-            return liftP(pure(0)
+            return toPromise(pure(0)
                 .chain(m)
                 .chain(m)
                 .chain(m))
@@ -252,7 +266,7 @@ describe('future', () => {
 
                 });
 
-                let c = new Compute(undefined, error, success, [task], [], []);
+                let c = new Compute(undefined, error, success, [task]);
 
                 setTimeout(() => { c.abort(); cb(); }, 100)
 
@@ -287,7 +301,7 @@ describe('future', () => {
 
                 let tasks = [task(2), task(3), task(11), task(5), task(4), task(1)];
 
-                let c = new Compute(undefined, error, success, tasks, [], []);
+                let c = new Compute(undefined, error, success, tasks);
 
                 c.run();
 
@@ -300,13 +314,13 @@ describe('future', () => {
     describe('attempt', () => {
 
         it('should trap errors', () =>
-            liftP(attempt(() => { throw new Error('foo'); })
+            toPromise(attempt(() => { throw new Error('foo'); })
                 .chain(inc)
                 .catch((e: Error) => pure(e.message)))
                 .then((s: string) => must(s).equal('foo')));
 
         it('should work otherwise', () =>
-            liftP(attempt(() => 11)
+            toPromise(attempt(() => 11)
                 .chain(inc))
                 .then((n: number) => must(n).equal(12)))
 
@@ -315,7 +329,7 @@ describe('future', () => {
     describe('delay', () => {
 
         it('should delay results', () =>
-            liftP(delay(() => 11)
+            toPromise(delay(() => 11)
                 .chain(inc))
                 .then((n: number) => must(n).equal(12)))
 
@@ -357,7 +371,7 @@ describe('future', () => {
             let tags: string[] = [];
             let failed = false;
 
-            return liftP(sequential([
+            return toPromise(sequential([
                 tagTask('a', 1000, tags),
                 errorTask('m', 2000, tags),
                 errorTask('foo', 500, tags),
@@ -383,7 +397,7 @@ describe('future', () => {
 
             let tags: string[] = [];
 
-            return liftP(sequential([
+            return toPromise(sequential([
                 tagTask('a', 300, tags),
                 tagTask('b', 200, tags),
                 tagTask('c', 500, tags),
@@ -395,14 +409,14 @@ describe('future', () => {
 
         it('should work when the list is empty', () => {
 
-            return liftP(sequential([]))
+            return toPromise(sequential([]))
                 .then((list: any[]) => must(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
-            return liftP(sequential([pure(1), pure(2), pure(3)]))
+            return toPromise(sequential([pure(1), pure(2), pure(3)]))
                 .then((list: number[]) => must(list).equate([1, 2, 3]));
 
         });
@@ -411,7 +425,7 @@ describe('future', () => {
 
             let failed = false;
 
-            return liftP(sequential([
+            return toPromise(sequential([
                 raise(new Error('1')),
                 raise(new Error('2'))
             ])
@@ -436,7 +450,7 @@ describe('future', () => {
             let tags: string[] = [];
             let failed = false;
 
-            return liftP(batch([
+            return toPromise(batch([
                 [tagTask('a', 1000, tags), tagTask('a', 2000, tags)],
                 [errorTask('m', 1000, tags)],
                 [errorTask('foo', 500, tags)],
@@ -462,7 +476,7 @@ describe('future', () => {
 
             let tags: string[] = [];
 
-            return liftP(batch([
+            return toPromise(batch([
                 [tagTask('a', 300, tags),
                 tagTask('a', 600, tags),
                 tagTask('a', 100, tags)],
@@ -485,14 +499,14 @@ describe('future', () => {
 
         it('should work when the list is empty', () => {
 
-            return liftP(batch([]))
+            return toPromise(batch([]))
                 .then((list: any[]) => must(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
-            return liftP(batch([[pure(1), pure(2)], [pure(3)]]))
+            return toPromise(batch([[pure(1), pure(2)], [pure(3)]]))
                 .then((list: number[][]) => must(list).equate([[1, 2], [3]]));
 
         });
@@ -501,7 +515,7 @@ describe('future', () => {
 
             let failed = false;
 
-            return liftP(sequential([
+            return toPromise(sequential([
                 raise(new Error('1')),
                 raise(new Error('2'))])
                 .catch((e: Error) => {
@@ -535,7 +549,7 @@ describe('future', () => {
                 errorTask('foo', 500, tags),
                 tagTask('bar', 200, tags)];
 
-            return liftP(parallel(tasks)
+            return toPromise(parallel(tasks)
                 .catch((e: Error) => {
                     if (e.message === 'foo')
                         failed = true;
@@ -549,7 +563,7 @@ describe('future', () => {
 
             let tags: string[] = [];
 
-            return liftP(parallel([
+            return toPromise(parallel([
                 tagTask('a', 300, tags),
                 tagTask('b', 200, tags),
                 tagTask('c', 500, tags),
@@ -563,14 +577,14 @@ describe('future', () => {
 
         it('should work when the list is empty', () => {
 
-            return liftP(parallel([]))
+            return toPromise(parallel([]))
                 .then((list: any[]) => must(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
-            return liftP(parallel([pure(1), pure(2), pure(3)]))
+            return toPromise(parallel([pure(1), pure(2), pure(3)]))
                 .then((list: number[]) => must(list).equate([1, 2, 3]));
 
         });
@@ -580,7 +594,7 @@ describe('future', () => {
             let e = new Error('a');
             let failed = false;
 
-            return liftP(parallel([raise(e), raise(e), raise(e)])
+            return toPromise(parallel([raise(e), raise(e), raise(e)])
                 .catch((e: Error) => {
 
                     if (e.message === 'a')
@@ -597,7 +611,7 @@ describe('future', () => {
 
             let failed = false;
 
-            return liftP(
+            return toPromise(
                 parallel([raise(new Error('1')), raise(new Error('2'))])
                     .catch((e: Error) => {
 
@@ -624,7 +638,7 @@ describe('future', () => {
             let tags: string[] = [];
             let failed = false;
 
-            return liftP(race([
+            return toPromise(race([
                 tagTask('a', 1000, tags),
                 tagTask('b', 2000, tags),
                 errorTask('c', 100, tags),
@@ -648,7 +662,7 @@ describe('future', () => {
 
         it('should succeed with the first successfull value', () => {
 
-            return liftP(race([
+            return toPromise(race([
                 tagTask('a', 1000, []),
                 tagTask('b', 2000, []),
                 tagTask('c', 500, []),
@@ -660,7 +674,7 @@ describe('future', () => {
 
         it('should fail when the list is empty', () => {
 
-            return liftP(race([]))
+            return toPromise(race([]))
                 .then(() => { throw new Error('bleh'); })
                 .catch((e: Error) =>
                     must(e.message).equal('race(): Cannot race an empty list!'));
@@ -669,7 +683,7 @@ describe('future', () => {
 
         it('should work with a list of pure values', () => {
 
-            return liftP<number>(race([pure(1), pure(2), pure(3)]))
+            return toPromise<number>(race([pure(1), pure(2), pure(3)]))
                 .then((list: number) => must(list).equal(1));
 
         });
@@ -678,7 +692,7 @@ describe('future', () => {
 
             let failed = false;
 
-            return liftP(race([
+            return toPromise(race([
                 raise(new Error('1')),
                 raise(new Error('2'))
             ])
@@ -695,6 +709,33 @@ describe('future', () => {
                     must(failed).be.true();
 
                 });
+
+        });
+
+    });
+
+    describe('liftP', () => {
+
+        it('should turn a promise into a Future', done => {
+
+            liftP(promiseTask)
+                .map(n => {
+                    must(n).equal(12);
+                    done();
+                }).fork(console.error,console.log);
+
+        });
+
+        it('should not swallow errors', done => {
+
+            liftP(promiseErrTask)
+                .catch(e => {
+
+                    must(e.message).equal('promise');
+                    done();
+                    return pure({});
+
+                }).fork(console.error, console.log);
 
         });
 
