@@ -54,7 +54,7 @@ export declare const readdir: (path: string) => Future<string[]>;
 /**
  * readFile (safe) wrapper
  */
-export declare const readFile: (path: string, options: string | object) => Future<Contents>;
+export declare const readFile: (path: string, options: object) => Future<Contents>;
 /**
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
@@ -101,7 +101,7 @@ export declare const listFilesRec: (path: string) => Future<string[]>;
 /**
  * writeFile (safe) wrapper.
  */
-export declare const writeFile: (path: string, contents: Contents, options: string | object) => Future<void>;
+export declare const writeFile: (path: string, contents: Contents, options: object) => Future<void>;
 /**
  * writeTextFile writes the passed contents to a a file location.
  */

@@ -111,14 +111,14 @@ export const readdir = (path: Path): Future<string[]> =>
 /**
  * readFile (safe) wrapper
  */
-export const readFile = (path: Path, options: string | object): Future<Contents> =>
+export const readFile = (path: Path, options:  object): Future<Contents> =>
     fromCallback(cb => fs.readFile(path, options, cb));
 
 /**
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
 export const readTextFile = (path: Path): Future<string> =>
-    <Future<string>>readFile(path, 'utf8');
+  <Future<string>>readFile(path, {encoding:'utf8'});
 
 /**
  * list the files/directories found at a path.
@@ -198,7 +198,7 @@ const expand = (path: Path) => (name: string): Path =>
 /**
  * writeFile (safe) wrapper.
  */
-export const writeFile = (path: Path, contents: Contents, options: string | object)
+export const writeFile = (path: Path, contents: Contents, options:  object)
     : Future<void> =>
     fromCallback(cb => fs.writeFile(path, contents, options, cb));
 
@@ -206,7 +206,7 @@ export const writeFile = (path: Path, contents: Contents, options: string | obje
  * writeTextFile writes the passed contents to a a file location.
  */
 export const writeTextFile = (path: Path, contents: string): Future<void> =>
-    writeFile(path, contents, 'utf8');
+  writeFile(path, contents, {encoding:'utf8'});
 
 /**
  * unlink a path from the file system.
