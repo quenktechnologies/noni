@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { Stats } from 'fs';
 import { join } from 'path';
 import { Future, pure, parallel, fromCallback } from '../control/monad/future';
-import { reduce, merge } from '../data/record';
+import { Record, reduce, merge } from '../data/record';
 
 export { Stats };
 
@@ -111,14 +111,14 @@ export const readdir = (path: Path): Future<string[]> =>
 /**
  * readFile (safe) wrapper
  */
-export const readFile = (path: Path, options:  object): Future<Contents> =>
+export const readFile = (path: Path, options: object): Future<Contents> =>
     fromCallback(cb => fs.readFile(path, options, cb));
 
 /**
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
 export const readTextFile = (path: Path): Future<string> =>
-  <Future<string>>readFile(path, {encoding:'utf8'});
+    <Future<string>>readFile(path, { encoding: 'utf8' });
 
 /**
  * list the files/directories found at a path.
@@ -198,7 +198,7 @@ const expand = (path: Path) => (name: string): Path =>
 /**
  * writeFile (safe) wrapper.
  */
-export const writeFile = (path: Path, contents: Contents, options:  object)
+export const writeFile = (path: Path, contents: Contents, options: object)
     : Future<void> =>
     fromCallback(cb => fs.writeFile(path, contents, options, cb));
 
@@ -206,10 +206,53 @@ export const writeFile = (path: Path, contents: Contents, options:  object)
  * writeTextFile writes the passed contents to a a file location.
  */
 export const writeTextFile = (path: Path, contents: string): Future<void> =>
-  writeFile(path, contents, {encoding:'utf8'});
+    writeFile(path, contents, { encoding: 'utf8' });
+
+/**
+ * makeDir makes a directory at the specified path.
+ *
+ * By default will create parents if they do not exist.
+ *
+ * NOTE: On node 8.11.3 and prior the fs module does not support
+ * parent directory creation so this function will fail if the parent
+ * path does not exist.
+ */
+export const makeDir = (path: Path, options: Record<boolean | number> = {})
+    : Future<void> =>
+    fromCallback(cb => fs.mkdir(path, merge({ recursive: true }, options), cb));
 
 /**
  * unlink a path from the file system.
+ *
+ * Does not matter whether it is a file or directory.
+ * Use with caution!
  */
-export const unlink = (path:Path) : Future<void> => 
-  fromCallback(cb => fs.unlink(path,cb));
+export const unlink = (path: Path): Future<void> =>
+    isDirectory(path)
+    .chain(yes => yes ?
+            removeDir(path) :
+            removeFile(path));
+
+/**
+ * removeFile removes a file and only a file.
+ *
+ * Will fail if the path is not a file.
+ */
+export const removeFile = (path: Path): Future<void> =>
+    exists(path)
+        .chain(yes => yes ?
+            fromCallback(cb => fs.unlink(path, cb)) :
+            pure((() => { })()));
+
+/**
+ * removeDir removes a directory and only a directory.
+ *
+ * Will fail if the path is not a directory.
+ */
+export const removeDir = (path: Path): Future<void> =>
+    exists(path)
+        .chain(yes => yes ?
+            listAbs(path)
+                .chain(l => parallel(l.map(unlink)))
+                .chain(() => fromCallback(cb => fs.rmdir(path, cb))) :
+            pure((() => { })()));

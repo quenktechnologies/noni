@@ -1,6 +1,6 @@
 import { must } from '@quenk/must';
 import { isAbsolute } from 'path';
-import { toPromise, pure } from '../../../src/control/monad/future';
+import { toPromise, pure, raise } from '../../../src/control/monad/future';
 import { reduce } from '../../../src/data/record';
 import {
     readTextFile,
@@ -20,6 +20,7 @@ import {
     listFilesRec,
     isFile,
     isDirectory,
+    makeDir,
     unlink
 } from '../../../src/io/file';
 
@@ -194,17 +195,63 @@ describe('file', () => {
 
     });
 
+    describe('makeDir', () => {
+
+        it('should create new directories', () => {
+
+            let dest = `${FIXTURES}/bun`;
+
+            return toPromise(makeDir(dest)
+                .chain(() => isDirectory(dest))
+                .map(v => must(v).be.true())
+                .chain(() => unlink(dest)))
+
+        });
+
+    });
+
     describe('unlink', () => {
 
-      let dest = `${FIXTURES}/../unlinkable`;
+        it('should remove files', () => {
 
-        toPromise(writeTextFile(dest, 'will delete')
-            .chain(() => readTextFile(dest))
-            .map(txt => must(txt).equal('will delete'))
-            .catch(() => pure(must(true).be.false()))
-            .chain(() => unlink(dest))
-            .chain(() => exists(dest))
-            .map(yes => must(yes).be.false()));
+            let dest = `${FIXTURES}/../unlinkable`;
+
+            return toPromise(writeTextFile(dest, 'will delete')
+                .chain(() => readTextFile(dest))
+                .map(txt => must(txt).equal('will delete'))
+                .catch(() => pure(must(true).be.false()))
+                .chain(() => unlink(dest))
+                .chain(() => exists(dest))
+                .map(yes => must(yes).be.false()));
+        });
+
+        it('should remove dirs', () => {
+
+            let dest = `${FIXTURES}/../unlinkable`;
+
+            return toPromise(makeDir(dest)
+                .chain(() => isDirectory(dest))
+                .chain(yes => !yes ? raise(new Error('failed!')) : pure({}))
+                .chain(() => unlink(dest))
+                .chain(() => exists(dest))
+                .map(yes => must(yes).be.false()));
+        });
+
+        it('should remove non empty dirs', () => {
+
+            let dest = `${FIXTURES}/../unlinkable`;
+            let file = `${dest}/file`;
+
+            return toPromise(makeDir(dest)
+                .chain(() => isDirectory(dest))
+                .chain(yes => !yes ? raise(new Error('failed!')) : pure({}))
+                .chain(() => writeTextFile(file, 'will delete'))
+                .chain(() => readTextFile(file))
+                .map(txt => must(txt).equal('will delete'))
+                .chain(() => unlink(dest))
+                .chain(() => exists(dest))
+                .map(yes => must(yes).be.false()));
+        });
 
     });
 
