@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import { Stats } from 'fs';
 import { Future } from '../control/monad/future';
+import { Record } from '../data/record';
 export { Stats };
 /**
  * Path to a file.
@@ -107,6 +108,31 @@ export declare const writeFile: (path: string, contents: Contents, options: obje
  */
 export declare const writeTextFile: (path: string, contents: string) => Future<void>;
 /**
+ * makeDir makes a directory at the specified path.
+ *
+ * By default will create parents if they do not exist.
+ *
+ * NOTE: On node 8.11.3 and prior the fs module does not support
+ * parent directory creation so this function will fail if the parent
+ * path does not exist.
+ */
+export declare const makeDir: (path: string, options?: Record<number | boolean>) => Future<void>;
+/**
  * unlink a path from the file system.
+ *
+ * Does not matter whether it is a file or directory.
+ * Use with caution!
  */
 export declare const unlink: (path: string) => Future<void>;
+/**
+ * removeFile removes a file and only a file.
+ *
+ * Will fail if the path is not a file.
+ */
+export declare const removeFile: (path: string) => Future<void>;
+/**
+ * removeDir removes a directory and only a directory.
+ *
+ * Will fail if the path is not a directory.
+ */
+export declare const removeDir: (path: string) => Future<void>;
