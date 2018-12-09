@@ -194,7 +194,7 @@ export declare class Compute<A> implements Supervisor<A> {
      * and invoke the canceller for the currently executing Future.
      */
     abort(): void;
-    run(): void;
+    run(): Compute<A>;
 }
 /**
  * pure wraps a synchronous value in a Future.

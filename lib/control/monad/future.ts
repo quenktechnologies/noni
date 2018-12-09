@@ -95,9 +95,7 @@ export abstract class Future<A> implements Monad<A> {
 
     fork(onError: OnError, onSuccess: OnSuccess<A>): Compute<A> {
 
-        let c = new Compute(<any>undefined, onError, onSuccess, [this]);
-        c.run();
-        return c;
+        return (new Compute(<any>undefined, onError, onSuccess, [this])).run();
 
     }
 
@@ -411,18 +409,20 @@ export class Compute<A> implements Supervisor<A> {
 
     }
 
-    run(): void {
+  run(): Compute<A> {
 
         while (this.stack.length > 0) {
 
             let next = <Future<A>>this.stack.pop();
 
-            if (!next.__exec(this)) return; // short-circuit
+            if (!next.__exec(this)) return this; // short-circuit
 
         }
 
         this.running = false;
         this.exitSuccess(this.value);
+
+    return this;
 
     }
 
