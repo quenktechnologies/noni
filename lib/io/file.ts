@@ -229,20 +229,20 @@ export const makeDir = (path: Path, options: Record<boolean | number> = {})
  */
 export const unlink = (path: Path): Future<void> =>
     isDirectory(path)
-        .chain(yes => fromCallback(cb => yes ?
-          removeDir(path) :
-          removeFile(path)));
+    .chain(yes => yes ?
+            removeDir(path) :
+            removeFile(path));
 
 /**
  * removeFile removes a file and only a file.
  *
  * Will fail if the path is not a file.
  */
-export const removeFile = (path:Path) : Future<void> => 
-  exists(path)
-   .chain(yes => yes ?
-       fromCallback(cb => fs.unlink(path, cb)) :
-     pure((()=>{})()));
+export const removeFile = (path: Path): Future<void> =>
+    exists(path)
+        .chain(yes => yes ?
+            fromCallback(cb => fs.unlink(path, cb)) :
+            pure((() => { })()));
 
 /**
  * removeDir removes a directory and only a directory.
