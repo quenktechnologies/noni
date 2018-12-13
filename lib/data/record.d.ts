@@ -21,7 +21,7 @@ export declare const keys: <A>(value: Record<A>) => string[];
  *
  * The order of keys processed is not guaranteed.
  */
-export declare const map: <A, B, R extends Record<B>>(o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B) => R;
+export declare const map: <A, B>(o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B) => Record<B>;
 /**
  * reduce a Record's keys to a single value.
  *

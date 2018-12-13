@@ -36,9 +36,9 @@ export const keys = <A>(value: Record<A>) => Object.keys(value);
  *
  * The order of keys processed is not guaranteed.
  */
-export const map = <A, B, R extends Record<B>>
-    (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B): R =>
-    <R>keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), <Record<B>>{});
+export const map = <A, B>
+  (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B): Record<B> =>
+    keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), {});
 
 /**
  * reduce a Record's keys to a single value.
