@@ -18,6 +18,7 @@ import {
     fromCallback,
     raise,
     sequential,
+    reduce,
     batch,
     parallel,
     toPromise,
@@ -443,6 +444,87 @@ describe('future', () => {
 
     });
 
+    describe('reduce', () => {
+
+        let f = (p: number, c: number) =>  p + c; 
+
+        it('should fail if any fail', () => {
+
+            let tags: string[] = [];
+            let failed = false;
+
+            return toPromise(reduce([
+                tagTask('a', 30, tags),
+                errorTask('m', 500, tags),
+                tagTask('b', 20, tags),
+            ], 1, f)
+                .catch((e: Error) => {
+
+                    if (e.message === 'm')
+                        failed = true;
+
+                    return pure(12);
+
+                }))
+                .then(() => {
+
+                    must(failed).be.true();
+                    must(tags).equate(['a', 'm']);
+
+                });
+
+        });
+
+        it('should succeed with all results', () => {
+
+            let tags: string[] = [];
+
+            return toPromise(reduce([
+                tagTask('a', 300, tags),
+                tagTask('b', 200, tags),
+                tagTask('c', 200, tags),
+                tagTask('d', 400, tags)], 100, f))
+                .then((r: number) => must(r).equal(1200))
+                .then(() => must(tags).equate(['a', 'b', 'c', 'd']));
+
+        });
+
+        it('should work when the list is empty', () => {
+
+            return toPromise(reduce([], 12, f))
+                .then((r: number) => must(r).equal(12));
+
+        });
+
+        it('should work with a list of pure values', () => {
+
+            return toPromise(reduce([pure(1), pure(2), pure(3)], 6, f))
+                .then((r: number) => must(r).equal(12));
+
+        });
+
+        it('should work with a list of failed values', () => {
+
+            let failed = false;
+
+            return toPromise(reduce([
+                raise<number>(new Error('1')),
+                raise<number>(new Error('2'))
+            ], 12, f)
+                .catch((e: Error) => {
+
+                    if (e.message === '1')
+                        failed = true;
+
+                    return pure(13);
+
+                }))
+                .then(() => must(failed).be.true())
+
+        });
+
+    })
+
     describe('batch', () => {
 
         it('should fail if any fail', () => {
@@ -515,9 +597,11 @@ describe('future', () => {
 
             let failed = false;
 
-            return toPromise(sequential([
-                raise(new Error('1')),
-                raise(new Error('2'))])
+            return toPromise(batch([
+
+                [raise(new Error('1')), raise(new Error('2'))]
+
+            ])
                 .catch((e: Error) => {
 
                     if (e.message === '1')
@@ -722,7 +806,7 @@ describe('future', () => {
                 .map(n => {
                     must(n).equal(12);
                     done();
-                }).fork(console.error,console.log);
+                }).fork(console.error, console.log);
 
         });
 

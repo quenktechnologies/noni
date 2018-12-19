@@ -41,7 +41,10 @@ export declare type Callback<A> = (e?: Error, a?: A) => void;
  * and performs some side-effect.
  */
 export declare type CallbackReceiver<A> = (cb: Callback<A>) => void;
-export declare type T<A> = (f: (cb: Callback<A>) => void) => Future<A>;
+/**
+ * Reducer function type.
+ */
+export declare type Reducer<A, B> = (p: B, c: A, i: number) => B;
 export declare abstract class Future<A> implements Monad<A> {
     of(a: A): Future<A>;
     map<B>(f: (a: A) => B): Future<B>;
@@ -244,6 +247,13 @@ export declare const parallel: <A>(list: Future<A>[]) => Future<A[]>;
  * error.
  */
 export declare const sequential: <A>(list: Future<A>[]) => Future<A[]>;
+/**
+ * reduce a list of futures into a single value.
+ *
+ * Starts with an initial value passing the result of
+ * each future to the next.
+ */
+export declare const reduce: <A, B>(list: Future<A>[], init: B, f: Reducer<A, B>) => Future<B>;
 /**
  * race given a list of Futures, will return a Future that is settled by
  * the first error or success to occur.

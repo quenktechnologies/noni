@@ -53,7 +53,10 @@ export type Callback<A> = (e?: Error, a?: A) => void;
  */
 export type CallbackReceiver<A> = (cb: Callback<A>) => void;
 
-export type T<A> = (f: (cb: Callback<A>) => void) => Future<A>;
+/**
+ * Reducer function type.
+ */
+export type Reducer<A, B> = (p: B, c: A, i: number) => B;
 
 export abstract class Future<A> implements Monad<A> {
 
@@ -409,7 +412,7 @@ export class Compute<A> implements Supervisor<A> {
 
     }
 
-  run(): Compute<A> {
+    run(): Compute<A> {
 
         while (this.stack.length > 0) {
 
@@ -422,7 +425,7 @@ export class Compute<A> implements Supervisor<A> {
         this.running = false;
         this.exitSuccess(this.value);
 
-    return this;
+        return this;
 
     }
 
@@ -577,6 +580,43 @@ export const sequential = <A>(list: Future<A>[]): Future<A[]> => new Run(s => {
 });
 
 /**
+ * reduce a list of futures into a single value.
+ *
+ * Starts with an initial value passing the result of
+ * each future to the next.
+ */
+export const reduce = <A, B>(list: Future<A>[], init: B, f: Reducer<A, B>)
+    : Future<B> => new Run((s: Supervisor<B>) => {
+
+        let i = 0;
+        let onErr = (e: Error) => s.onError(e);
+
+        let onSuccess = (a: A) => {
+
+            init = f(init, a, i);
+            next(init);
+
+        };
+
+        let abort: Compute<A>;
+
+        let next = (value: B) => {
+
+            if (i < list.length)
+                abort = list[i].fork(onErr, onSuccess);
+            else
+                s.onSuccess(value);
+            i++;
+
+        }
+
+        next(init);
+
+        return () => { if (abort) abort.abort(); }
+
+    });
+
+/**
  * race given a list of Futures, will return a Future that is settled by
  * the first error or success to occur.
  */
@@ -621,6 +661,7 @@ export const race = <A>(list: Future<A>[])
         return () => abortAll();
 
     });
+
 
 /**
  * toPromise transforms a Future into a Promise.
