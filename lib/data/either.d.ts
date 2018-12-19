@@ -97,11 +97,11 @@ export declare class Right<L, R> extends Either<L, R> {
 /**
  * left constructor helper.
  */
-export declare const left: <A, B>(a: A) => Left<A, B>;
+export declare const left: <A, B>(a: A) => Either<A, B>;
 /**
  * right constructor helper.
  */
-export declare const right: <A, B>(b: B) => Right<A, B>;
+export declare const right: <A, B>(b: B) => Either<A, B>;
 /**
  * fromBoolean constructs an Either using a boolean value.
  */

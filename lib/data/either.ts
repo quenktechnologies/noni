@@ -267,12 +267,12 @@ export class Right<L, R> extends Either<L, R>  {
 /**
  * left constructor helper.
  */
-export const left = <A, B>(a: A) => new Left<A, B>(a);
+export const left = <A, B>(a: A) : Either<A,B> => new Left<A, B>(a);
 
 /**
  * right constructor helper.
  */
-export const right = <A, B>(b: B) => new Right<A, B>(b);
+export const right = <A, B>(b: B) : Either<A,B> => new Right<A, B>(b);
 
 /**
  * fromBoolean constructs an Either using a boolean value.
@@ -285,5 +285,5 @@ export const fromBoolean = (b: boolean): Either<boolean, boolean> =>
  * the result of applying the appropriate function to an Either's internal value.
  */
 export const either =
-    <A, B, C>(f: (a: A) => C) => (g: (b: B) => C) => (e: Either<A, B>) =>
+    <A, B, C>(f: (a: A) => C) => (g: (b: B) => C) => (e: Either<A, B>) : C =>
         (e instanceof Right) ? g(e.takeRight()) : f(e.takeLeft())
