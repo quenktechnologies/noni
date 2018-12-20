@@ -1,6 +1,8 @@
+
 /**
- * test provides basic type tests common when working with ECMAScript.
+ * Type is an alias for <any>.
  */
+export type Type = any;
 
 /**
  * Pattern is the value used to match expressions.
@@ -10,7 +12,7 @@ export type Pattern
     | number
     | boolean
     | object
-    | { new(...args: any[]): object }
+    | { new(...args: Type[]): object }
     ;
 
 const prims = ['string', 'number', 'boolean'];
@@ -25,7 +27,7 @@ export class Any { }
  *
  * Does not consider an Array an object.
  */
-export const isObject = (value: any): value is object =>
+export const isObject = (value: Type): value is object =>
     (typeof value === 'object') && (!isArray(value));
 
 /**
@@ -36,28 +38,28 @@ export const isArray = Array.isArray;
 /**
  * isString test.
  */
-export const isString = (value: any): value is string => typeof value === 'string';
+export const isString = (value: Type): value is string => typeof value === 'string';
 
 /**
  * isNumber test.
  */
-export const isNumber = (value: any): value is Number =>
+export const isNumber = (value: Type): value is Number =>
     (typeof value === 'number') && (!isNaN(value))
 
 /**
  * isBoolean test.
  */
-export const isBoolean = (value: any): value is boolean => typeof value === 'boolean';
+export const isBoolean = (value: Type): value is boolean => typeof value === 'boolean';
 
 /**
  * isFunction test.
  */
-export const isFunction = (value: any): value is (<A, B>(a: A) => B) => typeof value === 'function';
+export const isFunction = (value: Type): value is (<A, B>(a: A) => B) => typeof value === 'function';
 
 /**
  * isPrim test.
  */
-export const isPrim = (value: any) =>
+export const isPrim = (value: Type) =>
     !(isObject(value) ||
         isArray(value) ||
         isFunction(value))
@@ -82,7 +84,7 @@ export const is = <A>(expected: string) => (value: A) => typeof (value) === expe
  *             instead.
  */
 export const test = <V>(value: V, t: Pattern): boolean =>
-    ((prims.indexOf(typeof t) > -1) && (<any>value === t)) ?
+    ((prims.indexOf(typeof t) > -1) && (<Type>value === t)) ?
         true :
         ((typeof t === 'function') &&
             (((<Function>t === String) && (typeof value === 'string')) ||
@@ -98,8 +100,8 @@ export const test = <V>(value: V, t: Pattern): boolean =>
                     Object
                         .keys(t)
                         .every(k => value.hasOwnProperty(k) ?
-                            test((<{ [key: string]: any }>value)[k],
-                                (<{ [key: string]: any }>t)[k]) : false) :
+                            test((<{ [key: string]: Type }>value)[k],
+                                (<{ [key: string]: Type }>t)[k]) : false) :
                     false;
 
 /**
@@ -115,7 +117,7 @@ export const show = <A>(value: A): string => {
         if (Array.isArray(value))
             return `[${value.map(show)}]`
         else if (value.constructor !== Object)
-            return ((<any>value.constructor).name || value.constructor);
+            return ((<Type>value.constructor).name || value.constructor);
         else
             return JSON.stringify(value);
 

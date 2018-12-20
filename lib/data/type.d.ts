@@ -1,11 +1,12 @@
 /**
- * test provides basic type tests common when working with ECMAScript.
+ * Type is an alias for <any>.
  */
+export declare type Type = any;
 /**
  * Pattern is the value used to match expressions.
  */
 export declare type Pattern = string | number | boolean | object | {
-    new (...args: any[]): object;
+    new (...args: Type[]): object;
 };
 /**
  * Any is a class used to represent typescript's "any" type.
