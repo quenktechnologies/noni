@@ -1,3 +1,24 @@
+/**
+ * Either represents a value that may be one of two types.
+ *
+ * An Either is either a Left or Right. Mapping and related functions over the 
+ * Left side returns the value unchanged. When the value is Right
+ * functions are applied as normal.
+ *
+ * The Either concept is often used to accomodate error handling but there
+ * are other places it may come in handy.
+ *
+ * An important point to note when using this type is that the left side
+ * remains the same while chaining. That means, the types Either<number, string>
+ * and Either<boolean, string> are two different types that can not be sequenced 
+ * together via map,chain etc.
+ *
+ * This turns up compiler errors in unexpected places and is sometimes rectified
+ * by extracting the values out of the Either type completley and constructing
+ * a fresh one.
+ */
+
+/** imports */
 import { Functor } from './functor';
 import { Apply } from '../control/apply';
 import { Alt } from '../control/alt';
@@ -8,14 +29,9 @@ import { Eq } from './eq';
 import { Maybe, nothing, just } from './maybe';
 
 /**
- * Either represents a value that may be one of two types.
+ * The abstract Either class.
  *
- * An Either is either a Left or Right. Mapping and related functions over the 
- * Left side returns the value unchanged. When the value is Right
- * functions are applied as normal.
- *
- * The Either concept is often used to accomodate error handling but there
- * are other places it may come in handy.
+ * This is the type that will be used in signatures.
  */
 export abstract class Either<L, R> implements
     Functor<R>,

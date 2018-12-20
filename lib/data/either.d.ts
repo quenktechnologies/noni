@@ -1,11 +1,3 @@
-import { Functor } from './functor';
-import { Apply } from '../control/apply';
-import { Alt } from '../control/alt';
-import { Chain } from '../control/chain';
-import { Monad } from '../control/monad';
-import { Extend } from '../control/extend';
-import { Eq } from './eq';
-import { Maybe } from './maybe';
 /**
  * Either represents a value that may be one of two types.
  *
@@ -15,6 +7,29 @@ import { Maybe } from './maybe';
  *
  * The Either concept is often used to accomodate error handling but there
  * are other places it may come in handy.
+ *
+ * An important point to note when using this type is that the left side
+ * remains the same while chaining. That means, the types Either<number, string>
+ * and Either<boolean, string> are two different types that can not be sequenced
+ * together via map,chain etc.
+ *
+ * This turns up compiler errors in unexpected places and is sometimes rectified
+ * by extracting the values out of the Either type completley and constructing
+ * a fresh one.
+ */
+/** imports */
+import { Functor } from './functor';
+import { Apply } from '../control/apply';
+import { Alt } from '../control/alt';
+import { Chain } from '../control/chain';
+import { Monad } from '../control/monad';
+import { Extend } from '../control/extend';
+import { Eq } from './eq';
+import { Maybe } from './maybe';
+/**
+ * The abstract Either class.
+ *
+ * This is the type that will be used in signatures.
  */
 export declare abstract class Either<L, R> implements Functor<R>, Apply<R>, Alt<R>, Chain<R>, Monad<R>, Extend<R>, Eq<Either<L, R>> {
     of(value: R): Either<L, R>;
