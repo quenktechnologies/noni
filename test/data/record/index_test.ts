@@ -1,4 +1,4 @@
-import {must} from '@quenk/must';
+import { must } from '@quenk/must';
 import {
     Record,
     keys,
@@ -17,8 +17,9 @@ import {
     partition,
     group,
     values,
-    contains
-} from '../../src/data/record';
+  contains,
+  clone
+} from '../../../src/data/record';
 
 type A = { a: number };
 type B = { b: number };
@@ -417,8 +418,8 @@ describe('record', () => {
 
         it('should return a shallow array', () => {
 
-          must(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' }))
-            .equate([1, [22], { n: 1 }, 'e']);
+            must(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' }))
+                .equate([1, [22], { n: 1 }, 'e']);
 
         });
 
@@ -435,6 +436,20 @@ describe('record', () => {
 
         });
 
+    });
+
+    describe('clone', () => {
+
+        it('should break refs', () => {
+
+          let c = {n:1}
+          let a = {b: c};
+
+          must(clone(a)).equate(a);
+          must(clone(a).b).not.equal(c);
+          
+        });
+      
     });
 
 });

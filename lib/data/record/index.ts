@@ -4,8 +4,8 @@
  * Some of the functions provided here are inherently unsafe (tsc will not
  * be able track integrity and may result in runtime errors if not used carefully.
  */
-import { isObject } from '../data/type';
-import { concat } from './array';
+import { isObject } from '../type';
+import { concat } from '../array';
 
 /**
  * Record is an ES object with an index signature.
@@ -37,7 +37,7 @@ export const keys = <A>(value: Record<A>) => Object.keys(value);
  * The order of keys processed is not guaranteed.
  */
 export const map = <A, B>
-  (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B): Record<B> =>
+    (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B): Record<B> =>
     keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), {});
 
 /**
@@ -216,11 +216,33 @@ export const group = <A, R extends Record<A>>
 /**
  * values returns a shallow array of the values of a record.
  */
-export const values = <A >(r: Record<A>): A[] =>
-    reduce(r, [], (p: A[], c) => concat(p,<A>c));
+export const values = <A>(r: Record<A>): A[] =>
+    reduce(r, [], (p: A[], c) => concat(p, <A>c));
 
 /**
  * contains indicates whether a Record has a given key.
  */
 export const contains = <A>(r: Record<A>, key: string): boolean =>
     Object.hasOwnProperty.call(r, key);
+
+
+/**
+ * clone a Record.
+ * 
+ * Breaks references and deep clones arrays.
+ * This function should only be used on Records or objects that
+ * are not class instances.
+ */
+export const clone = <A, R extends Record<A>>(r: R): R =>
+    reduce(r, <any>{}, (p: R, c, k) => {
+
+        if (Array.isArray(c))
+            p[k] = <any>c.map(clone);
+        else if (typeof c === 'object')
+            p[k] = clone(<any>c);
+        else
+            p[k] = c;
+
+        return p;
+
+    });

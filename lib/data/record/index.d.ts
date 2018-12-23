@@ -101,3 +101,11 @@ export declare const values: <A>(r: Record<A>) => A[];
  * contains indicates whether a Record has a given key.
  */
 export declare const contains: <A>(r: Record<A>, key: string) => boolean;
+/**
+ * clone a Record.
+ *
+ * Breaks references and deep clones arrays.
+ * This function should only be used on Records or objects that
+ * are not class instances.
+ */
+export declare const clone: <A, R extends Record<A>>(r: R) => R;
