@@ -1,6 +1,14 @@
 import { must } from '@quenk/must';
 import { Nothing } from '../../../src/data/maybe';
-import { tokenize, get, set } from '../../../src/data/record/path';
+import {
+    tokenize,
+    get,
+    set,
+    escape,
+    escapeRecord,
+    unescape,
+    unescapeRecord
+} from '../../../src/data/record/path';
 
 describe('path', () => {
 
@@ -315,6 +323,98 @@ describe('path', () => {
                 },
                 points: 0
             });
+
+        });
+
+    });
+
+    describe('escape', () => {
+
+        it('should escape dots', () => {
+
+            must(escape('dot.dot.dots')).equal('dot..dot..dots');
+
+        });
+
+        it('must escape brackets', () => {
+
+            must(escape('dot[dot][dots]')).equal('dot[[dot]][[dots]]');
+        });
+
+    });
+
+    describe('escapeRecord', () => {
+
+        it('should work', () => {
+
+            must(escapeRecord({
+                'a.one': 1,
+                b: 'c',
+                'd.e': {
+                    a: 1,
+                    'b[two]': 3,
+                    c: { 'n.': 1 }
+                }
+            }))
+                .equate({
+                    'a..one': 1,
+                    b: 'c',
+                    'd..e':
+                    {
+                        a: 1,
+                        'b[[two]]': 3,
+                        c: {
+                            'n..': 1
+                        }
+                    }
+                })
+
+        });
+
+    });
+
+
+    describe('unescape', () => {
+
+        it('should unescape dots', () => {
+
+            must(unescape('dot..dot..dots')).equal('dot.dot.dots');
+
+        });
+
+        it('must unescape brackets', () => {
+
+            must(unescape('dot[[dot]][[dots]]')).equal('dot[dot][dots]');
+        });
+
+    });
+
+    describe('unescapeRecord', () => {
+
+        it('should work', () => {
+
+            must(unescapeRecord(
+                {
+                    'a..one': 1,
+                    b: 'c',
+                    'd..e':
+                    {
+                        a: 1,
+                        'b[[two]]': 3,
+                        c: {
+                            'n..': 1
+                        }
+                    }
+                }      ))
+               .equate({
+                    'a.one': 1,
+                    b: 'c',
+                    'd.e': {
+                        a: 1,
+                        'b[two]': 3,
+                        c: { 'n.': 1 }
+                    }
+                })
 
         });
 

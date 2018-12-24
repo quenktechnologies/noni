@@ -8,10 +8,17 @@
  * of both. 
  *
  * Note that quotes are not used when describing a path via bracket notation.
+ *
+ * If you need to use the dots or square brackets in your paths, escape them
+ * as follows:
+ *
+ * "." -> ".."
+ * "[" -> "[["
+ * "]" -> "]]"
  */
 /** imports **/
 import { Maybe, fromNullable } from '../maybe';
-import { Record, clone } from './';
+import { Record, clone, reduce } from './';
 
 const TOKEN_DOT = '.';
 const TOKEN_BRACKET_LEFT = '[';
@@ -204,3 +211,70 @@ const _set = (r: any, value: any, toks: string[]): any => {
     return o;
 
 }
+
+/**
+ * escape a path so that occurences of dots and brackets are not interpreted
+ * as paths.
+ */
+export const escape = (p: Path): Path =>
+    p
+        .split(TOKEN_DOT)
+        .join(TOKEN_DOT + TOKEN_DOT)
+        .split(TOKEN_BRACKET_LEFT)
+        .join(TOKEN_BRACKET_LEFT + TOKEN_BRACKET_LEFT)
+        .split(TOKEN_BRACKET_RIGHT)
+        .join(TOKEN_BRACKET_RIGHT + TOKEN_BRACKET_RIGHT);
+
+/**
+ * unescape a path that has been previously escaped.
+ */
+export const unescape = (p: Path): Path =>
+    p
+        .split(TOKEN_DOT + TOKEN_DOT)
+        .join(TOKEN_DOT)
+        .split(TOKEN_BRACKET_LEFT + TOKEN_BRACKET_LEFT)
+        .join(TOKEN_BRACKET_LEFT)
+        .split(TOKEN_BRACKET_RIGHT + TOKEN_BRACKET_RIGHT)
+        .join(TOKEN_BRACKET_RIGHT);
+
+/**
+ * escapeRecord escapes each property of a record recursively.
+ */
+export const escapeRecord = <A>(r: Record<A>): Record<A> =>
+    _escapeRecord(r);
+
+const _escapeRecord = <A>(r: Record<A>): Record<A> =>
+    reduce(r, <Record<any>>{}, (p, c, k) => {
+
+        if (Array.isArray(c))
+            p[escape(k)] = c.map(_escapeRecord);
+        else if (typeof c === 'object')
+            p[escape(k)] = escapeRecord(<any>c);
+        else
+            p[escape(k)] = c;
+
+        return p
+
+    })
+
+/**
+ * unescapeRecord unescapes each property of a record recursively.
+ */
+export const unescapeRecord = <A>(r: Record<A>): Record<A> =>
+    _unescapeRecord(r);
+
+const _unescapeRecord = <A>(r: Record<A>): Record<A> =>
+    reduce(r, <Record<any>>{}, (p, c, k) => {
+
+        if (Array.isArray(c))
+            p[unescape(k)] = c.map(_unescapeRecord);
+        else if (typeof c === 'object')
+            p[unescape(k)] = unescapeRecord(<any>c);
+        else
+            p[unescape(k)] = c;
+
+        return p
+
+    })
+
+
