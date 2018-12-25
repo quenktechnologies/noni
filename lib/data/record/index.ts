@@ -4,7 +4,6 @@
  * Some of the functions provided here are inherently unsafe (tsc will not
  * be able track integrity and may result in runtime errors if not used carefully.
  */
-import { isObject } from '../type';
 import { concat } from '../array';
 
 /**
@@ -13,7 +12,6 @@ import { concat } from '../array';
 export interface Record<A> {
 
     [key: string]: A
-
 }
 
 /**
@@ -37,7 +35,8 @@ export const keys = <A>(value: Record<A>) => Object.keys(value);
  * The order of keys processed is not guaranteed.
  */
 export const map = <A, B>
-    (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B): Record<B> =>
+    (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B)
+    : Record<B> =>
     keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), {});
 
 /**
@@ -48,7 +47,8 @@ export const map = <A, B>
  * The order of keys processed is not guaranteed.
  */
 export const reduce = <A, B>
-    (o: Record<A>, accum: B, f: (pre: B, curr: A, key: string) => B): B =>
+    (o: Record<A>, accum: B, f: (pre: B, curr: A, key: string) => B)
+    : B =>
     keys(o).reduce((p, k) => f(p, o[k], k), accum);
 
 /**
@@ -163,27 +163,6 @@ export const exclude = <A, R extends Record<A>>(o: R, keys: string | string[]) =
 }
 
 /**
- * flatten an object into a map of key value pairs.
- *
- * The keys are the paths on the objects where the value would have been
- * found. 
- * 
- * Note: This function does not give special treatment to properties
- * with dots in them.
- */
-export const flatten = <A, R extends Record<A>>(r: R): Record<A> =>
-    (flatImpl<A, R>('')({})(r));
-
-const flatImpl = <A, R extends Record<A>>
-    (pfix: string) => (prev: Record<any>) => (r: R): Record<A> =>
-        reduce(r, prev, (p, c, k) => isObject(c) ?
-            (flatImpl(prefix(pfix, k))(p)(<Record<any>>c)) :
-            merge(p, { [prefix(pfix, k)]: c }));
-
-const prefix = (pfix: string, key: string) => (pfix === '') ?
-    key : `${pfix}.${key}`;
-
-/**
  * partition a Record into two sub-records using a separating function.
  *
  * This function produces an array where the first element is a record
@@ -234,15 +213,15 @@ export const contains = <A>(r: Record<A>, key: string): boolean =>
  * are not class instances.
  */
 export const clone = <A, R extends Record<A>>(r: R): R =>
-    reduce(r, <any>{}, (p: R, c, k) => {
+    reduce(r, <any>{}, (p: R, c, k) => { p[k] = _clone(c); return p; });
 
-        if (Array.isArray(c))
-            p[k] = <any>c.map(clone);
-        else if (typeof c === 'object')
-            p[k] = clone(<any>c);
-        else
-            p[k] = c;
+const _clone = (a: any): any => {
 
-        return p;
+    if (Array.isArray(a))
+        return a.map(_clone);
+    else if (typeof a === 'object')
+        return clone(a);
+    else
+        return a;
 
-    });
+};

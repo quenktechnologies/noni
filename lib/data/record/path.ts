@@ -18,7 +18,7 @@
  */
 /** imports **/
 import { Maybe, fromNullable } from '../maybe';
-import { Record, clone, reduce } from './';
+import { Record, clone, reduce, merge, isRecord } from './';
 
 const TOKEN_DOT = '.';
 const TOKEN_BRACKET_LEFT = '[';
@@ -28,6 +28,16 @@ const TOKEN_BRACKET_RIGHT = ']';
  * Path representing a path to a value in an object.
  */
 export type Path = string;
+
+/**
+ * FlatRecord represents a flat Record where the keys are actually
+ * paths to a more complex one.
+ */
+export interface FlatRecord<A> {
+
+    [key: string]: A
+
+}
 
 /**
  * Token represents the name of a single property (not a path to one!).
@@ -205,8 +215,8 @@ const _set = (r: any, value: any, toks: string[]): any => {
 
     if (toks.length === 0) return value;
 
-    o = ((typeof r !== 'object') || (r === null)) ? {} : clone(r);
-    o[toks[0]] = _set((o)[toks[0]], value, toks.slice(1));
+    o = isRecord(r) ? clone(r) : {}
+    o[toks[0]] = _set(o[toks[0]], value, toks.slice(1));
 
     return o;
 
@@ -278,3 +288,27 @@ const _unescapeRecord = <A>(r: Record<A>): Record<A> =>
     })
 
 
+/**
+ * flatten an object into a Record where each key is a path to a non-complex
+ * value or array.
+ *
+ * If any of the paths contain dots, they will be escaped.
+ */
+export const flatten = <A>(r: Record<A>): FlatRecord<A> =>
+    (flatImpl<A>('')({})(r));
+
+const flatImpl = <A>(pfix: string) => (prev: FlatRecord<any>) =>
+    (r: Record<A>): FlatRecord<A> =>
+        reduce(r, prev, (p, c, k) => isRecord(c) ?
+            (flatImpl(prefix(pfix, k))(p)(<Record<any>>c)) :
+            merge(p, { [prefix(pfix, k)]: c }));
+
+const prefix = (pfix: string, key: string) => (pfix === '') ?
+    escape(key) : `${pfix}.${escape(key)}`;
+
+/**
+ * unflatten a flattened Record so that any nested paths are expanded
+ * to their full representation.
+ */
+export const unflatten = <A>(r: FlatRecord<A>): Record<A> =>
+    reduce(r, {}, (p: Record<A>, c, k: string) => set(k, c, p));

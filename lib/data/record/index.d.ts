@@ -72,16 +72,6 @@ export declare const rmerge5: <A, R extends Record<A>, B, S extends Record<B>, C
  */
 export declare const exclude: <A, R extends Record<A>>(o: R, keys: string | string[]) => {};
 /**
- * flatten an object into a map of key value pairs.
- *
- * The keys are the paths on the objects where the value would have been
- * found.
- *
- * Note: This function does not give special treatment to properties
- * with dots in them.
- */
-export declare const flatten: <A, R extends Record<A>>(r: R) => Record<A>;
-/**
  * partition a Record into two sub-records using a separating function.
  *
  * This function produces an array where the first element is a record

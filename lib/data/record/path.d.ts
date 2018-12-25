@@ -24,6 +24,13 @@ import { Record } from './';
  */
 export declare type Path = string;
 /**
+ * FlatRecord represents a flat Record where the keys are actually
+ * paths to a more complex one.
+ */
+export interface FlatRecord<A> {
+    [key: string]: A;
+}
+/**
  * Token represents the name of a single property (not a path to one!).
  */
 export declare type Token = string;
@@ -63,3 +70,15 @@ export declare const escapeRecord: <A>(r: Record<A>) => Record<A>;
  * unescapeRecord unescapes each property of a record recursively.
  */
 export declare const unescapeRecord: <A>(r: Record<A>) => Record<A>;
+/**
+ * flatten an object into a Record where each key is a path to a non-complex
+ * value or array.
+ *
+ * If any of the paths contain dots, they will be escaped.
+ */
+export declare const flatten: <A>(r: Record<A>) => FlatRecord<A>;
+/**
+ * unflatten a flattened Record so that any nested paths are expanded
+ * to their full representation.
+ */
+export declare const unflatten: <A>(r: FlatRecord<A>) => Record<A>;

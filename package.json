@@ -13,7 +13,7 @@
     "main": "lib",
     "types": "lib/index.d.ts",
     "devDependencies": {
-        "@quenk/must": "^1.0.4",
+        "@quenk/must": "^1.0.5",
         "@types/bluebird": "^3.5.24",
         "@types/mocha": "^5.2.5",
         "@types/node": "^10.12.10",
