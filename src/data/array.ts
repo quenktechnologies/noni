@@ -61,7 +61,7 @@ export const group = <A>(list: A[]) => (f: (a: A, i: number, r: A[]) => string)
 
         return merge(p, {
             [g]: Array.isArray(p[g]) ?
-                concat(p[g], c) : [c]
+          concat(<A[]>p[g], c) : [c]
         });
 
     }, <Record<A[]>>{});

@@ -13,12 +13,11 @@ import {
     rmerge4,
     rmerge5,
     exclude,
-    flatten,
     partition,
     group,
     values,
-  contains,
-  clone
+    contains,
+    clone
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -335,32 +334,6 @@ describe('record', () => {
         })
     })
 
-    describe('flatten', () => {
-
-        it('should work', () => {
-
-            must(flatten({
-
-                'name.first': 'Lasana',
-                name: { last: 'Murray' },
-                'name.middle': 'K',
-                'options.flags.enabled': [0, 1, 2],
-                'options.flags': { version: 'v22' },
-                level: 'master'
-
-            })).equate({
-
-                'name.first': 'Lasana',
-                'name.last': 'Murray',
-                'name.middle': 'K',
-                'options.flags.enabled': [0, 1, 2],
-                'options.flags.version': 'v22',
-                'level': 'master'
-
-            })
-        })
-    })
-
     describe('partition', () => {
 
         it('should partition records', () => {
@@ -442,14 +415,24 @@ describe('record', () => {
 
         it('should break refs', () => {
 
-          let c = {n:1}
-          let a = {b: c};
+            let c = { n: 1 }
+            let a = { b: c };
 
-          must(clone(a)).equate(a);
-          must(clone(a).b).not.equal(c);
-          
+            must(clone(a)).equate(a);
+            must(clone(a).b).not.equal(c);
+
         });
-      
+
+    });
+
+    it('should not mess up arrays', () => {
+
+        let o = {
+            n: 1, b: 12, d: [0, 2, 3]
+        };
+
+        must(clone(o)).equate({ n: 1, b: 12, d: [0, 2, 3]});
+
     });
 
 });

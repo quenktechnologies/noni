@@ -7,6 +7,8 @@ import {
     escape,
     escapeRecord,
     unescape,
+    flatten,
+    unflatten,
     unescapeRecord
 } from '../../../src/data/record/path';
 
@@ -405,8 +407,8 @@ describe('path', () => {
                             'n..': 1
                         }
                     }
-                }      ))
-               .equate({
+                }))
+                .equate({
                     'a.one': 1,
                     b: 'c',
                     'd.e': {
@@ -419,5 +421,62 @@ describe('path', () => {
         });
 
     });
+
+    describe('flatten', () => {
+
+        it('should work', () => {
+
+            must(flatten({
+
+                'name.first': 'Lasana',
+                name: { last: 'Murray' },
+                'name.middle': 'K',
+                'options.flags.enabled': [0, 1, 2],
+                options: { flags: { version: 'v22' } },
+                level: 'master'
+
+            })).equate({
+
+                'name..first': 'Lasana',
+                'name.last': 'Murray',
+                'name..middle': 'K',
+                'options..flags..enabled': [0, 1, 2],
+                'options.flags.version': 'v22',
+                'level': 'master'
+
+            })
+        })
+    })
+
+    describe('unflatten', () => {
+
+        it('should work', () => {
+
+            let b4 = {
+
+                'name..first': 'Lasana',
+                'name.last': 'Murray',
+                'name..middle': 'K',
+                'options..flags..enabled': [0, 1, 2],
+                'options.flags.version': 'v22',
+                'level': 'master'
+
+            };
+
+            let after = {
+
+                'name.first': 'Lasana',
+                name: { last: 'Murray' },
+                'name.middle': 'K',
+                'options.flags.enabled': [0, 1, 2],
+                options: { flags: { version: 'v22' } },
+                level: 'master'
+
+            };
+
+            must(unflatten(b4)).equate(after)
+
+        })
+    })
 
 });
