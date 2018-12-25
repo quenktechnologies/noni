@@ -423,15 +423,15 @@ describe('record', () => {
 
         });
 
-    });
+        it('should not mess up arrays', () => {
 
-    it('should not mess up arrays', () => {
+            let o = {
+                n: 1, b: 12, d: [0, 2, 3]
+            };
 
-        let o = {
-            n: 1, b: 12, d: [0, 2, 3]
-        };
+            must(clone(o)).equate({ n: 1, b: 12, d: [0, 2, 3] });
 
-        must(clone(o)).equate({ n: 1, b: 12, d: [0, 2, 3]});
+        });
 
     });
 
