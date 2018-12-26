@@ -251,15 +251,11 @@ export const unescape = (p: Path): Path =>
  * escapeRecord escapes each property of a record recursively.
  */
 export const escapeRecord = <A>(r: Record<A>): Record<A> =>
-    _escapeRecord(r);
 
-const _escapeRecord = <A>(r: Record<A>): Record<A> =>
-    reduce(r, <Record<any>>{}, (p, c, k) => {
+    reduce(r, <Record<A>>{}, (p, c, k) => {
 
-        if (Array.isArray(c))
-            p[escape(k)] = c.map(_escapeRecord);
-        else if (typeof c === 'object')
-            p[escape(k)] = escapeRecord(<any>c);
+        if (typeof c === 'object')
+            p[escape(k)] = <A><any>escapeRecord(<Record<A>><any>c);
         else
             p[escape(k)] = c;
 
@@ -271,14 +267,9 @@ const _escapeRecord = <A>(r: Record<A>): Record<A> =>
  * unescapeRecord unescapes each property of a record recursively.
  */
 export const unescapeRecord = <A>(r: Record<A>): Record<A> =>
-    _unescapeRecord(r);
-
-const _unescapeRecord = <A>(r: Record<A>): Record<A> =>
     reduce(r, <Record<any>>{}, (p, c, k) => {
 
-        if (Array.isArray(c))
-            p[unescape(k)] = c.map(_unescapeRecord);
-        else if (typeof c === 'object')
+        if (isRecord(c))
             p[unescape(k)] = unescapeRecord(<any>c);
         else
             p[unescape(k)] = c;

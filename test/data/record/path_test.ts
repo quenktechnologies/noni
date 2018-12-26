@@ -405,11 +405,12 @@ describe('path', () => {
             must(unescapeRecord(
                 {
                     'a..one': 1,
-                    b: 'c',
+                  b: 'c',
+                  d: ['d'],
                     'd..e':
                     {
                         a: 1,
-                        'b[[two]]': 3,
+                        'b[[two]]': [3],
                         c: {
                             'n..': 1
                         }
@@ -417,10 +418,11 @@ describe('path', () => {
                 }))
                 .equate({
                     'a.one': 1,
-                    b: 'c',
+                  b: 'c',
+                  d: ['d'],
                     'd.e': {
                         a: 1,
-                        'b[two]': 3,
+                        'b[two]': [3],
                         c: { 'n.': 1 }
                     }
                 })
