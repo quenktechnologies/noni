@@ -328,6 +328,13 @@ describe('path', () => {
 
         });
 
+        it('should not mangle arrays', () => {
+
+            must(set('flag', true, <any>{ n: 1, b: { d: [1, 2, 3] }, items: [12] }))
+                .equate({ n: 1, b: { d: [1, 2,  3] }, items: [12], flag: true });
+
+        });
+
     });
 
     describe('escape', () => {
