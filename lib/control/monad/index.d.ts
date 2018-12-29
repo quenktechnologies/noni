@@ -23,3 +23,36 @@ export declare const join: <A, M extends Monad<A>>(outer: Monad<M>) => M;
  * you get a function (a:A) => Monad<C>
  */
 export declare const compose: <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(f: (a: A) => MB) => (g: (b: B) => MC) => (a: A) => MC;
+/**
+ * $do simulates haskell's do notation using ES6's generator syntax.
+ *
+ * Example:
+ *
+ * ```typescript
+ * $do(function*() {
+ *
+ *   const a = yield pure(1);
+ *   const b = yield pure(a+2);
+ *   const c = yield pure(b+1);
+ *
+ *   return c;
+ *
+ * })
+ * ```
+ * Each yield is results in a level of nesting added to the chain. The above
+ * could be re-written as:
+ *
+ * ```typescript
+ *
+ * pure(1)
+ *  .chain(a =>
+ *   pure(a + 2)
+ *    .chain(b =>
+ *       pure(b + 1)));
+ *
+ * ```
+ *
+ * NOTE: You MUST wrap your return values manually, this function
+ *       will not do it for you.
+ */
+export declare const $do: <A, M extends Monad<A>>(f: () => Iterator<M>) => M;

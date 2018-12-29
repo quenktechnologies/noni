@@ -70,3 +70,9 @@ export class Identity<A> implements
     }
 
 }
+
+/**
+ * pure wraps a value in an Identity.
+ */
+export const pure = <A>(value:A): Identity<A> =>
+  new Identity(value);

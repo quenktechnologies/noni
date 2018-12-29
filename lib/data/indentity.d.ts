@@ -37,3 +37,7 @@ export declare class Identity<A> implements Alt<A>, Applicative<A>, Monad<A>, Eq
      */
     eq(i: Identity<A>): boolean;
 }
+/**
+ * pure wraps a value in an Identity.
+ */
+export declare const pure: <A>(value: A) => Identity<A>;
