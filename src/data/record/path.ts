@@ -23,6 +23,7 @@ import { Record, clone, reduce, merge, isRecord } from './';
 const TOKEN_DOT = '.';
 const TOKEN_BRACKET_LEFT = '[';
 const TOKEN_BRACKET_RIGHT = ']';
+const TOKEN_ESCAPE = '\\';
 
 /**
  * Path representing a path to a value in an object.
@@ -60,7 +61,13 @@ export const tokenize = (str: Path): Token[] => {
         curr = str[i];
         next = str[i + 1];
 
-        if ((curr === TOKEN_DOT) && (next === TOKEN_DOT)) {
+        if (curr === TOKEN_ESCAPE) {
+
+            //escape sequence
+            buf = `${buf}${next}`;
+            i++;
+
+        } else if ((curr === TOKEN_DOT) && (next === TOKEN_DOT)) {
 
             //escaped dot
             buf = `${buf}${curr}`;
@@ -223,29 +230,22 @@ const _set = (r: any, value: any, toks: string[]): any => {
 }
 
 /**
- * escape a path so that occurences of dots and brackets are not interpreted
- * as paths.
+ * escape a path so that occurences of dots are not interpreted as paths.
+ *
+ * This function escapes dots and dots only.
  */
 export const escape = (p: Path): Path =>
     p
         .split(TOKEN_DOT)
-        .join(TOKEN_DOT + TOKEN_DOT)
-        .split(TOKEN_BRACKET_LEFT)
-        .join(TOKEN_BRACKET_LEFT + TOKEN_BRACKET_LEFT)
-        .split(TOKEN_BRACKET_RIGHT)
-        .join(TOKEN_BRACKET_RIGHT + TOKEN_BRACKET_RIGHT);
+        .join(TOKEN_ESCAPE + TOKEN_DOT);
 
 /**
  * unescape a path that has been previously escaped.
  */
 export const unescape = (p: Path): Path =>
     p
-        .split(TOKEN_DOT + TOKEN_DOT)
-        .join(TOKEN_DOT)
-        .split(TOKEN_BRACKET_LEFT + TOKEN_BRACKET_LEFT)
-        .join(TOKEN_BRACKET_LEFT)
-        .split(TOKEN_BRACKET_RIGHT + TOKEN_BRACKET_RIGHT)
-        .join(TOKEN_BRACKET_RIGHT);
+        .split(TOKEN_ESCAPE + TOKEN_DOT)
+        .join(TOKEN_DOT);
 
 /**
  * escapeRecord escapes each property of a record recursively.

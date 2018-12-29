@@ -186,6 +186,19 @@ describe('path', () => {
 
         });
 
+        it('should allow backslash escape sequences', () => {
+
+            must(tokenize('\\..\\.'))
+                .equate(['.', '.']);
+
+            must(tokenize('\\.'))
+                .equate(['.']);
+
+            must(tokenize('imports\\.'))
+                .equate(['imports.']);
+
+        });
+
     })
 
     describe('get', () => {
@@ -347,13 +360,8 @@ describe('path', () => {
 
         it('should escape dots', () => {
 
-            must(escape('dot.dot.dots')).equal('dot..dot..dots');
+            must(escape('dot.dot.dots')).equal('dot\\.dot\\.dots');
 
-        });
-
-        it('must escape brackets', () => {
-
-            must(escape('dot[dot][dots]')).equal('dot[[dot]][[dots]]');
         });
 
     });
@@ -372,14 +380,14 @@ describe('path', () => {
                 }
             }))
                 .equate({
-                    'a..one': 1,
+                    'a\\.one': 1,
                     b: 'c',
-                    'd..e':
+                    'd\\.e':
                     {
                         a: 1,
-                        'b[[two]]': 3,
+                        'b[two]': 3,
                         c: {
-                            'n..': 1
+                            'n\\.': 1
                         }
                     }
                 })
@@ -388,18 +396,12 @@ describe('path', () => {
 
     });
 
-
     describe('unescape', () => {
 
         it('should unescape dots', () => {
 
-            must(unescape('dot..dot..dots')).equal('dot.dot.dots');
+            must(unescape('dot\.dot\.dots')).equal('dot.dot.dots');
 
-        });
-
-        it('must unescape brackets', () => {
-
-            must(unescape('dot[[dot]][[dots]]')).equal('dot[dot][dots]');
         });
 
     });
@@ -410,15 +412,15 @@ describe('path', () => {
 
             must(unescapeRecord(
                 {
-                    'a..one': 1,
+                    'a\\.one': 1,
                     b: 'c',
                     d: ['d'],
-                    'd..e':
+                    'd\\.e':
                     {
                         a: 1,
-                        'b[[two]]': [3],
+                        'b[two]': [3],
                         c: {
-                            'n..': 1
+                            'n\\.': 1
                         }
                     }
                 }))
@@ -452,10 +454,10 @@ describe('path', () => {
 
             })).equate({
 
-                'name..first': 'Lasana',
+                'name\\.first': 'Lasana',
                 'name.last': 'Murray',
-                'name..middle': 'K',
-                'options..flags..enabled': [0, 1, 2],
+                'name\\.middle': 'K',
+                'options\\.flags\\.enabled': [0, 1, 2],
                 'options.flags.version': 'v22',
                 'level': 'master'
 
@@ -469,10 +471,10 @@ describe('path', () => {
 
             let b4 = {
 
-                'name..first': 'Lasana',
+                'name\\.first': 'Lasana',
                 'name.last': 'Murray',
-                'name..middle': 'K',
-                'options..flags..enabled': [0, 1, 2],
+                'name\\.middle': 'K',
+                'options\\.flags\\.enabled': [0, 1, 2],
                 'options.flags.version': 'v22',
                 'level': 'master'
 
