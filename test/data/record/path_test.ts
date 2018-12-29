@@ -151,6 +151,12 @@ describe('path', () => {
 
         });
 
+        it('should handle two dots', () => {
+
+            must(tokenize('..')).equate(['.']);
+
+        });
+
         it('should handle a bracket', () => {
 
             must(tokenize('[')).equate(['[']);
@@ -331,7 +337,7 @@ describe('path', () => {
         it('should not mangle arrays', () => {
 
             must(set('flag', true, <any>{ n: 1, b: { d: [1, 2, 3] }, items: [12] }))
-                .equate({ n: 1, b: { d: [1, 2,  3] }, items: [12], flag: true });
+                .equate({ n: 1, b: { d: [1, 2, 3] }, items: [12], flag: true });
 
         });
 
@@ -405,8 +411,8 @@ describe('path', () => {
             must(unescapeRecord(
                 {
                     'a..one': 1,
-                  b: 'c',
-                  d: ['d'],
+                    b: 'c',
+                    d: ['d'],
                     'd..e':
                     {
                         a: 1,
@@ -418,8 +424,8 @@ describe('path', () => {
                 }))
                 .equate({
                     'a.one': 1,
-                  b: 'c',
-                  d: ['d'],
+                    b: 'c',
+                    d: ['d'],
                     'd.e': {
                         a: 1,
                         'b[two]': [3],
