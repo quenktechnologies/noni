@@ -54,8 +54,9 @@ export declare const get: <A>(path: string, src: Record<A>) => Maybe<A>;
  */
 export declare const set: <A, R extends Record<A>>(p: string, v: A, r: R) => R;
 /**
- * escape a path so that occurences of dots and brackets are not interpreted
- * as paths.
+ * escape a path so that occurences of dots are not interpreted as paths.
+ *
+ * This function escapes dots and dots only.
  */
 export declare const escape: (p: string) => string;
 /**
