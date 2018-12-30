@@ -30,7 +30,8 @@ describe('path', () => {
 
         it('should work with a third path', () => {
 
-            must(tokenize('single.double.tripple')).equate(['single', 'double', 'tripple']);
+            must(tokenize('single.double.tripple'))
+                .equate(['single', 'double', 'tripple']);
 
         });
 
@@ -80,42 +81,42 @@ describe('path', () => {
 
         it('should recognize escapeded dots', () => {
 
-            must(tokenize('path.that.has.the..'))
-                .equate(['path', 'that', 'has', 'the.']);
+            must(tokenize('path.that.has.the.\\.'))
+                .equate(['path', 'that', 'has', 'the', '.']);
 
         });
 
         it('should recognize escaped dots anywhere', () => {
 
-            must(tokenize('path.that..has.nothing'))
-                .equate(['path', 'that.has', 'nothing']);
+            must(tokenize('path.that\\..has.nothing'))
+                .equate(['path', 'that.', 'has', 'nothing']);
 
         });
 
         it('should recognize escaped dots at the start', () => {
 
-            must(tokenize('..files.are.a.real.thing......'))
-                .equate(['.files', 'are', 'a', 'real', 'thing...']);
+            must(tokenize('\\..files.are.a.real.thing\\.\\.\\....'))
+                .equate(['.', 'files', 'are', 'a', 'real', 'thing...']);
 
         });
 
         it('should recognize escaped brackets', () => {
 
-            must(tokenize('path.that[has].the[['))
+            must(tokenize('path.that[has].the\\['))
                 .equate(['path', 'that', 'has', 'the[']);
 
         });
 
         it('should recognize escaped brackets anyway', () => {
 
-            must(tokenize('path.that[[has[nothing]'))
+            must(tokenize('path.that\\[has[nothing]'))
                 .equate(['path', 'that[has', 'nothing']);
 
         });
 
         it('should recognize escaped brackets at the start', () => {
 
-            must(tokenize('[[is[escaped][you].know'))
+            must(tokenize('\\[is[escaped][you].know'))
                 .equate(['[is', 'escaped', 'you', 'know']);
 
         });
@@ -153,7 +154,7 @@ describe('path', () => {
 
         it('should handle two dots', () => {
 
-            must(tokenize('..')).equate(['.']);
+            must(tokenize('\\..')).equate(['.']);
 
         });
 
@@ -178,24 +179,11 @@ describe('path', () => {
 
         it('should not nest brackets', () => {
 
-            must(tokenize('path[[with nested]]'))
+            must(tokenize('path\\[with nested]]'))
                 .equate(['path[with nested]]']);
 
             must(tokenize('path[do.do[with nested].value]'))
                 .equate(['path', 'do.do[with nested', 'value]']);
-
-        });
-
-        it('should allow backslash escape sequences', () => {
-
-            must(tokenize('\\..\\.'))
-                .equate(['.', '.']);
-
-            must(tokenize('\\.'))
-                .equate(['.']);
-
-            must(tokenize('imports\\.'))
-                .equate(['imports.']);
 
         });
 
@@ -229,7 +217,7 @@ describe('path', () => {
             must(get('name.last', user).get()).equal('M');
             must(get('meta.status.banned', user).get()).equal(true);
             must(get('meta[status][banned]', user).get()).equal(true);
-            must(get('dot..value', user).get()).equal('...');
+            must(get('dot\\.value', user).get()).equal('...');
             must(get('name[dot.name]', user).get()).equal('Joe.M');
             must(get('nam', user)).be.instance.of(Nothing);
 

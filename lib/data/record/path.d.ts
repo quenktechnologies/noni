@@ -9,12 +9,8 @@
  *
  * Note that quotes are not used when describing a path via bracket notation.
  *
- * If you need to use the dots or square brackets in your paths, escape them
- * as follows:
- *
- * "." -> ".."
- * "[" -> "[["
- * "]" -> "]]"
+ * If you need to use a dot or square brackets in your paths, prefix them with
+ * the "\" (backslash) character.
  */
 /** imports **/
 import { Maybe } from '../maybe';

@@ -9,12 +9,8 @@
  *
  * Note that quotes are not used when describing a path via bracket notation.
  *
- * If you need to use the dots or square brackets in your paths, escape them
- * as follows:
- *
- * "." -> ".."
- * "[" -> "[["
- * "]" -> "]]"
+ * If you need to use a dot or square brackets in your paths, prefix them with
+ * the "\" (backslash) character.
  */
 /** imports **/
 import { Maybe, fromNullable } from '../maybe';
@@ -67,25 +63,12 @@ export const tokenize = (str: Path): Token[] => {
             buf = `${buf}${next}`;
             i++;
 
-        } else if ((curr === TOKEN_DOT) && (next === TOKEN_DOT)) {
-
-            //escaped dot
-            buf = `${buf}${curr}`;
-            i++;
-
         } else if (curr === TOKEN_DOT) {
 
             if (buf !== '')
                 tokens.push(buf); //recognize a path and push a new token
 
             buf = '';
-
-        } else if ((curr === TOKEN_BRACKET_LEFT) &&
-            (next === TOKEN_BRACKET_LEFT)) {
-
-            //escaped left bracket
-            buf = `${buf}${TOKEN_BRACKET_LEFT}`;
-            i++;
 
         } else if ((curr === TOKEN_BRACKET_LEFT) &&
             next === TOKEN_BRACKET_RIGHT) {
@@ -234,18 +217,62 @@ const _set = (r: any, value: any, toks: string[]): any => {
  *
  * This function escapes dots and dots only.
  */
-export const escape = (p: Path): Path =>
-    p
-        .split(TOKEN_DOT)
-        .join(TOKEN_ESCAPE + TOKEN_DOT);
+export const escape = (p: Path): Path => {
+
+    let i = 0;
+    let buf = '';
+    let curr = '';
+
+    while (i < p.length) {
+
+        curr = p[i];
+
+        if ((curr === TOKEN_ESCAPE) || (curr === TOKEN_DOT))
+            buf = `${buf}${TOKEN_ESCAPE}${curr}`;
+        else
+            buf = `${buf}${curr}`;
+
+        i++;
+
+    }
+
+    return buf;
+
+}
 
 /**
  * unescape a path that has been previously escaped.
  */
-export const unescape = (p: Path): Path =>
-    p
-        .split(TOKEN_ESCAPE + TOKEN_DOT)
-        .join(TOKEN_DOT);
+export const unescape = (p: Path): Path => {
+
+    let i = 0;
+    let curr = '';
+    let next = '';
+    let buf = '';
+
+    while (i < p.length) {
+
+        curr = p[i];
+        next = p[i + 1];
+
+        if (curr === TOKEN_ESCAPE) {
+
+            buf = `${buf}${next}`
+            i++;
+
+        } else {
+
+            buf = `${buf}${curr}`;
+
+        }
+
+        i++;
+
+    }
+
+    return buf;
+
+}
 
 /**
  * escapeRecord escapes each property of a record recursively.
