@@ -4,7 +4,7 @@
 /**
  * JSONValue are values that can appear in a JSON document.
  */
-export declare type JSONValue = JSONObject | JSONArray | JSONString | JSONBoolean | JSONNumber | JSONNull;
+export declare type JSONValue = JSONObject | JSONArray | JSONString | JSONBoolean | JSONNumber | JSONNull | undefined;
 /**
  * JSONArray represents an array in a JSON document.
  */
