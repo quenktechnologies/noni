@@ -29,12 +29,12 @@ export const compose = <A, B, C, MB extends Monad<B>, MC extends Monad<C>>
     (f: (a: A) => MB) => (g: (b: B) => MC) => (a: A): MC => <MC>f(a).chain(g);
 
 /**
- * $do simulates haskell's do notation using ES6's generator syntax.
+ * doN simulates haskell's do notation using ES6's generator syntax.
  *
  * Example:
  *
  * ```typescript
- * $do(function*() {
+ * doN(function*() {
  *
  *   const a = yield pure(1);
  *   const b = yield pure(a+2);
@@ -60,7 +60,7 @@ export const compose = <A, B, C, MB extends Monad<B>, MC extends Monad<C>>
  * NOTE: You MUST wrap your return values manually, this function
  *       will not do it for you.
  */
-export const $do = <A, M extends Monad<A>>(f: () => Iterator<M>): M => {
+export const doN = <A, M extends Monad<A>>(f: () => Iterator<M>): M => {
 
     let gen = f();
 

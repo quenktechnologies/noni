@@ -1,6 +1,6 @@
 import { must } from '@quenk/must';
 import { Identity, pure } from '../../../src/data/indentity';
-import { $do } from '../../../src/control/monad';
+import { doN } from '../../../src/control/monad';
 
 describe('monad', () => {
 
@@ -8,7 +8,7 @@ describe('monad', () => {
 
         it('should work', () => {
 
-            must($do<number, Identity<number>>(function* () {
+            must(doN<number, Identity<number>>(function* () {
 
                 let a = yield pure(1);
                 let b = yield pure(a + 1);
