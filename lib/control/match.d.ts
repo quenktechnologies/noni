@@ -1,6 +1,28 @@
-export declare type Cons<T> = {
-    new (...args: any[]): T;
-};
+/**
+ * The match module provides a best effort pattern runtime pattern matching
+ * framework for ECMAScript.
+ *
+ * Example:
+ * ```ts
+ *
+ *    let r:string = match(window.global)
+ *                   .caseOf(1, (_:number) => 'one')
+ *                   .caseOf('one', (n:string) => n)
+ *                   .orElse(()=> 'N/A')
+ *                   .end();
+ *
+ * ```
+ * This framework uses the data/type#test function to do the actual
+ * pattern matching and attention must be paid to the rules of that
+ * function to avoid unexpected errors.
+ *
+ * Great effort was made to try and make the `caseOf` methods as
+ * type safe as possible however it is still possible to evade the compiler
+ * especially when the first argument is a shape (object with keys describing
+ * allowed types).
+ *
+ */
+import { Constructor } from '../data/type/constructor';
 /**
  * Result is the sum of the UnMatched and Matched types.
  */
@@ -14,7 +36,7 @@ export declare class UnMatched<A> {
     /**
      * caseOf test.
      */
-    caseOf<T, B>(pattern: Cons<T>, f: (value: T) => B): Result<A | B>;
+    caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>;
     caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>;
     caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>;
     caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>;
@@ -44,7 +66,7 @@ export declare class Matched<A> {
     /**
      * caseOf does nothing.
      */
-    caseOf<T, B>(pattern: Cons<T>, f: (value: T) => B): Result<A | B>;
+    caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>;
     caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>;
     caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>;
     caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>;

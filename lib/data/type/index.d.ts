@@ -5,8 +5,8 @@ export declare type Type = any;
 /**
  * Pattern is the value used to match expressions.
  */
-export declare type Pattern = string | number | boolean | object | {
-    new (...args: Type[]): object;
+export declare type Pattern<T> = string | number | boolean | object | {
+    new (...args: Type[]): T;
 };
 /**
  * Any is a class used to represent typescript's "any" type.
@@ -61,7 +61,7 @@ export declare const is: <A>(expected: string) => (value: A) => boolean;
  *             the function is RegExp then we uses the RegExp.test function
  *             instead.
  */
-export declare const test: <V>(value: V, t: Pattern) => boolean;
+export declare const test: <V, T>(value: V, t: Pattern<T>) => boolean;
 /**
  * show the type of a value.
  *

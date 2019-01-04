@@ -7,12 +7,12 @@ export type Type = any;
 /**
  * Pattern is the value used to match expressions.
  */
-export type Pattern
+export type Pattern<T>
     = string
     | number
     | boolean
     | object
-    | { new(...args: Type[]): object }
+    | { new(...args: Type[]): T }
     ;
 
 const prims = ['string', 'number', 'boolean'];
@@ -83,7 +83,7 @@ export const is = <A>(expected: string) => (value: A) => typeof (value) === expe
  *             the function is RegExp then we uses the RegExp.test function
  *             instead.
  */
-export const test = <V>(value: V, t: Pattern): boolean =>
+export const test = <V,T>(value: V, t: Pattern<T>): boolean =>
     ((prims.indexOf(typeof t) > -1) && (<Type>value === t)) ?
         true :
         ((typeof t === 'function') &&

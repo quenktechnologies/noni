@@ -22,9 +22,9 @@
  * allowed types).
  *
  */
-import { test,show } from '../data/type';
 
-export type Cons<T> = { new(...args: any[]): T };
+import {Constructor} from '../data/type/constructor';
+import { test,show } from '../data/type';
 
 /**
  * Result is the sum of the UnMatched and Matched types.
@@ -44,7 +44,7 @@ export class UnMatched<A> {
     /**
      * caseOf test.
      */
-    caseOf<T, B>(pattern: Cons<T>, f: (value: T) => B): Result<A | B>
+    caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>
     caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>
     caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>
     caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>
@@ -91,7 +91,7 @@ export class Matched<A> {
     /**
      * caseOf does nothing.
      */
-    caseOf<T, B>(pattern: Cons<T>, f: (value: T) => B): Result<A | B>
+    caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>
     caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>
     caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>
     caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>
