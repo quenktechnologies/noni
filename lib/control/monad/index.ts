@@ -2,6 +2,13 @@ import { Applicative } from '../applicative';
 import { Chain } from '../chain';
 
 /**
+ * DoFn type.
+ *
+ * This is the type of function we expect for do notation.
+ */
+export type DoFn<A, M extends Monad<A>> = ()=> Iterator<M>;
+
+/**
  * Monad provides a combination of an Applicative and Chain.
  *
  * As far as this library is concerned, a Monad is a type used
@@ -60,7 +67,7 @@ export const compose = <A, B, C, MB extends Monad<B>, MC extends Monad<C>>
  * NOTE: You MUST wrap your return values manually, this function
  *       will not do it for you.
  */
-export const doN = <A, M extends Monad<A>>(f: () => Iterator<M>): M => {
+export const doN = <A, M extends Monad<A>>(f: DoFn<A,M>): M => {
 
     let gen = f();
 
