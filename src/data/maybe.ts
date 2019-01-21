@@ -36,6 +36,16 @@ export interface Maybe<A> extends
      */
     orElse<B>(f: () => Maybe<B>): Maybe<A | B>;
 
+      /**
+       * isNothing tests whether the Maybe is a Nothing.
+       */
+      isNothing(): boolean
+
+      /**
+       * isJust tests whether the Maybe is a Just.
+       */
+      isJust(): boolean
+
     /**
      * get the value from a Maybe.
      */
@@ -141,6 +151,18 @@ export class Nothing<A> implements Maybe<A> {
         return f();
 
     }
+
+  isNothing() : boolean {
+
+    return true;
+
+  }
+
+  isJust(): boolean {
+
+    return false;
+
+  }
 
     /**
      * get throws an error because there
@@ -252,6 +274,18 @@ export class Just<A> implements Maybe<A> {
         return this;
 
     }
+
+    isNothing() :boolean {
+
+      return false;
+
+    }
+
+  isJust() : boolean {
+
+return true;
+
+  }
 
     /**
      * get the value of this Just.

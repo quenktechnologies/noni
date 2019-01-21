@@ -16,21 +16,70 @@ const value = 12;
 
 describe('either', () => {
 
-    describe('Left', tests.isMonad<number>({
-        pure: right,
-        eq,
-        bind: (n: number) => left(n + 1),
-        map,
-        value
-    }));
+    describe('Left', () => {
 
-    describe('Right', tests.isMonad({
-        pure: right,
-        eq,
-        bind: (n: number) => right(n + 1),
-        map,
-        value
-    }));
+        describe('Monad', tests.isMonad<number>({
+            pure: right,
+            eq,
+            bind: (n: number) => left(n + 1),
+            map,
+            value
+        }));
+
+        describe('isLeft', () => {
+
+            it('must return true', () => {
+
+                must(left(1).isLeft()).be.true();
+
+            });
+
+        });
+
+        describe('isRight', () => {
+
+            it('must return false', () => {
+
+                must(left(1).isRight()).be.false();
+
+            });
+
+        });
+
+
+    });
+
+    describe('Right', () => {
+
+        describe('Monad', tests.isMonad({
+            pure: right,
+            eq,
+            bind: (n: number) => right(n + 1),
+            map,
+            value
+        }));
+
+        describe('isRight', () => {
+
+            it('must return true', () => {
+
+                must(right(1).isRight()).be.true();
+
+            });
+
+        });
+
+        describe('isLeft', () => {
+
+            it('must return false', () => {
+
+                must(right(1).isLeft()).be.false();
+
+            });
+
+        });
+
+    });
 
     describe('fromBoolean', function() {
 

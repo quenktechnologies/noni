@@ -78,6 +78,16 @@ export abstract class Either<L, R> implements
      */
     abstract orRight(_: (l: L) => R): Either<L, R>
 
+      /**
+       * isLeft test.
+       */
+      abstract isLeft(): boolean 
+
+      /**
+       * isRight test.
+       */
+      abstract isRight(): boolean 
+
     /**
      * takeLeft extracts the value from the Left side.
      */
@@ -167,6 +177,18 @@ export class Left<L, R> extends Either<L, R> {
         return new Right<L, R>(f(this.value));
 
     }
+
+  isLeft() : boolean {
+
+    return true;
+
+  }
+
+  isRight() : boolean {
+
+    return false;
+
+  }
 
     takeLeft(): L {
 
@@ -259,6 +281,18 @@ export class Right<L, R> extends Either<L, R>  {
         return this;
 
     }
+
+  isLeft(): boolean {
+
+    return false;
+
+  }
+
+  isRight() : boolean {
+
+    return true;
+
+  }
 
     takeLeft(): L {
 

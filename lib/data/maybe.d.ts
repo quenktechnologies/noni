@@ -25,6 +25,14 @@ export interface Maybe<A> extends Monad<A>, Alt<A>, Plus<A>, Alternative<A>, Ext
      */
     orElse<B>(f: () => Maybe<B>): Maybe<A | B>;
     /**
+     * isNothing tests whether the Maybe is a Nothing.
+     */
+    isNothing(): boolean;
+    /**
+     * isJust tests whether the Maybe is a Just.
+     */
+    isJust(): boolean;
+    /**
      * get the value from a Maybe.
      */
     get(): A;
@@ -77,6 +85,8 @@ export declare class Nothing<A> implements Maybe<A> {
      * to be provided since this one is Nothing<A>.
      */
     orElse<B>(f: () => Maybe<B>): Maybe<B>;
+    isNothing(): boolean;
+    isJust(): boolean;
     /**
      * get throws an error because there
      * is nothing here to get.
@@ -132,6 +142,8 @@ export declare class Just<A> implements Maybe<A> {
      * orElse returns this Just
      */
     orElse<B>(_: (a: A) => B): Maybe<A>;
+    isNothing(): boolean;
+    isJust(): boolean;
     /**
      * get the value of this Just.
      */

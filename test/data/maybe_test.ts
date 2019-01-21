@@ -21,21 +21,69 @@ const value = 12;
 
 describe('maybe', () => {
 
-    describe('Just', tests.isMonad({
-        pure: just,
-        eq,
-        bind: (n: number) => just(n + 1),
-        map,
-        value
-    }));
+    describe('Just', () => {
 
-    describe('Nothing', tests.isMonad<number>({
+        describe('Monad', tests.isMonad({
+            pure: just,
+            eq,
+            bind: (n: number) => just(n + 1),
+            map,
+            value
+        }));
+
+        describe('isNothing', () => {
+
+            it('should return false', () => {
+
+              must(just(1).isNothing()).equal(false);
+
+            });
+          
+        });
+
+        describe('isJust', () => {
+
+            it('should return true', () => {
+              
+          must(just(1).isJust()).equal(true);
+
+            });
+          
+        });
+
+    });
+
+    describe('Nothing', () => {
+      
+    describe('Monad', tests.isMonad<number>({
         pure: nothing,
         eq,
         bind: (_: number) => nothing(),
         map,
         value
     }));
+
+        describe('isNothing', () => {
+
+            it('should return true', () => {
+
+              must(nothing().isNothing()).equal(true);
+
+            });
+          
+        });
+
+        describe('isJust', () => {
+
+            it('should return false', () => {
+              
+          must(nothing().isJust()).equal(false);
+
+            });
+          
+        });
+
+    });
 
     describe('fromObject', () => {
 

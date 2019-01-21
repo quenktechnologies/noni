@@ -53,6 +53,14 @@ export declare abstract class Either<L, R> implements Functor<R>, Apply<R>, Alt<
      */
     abstract orRight(_: (l: L) => R): Either<L, R>;
     /**
+     * isLeft test.
+     */
+    abstract isLeft(): boolean;
+    /**
+     * isRight test.
+     */
+    abstract isRight(): boolean;
+    /**
      * takeLeft extracts the value from the Left side.
      */
     abstract takeLeft(): L;
@@ -84,6 +92,8 @@ export declare class Left<L, R> extends Either<L, R> {
     eq(m: Either<L, R>): boolean;
     orElse<B>(f: (l: L) => Either<L, B>): Either<L, B>;
     orRight(f: (l: L) => R): Either<L, R>;
+    isLeft(): boolean;
+    isRight(): boolean;
     takeLeft(): L;
     takeRight(): R;
     toMaybe(): Maybe<R>;
@@ -105,6 +115,8 @@ export declare class Right<L, R> extends Either<L, R> {
     fold<B>(_: (l: L) => B, g: (r: R) => B): B;
     orElse(_: (l: L) => Either<L, R>): Either<L, R>;
     orRight(_: (l: L) => R): Either<L, R>;
+    isLeft(): boolean;
+    isRight(): boolean;
     takeLeft(): L;
     takeRight(): R;
     toMaybe(): Maybe<R>;
