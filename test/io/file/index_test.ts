@@ -60,6 +60,8 @@ describe('file', () => {
                         '/test/io/file/fixtures/dirb',
                         '/test/io/file/fixtures/dirc',
                         '/test/io/file/fixtures/dira/dirab',
+                        '/test/io/file/fixtures/dira/dirab/dirabc',
+                        '/test/io/file/fixtures/dira/dirab/dirabc/filea',
                         '/test/io/file/fixtures/dirb/fileb',
                         '/test/io/file/fixtures/dirc/filea'
                     ]))));
@@ -110,6 +112,8 @@ describe('file', () => {
                         '/test/io/file/fixtures/about',
                         '/test/io/file/fixtures/dira',
                         '/test/io/file/fixtures/dira/dirab',
+                        '/test/io/file/fixtures/dira/dirab/dirabc',
+                        '/test/io/file/fixtures/dira/dirab/dirabc/filea',
                         '/test/io/file/fixtures/dirb',
                         '/test/io/file/fixtures/dirb/fileb',
                         '/test/io/file/fixtures/dirc',
@@ -143,6 +147,7 @@ describe('file', () => {
                     p.split(process.cwd()).join('')).sort()).equate([
                         '/test/io/file/fixtures/dira',
                         '/test/io/file/fixtures/dira/dirab',
+                        '/test/io/file/fixtures/dira/dirab/dirabc',
                         '/test/io/file/fixtures/dirb',
                         '/test/io/file/fixtures/dirc'
                     ]))));
@@ -173,6 +178,7 @@ describe('file', () => {
                 .map(list => must(list.map(p =>
                     p.split(process.cwd()).join('')).sort()).equate([
                         '/test/io/file/fixtures/about',
+                        '/test/io/file/fixtures/dira/dirab/dirabc/filea',
                         '/test/io/file/fixtures/dirb/fileb',
                         '/test/io/file/fixtures/dirc/filea'
                     ]))));

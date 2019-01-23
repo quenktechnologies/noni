@@ -72,9 +72,10 @@ export const statDirAbs = (path: Path): Future<StatsM> =>
  */
 export const statDirRec = (path: Path): Future<StatsM> =>
     statDirAbs(path)
-        .chain(stats => parallel(reduce(stats, [], (p: Future<StatsM>[], c, k) =>
-            c.isDirectory() ? p.concat(statDirAbs(k)) : p))
-            .map(results => results.reduce((p, c) => merge(p, c), stats)));
+        .chain(stats =>
+            parallel(reduce(stats, [], (p: Future<StatsM>[], c, k) =>
+                c.isDirectory() ? p.concat(statDirRec(k)) : p))
+                .map(results => results.reduce((p, c) => merge(p, c), stats)));
 
 /**
  * exists (safe) wrapper.
@@ -229,7 +230,7 @@ export const makeDir = (path: Path, options: Record<boolean | number> = {})
  */
 export const unlink = (path: Path): Future<void> =>
     isDirectory(path)
-    .chain(yes => yes ?
+        .chain(yes => yes ?
             removeDir(path) :
             removeFile(path));
 
