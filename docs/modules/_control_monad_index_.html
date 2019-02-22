@@ -912,11 +912,14 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="../interfaces/_control_monad_index_.monad.html" class="tsd-kind-icon">Monad</a>
 		</li>
-		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
-			<a href="_control_monad_index_.html#_do" class="tsd-kind-icon">$do</a>
+		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_monad_index_.html#dofn" class="tsd-kind-icon">Do<wbr>Fn</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_index_.html#compose" class="tsd-kind-icon">compose</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+			<a href="_control_monad_index_.html#don" class="tsd-kind-icon">doN</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 			<a href="_control_monad_index_.html#join" class="tsd-kind-icon">join</a>
@@ -936,10 +939,16 @@ img { max-width: 100%; }
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
+						<h3>Type aliases</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_index_.html#dofn" class="tsd-kind-icon">Do<wbr>Fn</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_index_.html#_do" class="tsd-kind-icon">$do</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_index_.html#compose" class="tsd-kind-icon">compose</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_index_.html#don" class="tsd-kind-icon">doN</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_control_monad_index_.html#join" class="tsd-kind-icon">join</a></li>
 						</ul>
 					</section>
@@ -947,77 +956,41 @@ img { max-width: 100%; }
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
-			<h2>Functions</h2>
-			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
-				<a name="_do" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagConst">Const</span> $do</h3>
-				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
-					<li class="tsd-signature tsd-kind-icon">$do&lt;A, M&gt;<span class="tsd-signature-symbol">(</span>f<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">M</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/1c35182/lib/control/monad/index.ts#L63">control/monad/index.ts:63</a></li>
+			<h2>Type aliases</h2>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="dofn" class="tsd-anchor"></a>
+				<h3>Do<wbr>Fn</h3>
+				<div class="tsd-signature tsd-kind-icon">Do<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/65a9837/lib/control/monad/index.ts#L9">control/monad/index.ts:9</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>DoFn type.</p>
+					</div>
+					<p>This is the type of function we expect for do notation.</p>
+				</div>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter-siganture">
+							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol">&gt;</span></li>
 							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>$do simulates haskell&#39;s do notation using ES6&#39;s generator syntax.</p>
-							</div>
-							<p>Example:</p>
-							<pre><code class="language-typescript">$<span class="hljs-keyword">do</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
-
-  <span class="hljs-keyword">const</span> a = <span class="hljs-keyword">yield</span> pure(<span class="hljs-number">1</span>);
-  <span class="hljs-keyword">const</span> b = <span class="hljs-keyword">yield</span> pure(a+<span class="hljs-number">2</span>);
-  <span class="hljs-keyword">const</span> c = <span class="hljs-keyword">yield</span> pure(b+<span class="hljs-number">1</span>);
-
-  <span class="hljs-keyword">return</span> c;
-
-})</code></pre>
-							<p>Each yield is results in a level of nesting added to the chain. The above
-							could be re-written as:</p>
-							<pre><code class="language-typescript">
-pure(<span class="hljs-number">1</span>)
- .chain(<span class="hljs-function"><span class="hljs-params">a</span> =&gt;</span>
-  pure(a + <span class="hljs-number">2</span>)
-   .chain(<span class="hljs-function"><span class="hljs-params">b</span> =&gt;</span>
-      pure(b + <span class="hljs-number">1</span>)));
-</code></pre>
-							<p>NOTE: You MUST wrap your return values manually, this function
-							will not do it for you.</p>
-						</div>
-						<h4 class="tsd-type-parameters-title">Type parameters</h4>
-						<ul class="tsd-type-parameters">
-							<li>
-								<h4>A</h4>
-							</li>
-							<li>
-								<h4>M<span class="tsd-signature-symbol">: </span><a href="../interfaces/_control_monad_index_.monad.html" class="tsd-signature-type">Monad</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							</li>
-						</ul>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>f: <span class="tsd-signature-type">function</span></h5>
-								<ul class="tsd-parameters">
-									<li class="tsd-parameter-siganture">
-										<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol">&gt;</span></li>
-										</ul>
-										<ul class="tsd-descriptions">
-											<li class="tsd-description">
-												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol">&gt;</span></h4>
-											</li>
-										</ul>
-									</li>
-								</ul>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">M</span></h4>
-					</li>
-				</ul>
+							<ul class="tsd-descriptions">
+								<li class="tsd-description">
+									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Iterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol">&gt;</span></h4>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Functions</h2>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 				<a name="compose" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> compose</h3>
@@ -1028,7 +1001,7 @@ pure(<span class="hljs-number">1</span>)
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/1c35182/lib/control/monad/index.ts#L28">control/monad/index.ts:28</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/65a9837/lib/control/monad/index.ts#L35">control/monad/index.ts:35</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1085,6 +1058,64 @@ pure(<span class="hljs-number">1</span>)
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+				<a name="don" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> doN</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class="tsd-signature tsd-kind-icon">doN&lt;A, M&gt;<span class="tsd-signature-symbol">(</span>f<span class="tsd-signature-symbol">: </span><a href="_control_monad_index_.html#dofn" class="tsd-signature-type">DoFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">M</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/65a9837/lib/control/monad/index.ts#L70">control/monad/index.ts:70</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>doN simulates haskell&#39;s do notation using ES6&#39;s generator syntax.</p>
+							</div>
+							<p>Example:</p>
+							<pre><code class="language-typescript">doN(<span class="hljs-function"><span class="hljs-keyword">function</span>*(<span class="hljs-params"></span>) </span>{
+
+  <span class="hljs-keyword">const</span> a = <span class="hljs-keyword">yield</span> pure(<span class="hljs-number">1</span>);
+  <span class="hljs-keyword">const</span> b = <span class="hljs-keyword">yield</span> pure(a+<span class="hljs-number">2</span>);
+  <span class="hljs-keyword">const</span> c = <span class="hljs-keyword">yield</span> pure(b+<span class="hljs-number">1</span>);
+
+  <span class="hljs-keyword">return</span> c;
+
+})</code></pre>
+							<p>Each yield is results in a level of nesting added to the chain. The above
+							could be re-written as:</p>
+							<pre><code class="language-typescript">
+pure(<span class="hljs-number">1</span>)
+ .chain(<span class="hljs-function"><span class="hljs-params">a</span> =&gt;</span>
+  pure(a + <span class="hljs-number">2</span>)
+   .chain(<span class="hljs-function"><span class="hljs-params">b</span> =&gt;</span>
+      pure(b + <span class="hljs-number">1</span>)));
+</code></pre>
+							<p>NOTE: You MUST wrap your return values manually, this function
+							will not do it for you.</p>
+						</div>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>A</h4>
+							</li>
+							<li>
+								<h4>M<span class="tsd-signature-symbol">: </span><a href="../interfaces/_control_monad_index_.monad.html" class="tsd-signature-type">Monad</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>f: <a href="_control_monad_index_.html#dofn" class="tsd-signature-type">DoFn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">M</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">M</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
 				<a name="join" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> join</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
@@ -1094,7 +1125,7 @@ pure(<span class="hljs-number">1</span>)
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/1c35182/lib/control/monad/index.ts#L19">control/monad/index.ts:19</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/65a9837/lib/control/monad/index.ts#L26">control/monad/index.ts:26</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
