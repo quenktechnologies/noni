@@ -7,6 +7,30 @@
 import { concat } from '../array';
 
 /**
+ * MapFunc
+ */
+export type MapFunc<A,B> = (value: A, key: string, rec: Record<A>) => B;
+
+/**
+ * ReduceFunc
+ */
+export type ReduceFunc<A,B> =  (pre: B, curr: A, key: string) => B;
+
+/**
+ * PartitionFunc
+ */
+export type PartitionFunc<A, R extends Record<A>> 
+  = (a: A, k: string, r: R) => boolean
+  ;
+
+/**
+ * GroupFunc
+ */
+export type GroupFunc<A, R extends Record<A>>
+  = (a: A, k: string, r: R) => string
+;
+
+/**
  * Record is an ES object with an index signature.
  */
 export interface Record<A> {
@@ -34,9 +58,7 @@ export const keys = <A>(value: Record<A>) => Object.keys(value);
  *
  * The order of keys processed is not guaranteed.
  */
-export const map = <A, B>
-    (o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B)
-    : Record<B> =>
+export const map = <A, B>  (o: Record<A>, f: MapFunc<A,B>)    : Record<B> =>
     keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), {});
 
 /**
@@ -46,9 +68,7 @@ export const map = <A, B>
  * there are no properites on the Record.
  * The order of keys processed is not guaranteed.
  */
-export const reduce = <A, B>
-    (o: Record<A>, accum: B, f: (pre: B, curr: A, key: string) => B)
-    : B =>
+export const reduce = <A, B>  (o: Record<A>, accum: B, f: ReduceFunc<A,B>)    : B =>
     keys(o).reduce((p, k) => f(p, o[k], k), accum);
 
 /**
@@ -169,7 +189,7 @@ export const exclude = <A, R extends Record<A>>(o: R, keys: string | string[]) =
  * of passing values and the second the failing values.
  */
 export const partition = <A, R extends Record<A>>
-    (r: R) => (f: (a: A, k: string, r: R) => boolean): [Record<A>, Record<A>] =>
+  (r: R , f: PartitionFunc<A,R>): [Record<A>, Record<A>] =>
         <[Record<A>, Record<A>]>reduce(r, [{}, {}], ([yes, no], c, k) =>
             f(<A>c, k, r) ?
                 [merge(yes, { [k]: c }), no] :
@@ -180,7 +200,7 @@ export const partition = <A, R extends Record<A>>
  * function.
  */
 export const group = <A, R extends Record<A>>
-    (r: R) => (f: (a: A, k: string, r: R) => string): Record<Record<A>> =>
+  (r: R, f: GroupFunc<A,R> ): Record<Record<A>> =>
         reduce(r, <Record<Record<A>>>{}, (p, c, k) => {
 
             let g = f(<A>c, k, r);
@@ -203,7 +223,6 @@ export const values = <A>(r: Record<A>): A[] =>
  */
 export const contains = <A>(r: Record<A>, key: string): boolean =>
     Object.hasOwnProperty.call(r, key);
-
 
 /**
  * clone a Record.

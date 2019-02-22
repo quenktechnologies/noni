@@ -342,7 +342,7 @@ describe('record', () => {
             let f = (n: number) => ((n % 2) === 0)
             let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 }, { a: 1, c: 3, e: 5, g: 7, i: 9 }];
 
-            must(partition<number, Record<number>>(m)(f)).equate(r);
+            must(partition<number, Record<number>>(m,f)).equate(r);
 
         });
     })
@@ -381,7 +381,7 @@ describe('record', () => {
                 }
             }
 
-            must(group(m)(f)).equate(r);
+            must(group(m,f)).equate(r);
 
         });
 

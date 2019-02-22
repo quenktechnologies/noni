@@ -1,4 +1,20 @@
 /**
+ * MapFunc
+ */
+export declare type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
+/**
+ * ReduceFunc
+ */
+export declare type ReduceFunc<A, B> = (pre: B, curr: A, key: string) => B;
+/**
+ * PartitionFunc
+ */
+export declare type PartitionFunc<A, R extends Record<A>> = (a: A, k: string, r: R) => boolean;
+/**
+ * GroupFunc
+ */
+export declare type GroupFunc<A, R extends Record<A>> = (a: A, k: string, r: R) => string;
+/**
  * Record is an ES object with an index signature.
  */
 export interface Record<A> {
@@ -21,7 +37,7 @@ export declare const keys: <A>(value: Record<A>) => string[];
  *
  * The order of keys processed is not guaranteed.
  */
-export declare const map: <A, B>(o: Record<A>, f: (value: A, key: string, rec: Record<A>) => B) => Record<B>;
+export declare const map: <A, B>(o: Record<A>, f: MapFunc<A, B>) => Record<B>;
 /**
  * reduce a Record's keys to a single value.
  *
@@ -29,7 +45,7 @@ export declare const map: <A, B>(o: Record<A>, f: (value: A, key: string, rec: R
  * there are no properites on the Record.
  * The order of keys processed is not guaranteed.
  */
-export declare const reduce: <A, B>(o: Record<A>, accum: B, f: (pre: B, curr: A, key: string) => B) => B;
+export declare const reduce: <A, B>(o: Record<A>, accum: B, f: ReduceFunc<A, B>) => B;
 /**
  * merge two objects into one.
  *
@@ -77,12 +93,12 @@ export declare const exclude: <A, R extends Record<A>>(o: R, keys: string | stri
  * This function produces an array where the first element is a record
  * of passing values and the second the failing values.
  */
-export declare const partition: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => boolean) => [Record<A>, Record<A>];
+export declare const partition: <A, R extends Record<A>>(r: R, f: PartitionFunc<A, R>) => [Record<A>, Record<A>];
 /**
  * group the properties of a Record into another Record using a grouping
  * function.
  */
-export declare const group: <A, R extends Record<A>>(r: R) => (f: (a: A, k: string, r: R) => string) => Record<Record<A>>;
+export declare const group: <A, R extends Record<A>>(r: R, f: GroupFunc<A, R>) => Record<Record<A>>;
 /**
  * values returns a shallow array of the values of a record.
  */
