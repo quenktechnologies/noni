@@ -1,5 +1,5 @@
 import * as json from '../../src/data/json';
-import {must} from '@quenk/must';
+import {assert} from '@quenk/test/lib/assert';
 
 export const anObject: json.Object = {
     string: 'String',
@@ -32,11 +32,11 @@ describe('json', () => {
 
         it('should be safe', () => {
 
-            must(json
+            assert(json
                 .parse('{"n":1, "b":2, "c":3}')
                 .takeRight()).equate({ n: 1, b: 2, c: 3 });
 
-            must(
+            assert(
                 json
                     .parse('{ vanku, []}^')
                     .takeLeft()).be.instance.of(Error);

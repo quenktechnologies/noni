@@ -3,7 +3,7 @@ import * as apply from '../../checks/apply';
 import * as applicative from '../../checks//applicative';
 import * as chain from '../../checks/chain';
 import * as monad from '../../checks/monad';
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import { tick } from '../../../src/control/timer';
 import { noop } from '../../../src/data/function';
 import {
@@ -32,7 +32,7 @@ const eq = <A>(f1: Future<A>) => (f2: Future<A>) =>
     toPromise<A>(f1)
         .then((a: A) =>
             toPromise<A>(f2)
-                .then((b: A) => must(<any>a).equate(<any>b)));
+                .then((b: A) => assert(<any>a).equate(<any>b)));
 
 const map = (n: number) => n * 2;
 
@@ -138,11 +138,11 @@ describe('future', () => {
 
             it('should provide the final value', () =>
                 (new Promise<number>((res: any, rej: any) => inc(0).fork(rej, res)))
-                    .then((value: number) => must(value).equal(1)));
+                    .then((value: number) => assert(value).equal(1)));
 
             it('should provide the error', () =>
                 (new Promise((res: any, rej: any) => err(msg).fork(rej, res)))
-                    .catch((e: Error) => must(e.message).equal(msg)))
+                    .catch((e: Error) => assert(e.message).equal(msg)))
 
         })
 
@@ -154,7 +154,7 @@ describe('future', () => {
                     .chain((n: number) => err(`error: ${n}`))
                     .map(map))
                     .then(() => Promise.reject('Map did not reject!'))
-                    .catch((e: Error) => must(e.message).equal('error: 2')));
+                    .catch((e: Error) => assert(e.message).equal('error: 2')));
 
         })
 
@@ -168,7 +168,7 @@ describe('future', () => {
                     .chain((n: number) => err(`error: ${n}`))
                     .ap(ap))
                     .then(() => Promise.reject('Ap did not reject!'))
-                    .catch((e: Error) => must(e.message).equal('error: 2')));
+                    .catch((e: Error) => assert(e.message).equal('error: 2')));
 
         })
 
@@ -179,7 +179,7 @@ describe('future', () => {
                     .chain((n: number) => err(`error: ${n}`))
                     .chain(inc))
                     .then(() => Promise.reject('Chain did not reject!'))
-                    .catch((e: Error) => must(e.message).equal('error: 1')));
+                    .catch((e: Error) => assert(e.message).equal('error: 1')));
 
         })
 
@@ -190,15 +190,15 @@ describe('future', () => {
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(must(e.message).equal('foo')))))
+                    .catch((e: Error) => pure(assert(e.message).equal('foo')))))
 
             it('should not duplicate errors', () =>
                 toPromise(inc(0)
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(must(e.message).equal('foo')))
-                    .catch((e: Error) => pure(must(e).equal('foo')))));
+                    .catch((e: Error) => pure(assert(e.message).equal('foo')))
+                    .catch((e: Error) => pure(assert(e).equal('foo')))));
 
             it('should not swallow further errors', cb => {
 
@@ -209,7 +209,7 @@ describe('future', () => {
                     .chain(() => err('second')))
                     .catch(e => {
 
-                        must(e.message).be.equal('second');
+                        assert(e.message).be.equal('second');
                         cb();
 
                     })
@@ -223,15 +223,15 @@ describe('future', () => {
                 toPromise(inc(0)
                     .chain(inc)
                     .finally(() => pure(12)))
-                    .then((n: number) => must(n).equal(12)));
+                    .then((n: number) => assert(n).equal(12)));
 
             it('should run after failure', () =>
                 toPromise(inc(0)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(must(e.message).equal('foo')))
+                    .catch((e: Error) => pure(assert(e.message).equal('foo')))
                     .finally(() => pure(12)))
-                    .then((n: number) => must(n).equal(12)));
+                    .then((n: number) => assert(n).equal(12)));
 
         })
 
@@ -244,7 +244,7 @@ describe('future', () => {
                 .chain(m)
                 .chain(m)
                 .chain(m))
-                .then(() => must(count).equal(3));
+                .then(() => assert(count).equal(3));
 
         })
 
@@ -287,7 +287,7 @@ describe('future', () => {
 
                 let success = () => {
 
-                    must(seq).equate([1, 4, 5, 11, 3, 2]); //stack grows downward
+                    assert(seq).equate([1, 4, 5, 11, 3, 2]); //stack grows downward
 
                     cb();
 
@@ -318,12 +318,12 @@ describe('future', () => {
             toPromise(attempt(() => { throw new Error('foo'); })
                 .chain(inc)
                 .catch((e: Error) => pure(e.message)))
-                .then((s: string) => must(s).equal('foo')));
+                .then((s: string) => assert(s).equal('foo')));
 
         it('should work otherwise', () =>
             toPromise(attempt(() => 11)
                 .chain(inc))
-                .then((n: number) => must(n).equal(12)))
+                .then((n: number) => assert(n).equal(12)))
 
     });
 
@@ -332,7 +332,7 @@ describe('future', () => {
         it('should delay results', () =>
             toPromise(delay(() => 11)
                 .chain(inc))
-                .then((n: number) => must(n).equal(12)))
+                .then((n: number) => assert(n).equal(12)))
 
     });
 
@@ -357,7 +357,7 @@ describe('future', () => {
 
             let raise = (e: Error) => { cb(e); }
 
-            let success = (n: any) => { must(n).equal(12); cb(); }
+            let success = (n: any) => { assert(n).equal(12); cb(); }
 
             fromCallback(cb => f(cb)).fork(raise, success);
 
@@ -387,8 +387,8 @@ describe('future', () => {
                 }))
                 .then(() => {
 
-                    must(failed).be.true();
-                    must(tags).equate(['a', 'm']);
+                    assert(failed).be.true();
+                    assert(tags).equate(['a', 'm']);
 
                 });
 
@@ -403,22 +403,22 @@ describe('future', () => {
                 tagTask('b', 200, tags),
                 tagTask('c', 500, tags),
                 tagTask('d', 600, tags)]))
-                .then((list: number[]) => must(list).equate([300, 200, 500, 600]))
-                .then(() => must(tags).equate(['a', 'b', 'c', 'd']));
+                .then((list: number[]) => assert(list).equate([300, 200, 500, 600]))
+                .then(() => assert(tags).equate(['a', 'b', 'c', 'd']));
 
         });
 
         it('should work when the list is empty', () => {
 
             return toPromise(sequential([]))
-                .then((list: any[]) => must(list).equate([]));
+                .then((list: any[]) => assert(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
             return toPromise(sequential([pure(1), pure(2), pure(3)]))
-                .then((list: number[]) => must(list).equate([1, 2, 3]));
+                .then((list: number[]) => assert(list).equate([1, 2, 3]));
 
         });
 
@@ -438,7 +438,7 @@ describe('future', () => {
                     return pure(<{}[]>[]);
 
                 }))
-                .then(() => must(failed).be.true())
+                .then(() => assert(failed).be.true())
 
         });
 
@@ -468,8 +468,8 @@ describe('future', () => {
                 }))
                 .then(() => {
 
-                    must(failed).be.true();
-                    must(tags).equate(['a', 'm']);
+                    assert(failed).be.true();
+                    assert(tags).equate(['a', 'm']);
 
                 });
 
@@ -484,22 +484,22 @@ describe('future', () => {
                 tagTask('b', 200, tags),
                 tagTask('c', 200, tags),
                 tagTask('d', 400, tags)], 100, f))
-                .then((r: number) => must(r).equal(1200))
-                .then(() => must(tags).equate(['a', 'b', 'c', 'd']));
+                .then((r: number) => assert(r).equal(1200))
+                .then(() => assert(tags).equate(['a', 'b', 'c', 'd']));
 
         });
 
         it('should work when the list is empty', () => {
 
             return toPromise(reduce([], 12, f))
-                .then((r: number) => must(r).equal(12));
+                .then((r: number) => assert(r).equal(12));
 
         });
 
         it('should work with a list of pure values', () => {
 
             return toPromise(reduce([pure(1), pure(2), pure(3)], 6, f))
-                .then((r: number) => must(r).equal(12));
+                .then((r: number) => assert(r).equal(12));
 
         });
 
@@ -519,7 +519,7 @@ describe('future', () => {
                     return pure(13);
 
                 }))
-                .then(() => must(failed).be.true())
+                .then(() => assert(failed).be.true())
 
         });
 
@@ -547,8 +547,8 @@ describe('future', () => {
                 }))
                 .then(() => {
 
-                    must(failed).be.true();
-                    must(tags).equate(['a', 'a', 'm']);
+                    assert(failed).be.true();
+                    assert(tags).equate(['a', 'a', 'm']);
 
                 });
 
@@ -566,14 +566,14 @@ describe('future', () => {
                 [tagTask('c', 300, tags), tagTask('c', 500, tags)],
                 [tagTask('d', 200, tags), tagTask('d', 600, tags)]]))
                 .then((list: number[][]) =>
-                    must(list)
+                    assert(list)
                         .equate([
                             [300, 600, 100],
                             [200],
                             [300, 500],
                             [200, 600]]))
                 .then(() =>
-                    must(tags).equate([
+                    assert(tags).equate([
                         'a', 'a', 'a', 'b', 'c', 'c', 'd', 'd'
                     ]));
 
@@ -582,14 +582,14 @@ describe('future', () => {
         it('should work when the list is empty', () => {
 
             return toPromise(batch([]))
-                .then((list: any[]) => must(list).equate([]));
+                .then((list: any[]) => assert(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
             return toPromise(batch([[pure(1), pure(2)], [pure(3)]]))
-                .then((list: number[][]) => must(list).equate([[1, 2], [3]]));
+                .then((list: number[][]) => assert(list).equate([[1, 2], [3]]));
 
         });
 
@@ -612,7 +612,7 @@ describe('future', () => {
                 }))
                 .then(() => {
 
-                    must(failed).be.true();
+                    assert(failed).be.true();
 
                 });
 
@@ -639,7 +639,7 @@ describe('future', () => {
                         failed = true;
                     return pure(<{}[]>[])
                 }))
-                .then(() => must(failed).equal(true));
+                .then(() => assert(failed).equal(true));
 
         });
 
@@ -655,21 +655,21 @@ describe('future', () => {
                 tagTask('e', 600, tags)
             ]))
                 .then((list: number[]) =>
-                    must(list).equate([300, 200, 500, 300, 600]));
+                    assert(list).equate([300, 200, 500, 300, 600]));
 
         });
 
         it('should work when the list is empty', () => {
 
             return toPromise(parallel([]))
-                .then((list: any[]) => must(list).equate([]));
+                .then((list: any[]) => assert(list).equate([]));
 
         });
 
         it('should work with a list of pure values', () => {
 
             return toPromise(parallel([pure(1), pure(2), pure(3)]))
-                .then((list: number[]) => must(list).equate([1, 2, 3]));
+                .then((list: number[]) => assert(list).equate([1, 2, 3]));
 
         });
 
@@ -687,7 +687,7 @@ describe('future', () => {
                     return pure(<{}[]>[]);
 
                 }))
-                .then(() => must(failed).be.true());
+                .then(() => assert(failed).be.true());
 
         });
 
@@ -707,7 +707,7 @@ describe('future', () => {
                     }))
                 .then(() => {
 
-                    must(failed).be.true();
+                    assert(failed).be.true();
 
                 });
 
@@ -738,7 +738,7 @@ describe('future', () => {
                 }))
                 .then(() => {
 
-                    must(failed).be.true();
+                    assert(failed).be.true();
 
                 });
 
@@ -752,7 +752,7 @@ describe('future', () => {
                 tagTask('c', 500, []),
                 tagTask('d', 200, []),
                 tagTask('e', 800, [])]))
-                .then((n: number) => must(n).equal(200))
+                .then((n: number) => assert(n).equal(200))
 
         });
 
@@ -761,14 +761,14 @@ describe('future', () => {
             return toPromise(race([]))
                 .then(() => { throw new Error('bleh'); })
                 .catch((e: Error) =>
-                    must(e.message).equal('race(): Cannot race an empty list!'));
+                    assert(e.message).equal('race(): Cannot race an empty list!'));
 
         });
 
         it('should work with a list of pure values', () => {
 
             return toPromise<number>(race([pure(1), pure(2), pure(3)]))
-                .then((list: number) => must(list).equal(1));
+                .then((list: number) => assert(list).equal(1));
 
         });
 
@@ -790,7 +790,7 @@ describe('future', () => {
                 }))
                 .then(() => {
 
-                    must(failed).be.true();
+                    assert(failed).be.true();
 
                 });
 
@@ -804,7 +804,7 @@ describe('future', () => {
 
             liftP(promiseTask)
                 .map(n => {
-                    must(n).equal(12);
+                    assert(n).equal(12);
                     done();
                 }).fork(console.error, console.log);
 
@@ -815,7 +815,7 @@ describe('future', () => {
             liftP(promiseErrTask)
                 .catch(e => {
 
-                    must(e.message).equal('promise');
+                    assert(e.message).equal('promise');
                     done();
                     return pure({});
 

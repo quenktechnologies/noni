@@ -1,4 +1,4 @@
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import * as tests from '../checks';
 import {
     Either,
@@ -30,7 +30,7 @@ describe('either', () => {
 
             it('must return true', () => {
 
-                must(left(1).isLeft()).be.true();
+                assert(left(1).isLeft()).be.true();
 
             });
 
@@ -40,7 +40,7 @@ describe('either', () => {
 
             it('must return false', () => {
 
-                must(left(1).isRight()).be.false();
+                assert(left(1).isRight()).be.false();
 
             });
 
@@ -63,7 +63,7 @@ describe('either', () => {
 
             it('must return true', () => {
 
-                must(right(1).isRight()).be.true();
+                assert(right(1).isRight()).be.true();
 
             });
 
@@ -73,7 +73,7 @@ describe('either', () => {
 
             it('must return false', () => {
 
-                must(right(1).isLeft()).be.false();
+                assert(right(1).isLeft()).be.false();
 
             });
 
@@ -85,9 +85,9 @@ describe('either', () => {
 
         it('should be nothing with false', function() {
 
-            must(fromBoolean(false) instanceof Left).equal(true);
+            assert(fromBoolean(false) instanceof Left).equal(true);
 
-            must(fromBoolean(true) instanceof Right).equal(true);
+            assert(fromBoolean(true) instanceof Right).equal(true);
 
         });
 
@@ -103,8 +103,8 @@ describe('either', () => {
             let g = (_: boolean) => '12';
             let test = either<boolean, boolean, string>(f)(g);
 
-            must(test(l)).equal('false');
-            must(test(r)).equal('12');
+            assert(test(l)).equal('false');
+            assert(test(r)).equal('12');
 
         });
 

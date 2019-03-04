@@ -1,4 +1,4 @@
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import {
     Record,
     keys,
@@ -109,7 +109,7 @@ describe('record', () => {
 
         it('should provide a list of a Record keys', () => {
 
-            must(keys({ a: 1, b: 2, c: { d: 1, e: { f: 'g' } } })).equate(['a', 'b', 'c']);
+            assert(keys({ a: 1, b: 2, c: { d: 1, e: { f: 'g' } } })).equate(['a', 'b', 'c']);
 
         })
     })
@@ -118,7 +118,7 @@ describe('record', () => {
 
         it('should transform the properties of a Record', () => {
 
-            must(map({ a: 1, b: 2, c: 3 },
+            assert(map({ a: 1, b: 2, c: 3 },
                 (value: number, key: string, rec: Record<number>) =>
                     `${key}-${value}-${keys(rec).length}`))
                 .equate({ a: 'a-1-3', b: 'b-2-3', c: 'c-3-3' });
@@ -130,7 +130,7 @@ describe('record', () => {
 
         it('should reduce to a single value', () => {
 
-            must(reduce({ a: 1, b: 2, c: 3 }, 0,
+            assert(reduce({ a: 1, b: 2, c: 3 }, 0,
                 (p: number, c: number, _: string) => p + c))
                 .equate(6);
 
@@ -144,7 +144,7 @@ describe('record', () => {
             let r: { a: number, b: number, c: number, e: { f: 'g' } | number } =
                 merge({ a: 1, b: 2, c: 3, e: { f: 'g' } }, { c: 4, e: 4 });
 
-            must(r).equate({ a: 1, b: 2, c: 4, e: 4 });
+            assert(r).equate({ a: 1, b: 2, c: 4, e: 4 });
 
         })
     })
@@ -155,7 +155,7 @@ describe('record', () => {
 
             let r: A & B & C = merge3(a, b, c);
 
-            must(r).equate({ a: 1, b: 2, c: 3 });
+            assert(r).equate({ a: 1, b: 2, c: 3 });
 
         });
 
@@ -167,7 +167,7 @@ describe('record', () => {
 
             let r: A & B & C & D = merge4(a, b, c, d);
 
-            must(r).equate({ a: 1, b: 2, c: 3, d: 4 });
+            assert(r).equate({ a: 1, b: 2, c: 3, d: 4 });
 
         });
 
@@ -179,7 +179,7 @@ describe('record', () => {
 
             let r: A & B & C & D & E = merge5(a, b, c, d, e);
 
-            must(r).equate({ a: 1, b: 2, c: 3, d: 4, e: { f: 'g' } });
+            assert(r).equate({ a: 1, b: 2, c: 3, d: 4, e: { f: 'g' } });
 
         });
 
@@ -191,7 +191,7 @@ describe('record', () => {
 
             let r: RA & RB = rmerge(ra, rb);
 
-            must(r).equate(
+            assert(r).equate(
                 {
                     a: 1,
                     b: '2',
@@ -211,7 +211,7 @@ describe('record', () => {
 
             let r: RA & RB & RC = rmerge3(ra, rb, rc);
 
-            must(r).equate(
+            assert(r).equate(
                 {
                     a: 1,
                     b: '2',
@@ -232,7 +232,7 @@ describe('record', () => {
 
             let r: RA & RB & RC & RD = rmerge4(ra, rb, rc, rd);
 
-            must(r).equate(
+            assert(r).equate(
                 {
                     a: 1,
                     b: '2',
@@ -254,7 +254,7 @@ describe('record', () => {
 
             let r: RA & RB & RC & RD & RE = rmerge5(ra, rb, rc, rd, re);
 
-            must(r).equate(
+            assert(r).equate(
                 {
                     a: 1,
                     b: {
@@ -305,7 +305,7 @@ describe('record', () => {
                     a: {}
                 });
 
-            must(r).equate(
+            assert(r).equate(
                 {
                     a: {},
                     b: { bv: 'b2' },
@@ -324,10 +324,10 @@ describe('record', () => {
 
         it('should remove unwanted keys', () => {
 
-            must(exclude({ one: 1, two: 2, three: 3 }, 'two'))
+            assert(exclude({ one: 1, two: 2, three: 3 }, 'two'))
                 .equate({ one: 1, three: 3 });
 
-            must(exclude({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 },
+            assert(exclude({ one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 },
                 ['one', 'two', 'three']))
                 .equate({ four: 4, five: 5, six: 6 });
 
@@ -338,11 +338,13 @@ describe('record', () => {
 
         it('should partition records', () => {
 
-            let m = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8, i: 9, j: 10 };
+          let m = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6,
+            g: 7, h: 8, i: 9, j: 10 };
             let f = (n: number) => ((n % 2) === 0)
-            let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 }, { a: 1, c: 3, e: 5, g: 7, i: 9 }];
+          let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 },
+            { a: 1, c: 3, e: 5, g: 7, i: 9 }];
 
-            must(partition<number, Record<number>>(m,f)).equate(r);
+            assert(partition<number, Record<number>>(m,f)).equate(r);
 
         });
     })
@@ -381,7 +383,7 @@ describe('record', () => {
                 }
             }
 
-            must(group(m,f)).equate(r);
+            assert(group(m,f)).equate(r);
 
         });
 
@@ -391,7 +393,7 @@ describe('record', () => {
 
         it('should return a shallow array', () => {
 
-            must(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' }))
+            assert(values({ a: 1, b: [22], c: { n: 1 }, d: 'e' }))
                 .equate([1, [22], { n: 1 }, 'e']);
 
         });
@@ -404,8 +406,8 @@ describe('record', () => {
 
             let foo = { n: 12 };
 
-            must(contains(foo, 'n')).equal(true);
-            must(contains(foo, 'x')).equal(false);
+            assert(contains(foo, 'n')).equal(true);
+            assert(contains(foo, 'x')).equal(false);
 
         });
 
@@ -418,8 +420,8 @@ describe('record', () => {
             let c = { n: 1 }
             let a = { b: c };
 
-            must(clone(a)).equate(a);
-            must(clone(a).b).not.equal(c);
+            assert(clone(a)).equate(a);
+            assert(clone(a).b).not.equal(c);
 
         });
 
@@ -429,7 +431,7 @@ describe('record', () => {
                 n: 1, b: 12, d: [0, 2, 3]
             };
 
-            must(clone(o)).equate({ n: 1, b: 12, d: [0, 2, 3] });
+            assert(clone(o)).equate({ n: 1, b: 12, d: [0, 2, 3] });
 
         });
 

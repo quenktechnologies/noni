@@ -1,4 +1,4 @@
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import { isAbsolute } from 'path';
 import { toPromise, pure, raise } from '../../../src/control/monad/future';
 import { reduce } from '../../../src/data/record';
@@ -35,7 +35,7 @@ describe('file', () => {
 
         it('should stat everything in the path', () =>
             toPromise(statDir(FIXTURES)
-                .map(d => must(Object.keys(d).sort())
+                .map(d => assert(Object.keys(d).sort())
                     .equate(['about', 'dira', 'dirb', 'dirc']))));
 
     });
@@ -44,7 +44,7 @@ describe('file', () => {
 
         it('should provide absolute paths', () =>
             toPromise(statDirAbs(FIXTURES)
-                .map(m => must(reduce(m, true, (p, _, k) => !p ?
+                .map(m => assert(reduce(m, true, (p, _, k) => !p ?
                     p : isAbsolute(k))).true())));
 
     });
@@ -53,7 +53,7 @@ describe('file', () => {
 
         it('should provide absolute paths', () =>
             toPromise(statDirRec(FIXTURES)
-                .map(stats => must(Object.keys(stats)
+                .map(stats => assert(Object.keys(stats)
                     .map(p => p.split(process.cwd()).sort().join(''))).equate([
                         '/test/io/file/fixtures/about',
                         '/test/io/file/fixtures/dira',
@@ -72,7 +72,7 @@ describe('file', () => {
 
         it('should read a file\'s contents as utf8', () =>
             toPromise(readTextFile(ABOUT_FILE)
-                .map(contents => must(contents).equal(ABOUT))));
+                .map(contents => assert(contents).equal(ABOUT))));
 
     });
 
@@ -81,7 +81,7 @@ describe('file', () => {
         it('should write a file\'s contents as utf8', () =>
             toPromise(writeTextFile(ABOUT_FILE, ABOUT)
                 .chain(() => readTextFile(ABOUT_FILE))
-                .map(contents => must(contents).equal(ABOUT))));
+                .map(contents => assert(contents).equal(ABOUT))));
 
     });
 
@@ -89,7 +89,7 @@ describe('file', () => {
 
         it('should stat all the directories in a directory', () =>
             toPromise(list(FIXTURES)
-                .map(d => must(d)
+                .map(d => assert(d)
                     .equate(['about', 'dira', 'dirb', 'dirc']))));
 
     });
@@ -98,7 +98,7 @@ describe('file', () => {
 
         it('should list absolute paths', () =>
             toPromise(listAbs(FIXTURES)
-                .map(m => must(m.reduce((p, c) =>
+                .map(m => assert(m.reduce((p, c) =>
                     (!p) ? p : isAbsolute(c), true)).true())));
 
     });
@@ -107,7 +107,7 @@ describe('file', () => {
 
         it('should provide paths recursively', () =>
             toPromise(listRec(FIXTURES)
-                .map(list => must(list.map(p =>
+                .map(list => assert(list.map(p =>
                     p.split(process.cwd()).join('')).sort()).equate([
                         '/test/io/file/fixtures/about',
                         '/test/io/file/fixtures/dira',
@@ -126,7 +126,7 @@ describe('file', () => {
 
         it('should list all the directories in a directory', () =>
             toPromise(listDirs(FIXTURES)
-                .map(l => must(l.sort()).equate(['dira', 'dirb', 'dirc']))));
+                .map(l => assert(l.sort()).equate(['dira', 'dirb', 'dirc']))));
 
     });
 
@@ -134,7 +134,7 @@ describe('file', () => {
 
         it('should list all the directories in a directory absolutely', () =>
             toPromise(listDirsAbs(FIXTURES)
-                .map(l => must(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
+                .map(l => assert(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
                     .true())))
 
     });
@@ -143,7 +143,7 @@ describe('file', () => {
 
         it('should provide paths recursively', () =>
             toPromise(listDirsRec(FIXTURES)
-                .map(list => must(list.map(p =>
+                .map(list => assert(list.map(p =>
                     p.split(process.cwd()).join('')).sort()).equate([
                         '/test/io/file/fixtures/dira',
                         '/test/io/file/fixtures/dira/dirab',
@@ -158,7 +158,7 @@ describe('file', () => {
 
         it('should list all files in a directory', () =>
             toPromise(listFiles(FIXTURES)
-                .map(l => must(l.sort()).equate(['about']))));
+                .map(l => assert(l.sort()).equate(['about']))));
 
     });
 
@@ -166,7 +166,7 @@ describe('file', () => {
 
         it('should list all files in a directory absolutely', () =>
             toPromise(listFilesAbs(FIXTURES)
-                .map(l => must(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
+                .map(l => assert(l.reduce((p, c) => !p ? p : isAbsolute(c), true))
                     .true())))
 
     });
@@ -175,7 +175,7 @@ describe('file', () => {
 
         it('should provide paths recursively', () =>
             toPromise(listFilesRec(FIXTURES)
-                .map(list => must(list.map(p =>
+                .map(list => assert(list.map(p =>
                     p.split(process.cwd()).join('')).sort()).equate([
                         '/test/io/file/fixtures/about',
                         '/test/io/file/fixtures/dira/dirab/dirabc/filea',
@@ -189,7 +189,7 @@ describe('file', () => {
 
         it('should not fail if the file does not exist', () =>
             toPromise(isFile(RANDOM_FILE)
-                .map(yes => must(yes).be.false())));
+                .map(yes => assert(yes).be.false())));
 
     });
 
@@ -197,7 +197,7 @@ describe('file', () => {
 
         it('should not fail if the directory does not exist', () =>
             toPromise(isDirectory(RANDOM_FILE)
-                .map(yes => must(yes).be.false())));
+                .map(yes => assert(yes).be.false())));
 
     });
 
@@ -209,7 +209,7 @@ describe('file', () => {
 
             return toPromise(makeDir(dest)
                 .chain(() => isDirectory(dest))
-                .map(v => must(v).be.true())
+                .map(v => assert(v).be.true())
                 .chain(() => unlink(dest)))
 
         });
@@ -224,11 +224,11 @@ describe('file', () => {
 
             return toPromise(writeTextFile(dest, 'will delete')
                 .chain(() => readTextFile(dest))
-                .map(txt => must(txt).equal('will delete'))
-                .catch(() => pure(must(true).be.false()))
+                .map(txt => assert(txt).equal('will delete'))
+                .catch(() => pure(assert(true).be.false()))
                 .chain(() => unlink(dest))
                 .chain(() => exists(dest))
-                .map(yes => must(yes).be.false()));
+                .map(yes => assert(yes).be.false()));
         });
 
         it('should remove dirs', () => {
@@ -240,7 +240,7 @@ describe('file', () => {
                 .chain(yes => !yes ? raise(new Error('failed!')) : pure({}))
                 .chain(() => unlink(dest))
                 .chain(() => exists(dest))
-                .map(yes => must(yes).be.false()));
+                .map(yes => assert(yes).be.false()));
         });
 
         it('should remove non empty dirs', () => {
@@ -253,10 +253,10 @@ describe('file', () => {
                 .chain(yes => !yes ? raise(new Error('failed!')) : pure({}))
                 .chain(() => writeTextFile(file, 'will delete'))
                 .chain(() => readTextFile(file))
-                .map(txt => must(txt).equal('will delete'))
+                .map(txt => assert(txt).equal('will delete'))
                 .chain(() => unlink(dest))
                 .chain(() => exists(dest))
-                .map(yes => must(yes).be.false()));
+                .map(yes => assert(yes).be.false()));
         });
 
     });

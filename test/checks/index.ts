@@ -3,7 +3,7 @@ import * as apply from './apply';
 import * as applicative from './applicative';
 import * as chain from './chain';
 import * as monad from './monad';
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import { Monad } from '../../src/control/monad';
 
 export interface TestOpts<A> {
@@ -29,41 +29,41 @@ export const isMonad =
         describe('Functor', () => {
 
             it('should obey the identity law', () =>
-                must((functor.identity(pure)(eq)(value))).equal(true))
+                assert((functor.identity(pure)(eq)(value))).equal(true))
 
             it('should obey the composition law', () =>
-                must((functor.composition<A>(pure)(eq)(map)(map)(value))).equal(true))
+                assert((functor.composition<A>(pure)(eq)(map)(map)(value))).equal(true))
 
         })
 
         describe('Apply', () => {
 
             it('should obey the composition law', () =>
-              must((apply.composition<A>(pure)(eq)(map)(map)(value))).equal(true))
+              assert((apply.composition<A>(pure)(eq)(map)(map)(value))).equal(true))
 
         })
 
         describe('Applicative', () => {
 
             it('should obey the identity law', () =>
-                must((applicative.identity(pure)(eq)(value))).equal(true))
+                assert((applicative.identity(pure)(eq)(value))).equal(true))
 
             it('should obey the homomorphism law', () =>
-                must((applicative.identity(pure)(eq)(value))).equal(true))
+                assert((applicative.identity(pure)(eq)(value))).equal(true))
 
         })
 
         describe('Chain', () => {
 
             it('should obey the associativity law', () =>
-                must((chain.associativity(pure)(eq)(value))).equal(true))
+                assert((chain.associativity(pure)(eq)(value))).equal(true))
 
         })
 
         describe('Monad', () => {
 
             it('should obey the left identity law', () =>
-              must((monad.leftIdentity<A>(pure)(eq)(bind)(value))).equal(true))
+              assert((monad.leftIdentity<A>(pure)(eq)(bind)(value))).equal(true))
 
         })
 

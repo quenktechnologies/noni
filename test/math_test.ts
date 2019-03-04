@@ -1,4 +1,4 @@
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import { isMultipleOf } from '../src/math';
 
 describe('math', () => {
@@ -7,9 +7,9 @@ describe('math', () => {
 
         it('should work', () => {
 
-            must(isMultipleOf(3, 9)).be.true();
-            must(isMultipleOf(2, 5)).be.false();
-            must(isMultipleOf(0, 1)).be.false();
+            assert(isMultipleOf(3, 9)).be.true();
+            assert(isMultipleOf(2, 5)).be.false();
+            assert(isMultipleOf(0, 1)).be.false();
 
         });
 

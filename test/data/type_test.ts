@@ -1,4 +1,4 @@
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import { Any, test } from '../../src/data/type';
 
 class Point {
@@ -12,58 +12,55 @@ describe('test', function() {
 
     it('must match literals', function() {
 
-        must(test(1, 1)).equal(true);
-        must(test('one', 'one')).equal(true);
-        must(test(true, true)).equal(true);
-        must(test(false, false)).equal(true);
+        assert(test(1, 1)).equal(true);
+        assert(test('one', 'one')).equal(true);
+        assert(test(true, true)).equal(true);
+        assert(test(false, false)).equal(true);
 
-        must(test(1, 12)).equal(false);
-        must(test('one', 'two')).equal(false);
-        must(test(true, false)).equal(false);
-        must(test(false, true)).equal(false);
+        assert(test(1, 12)).equal(false);
+        assert(test('one', 'two')).equal(false);
+        assert(test(true, false)).equal(false);
+        assert(test(false, true)).equal(false);
 
     });
 
     it('must match builtins', function() {
 
-        must(test(1, Number)).equal(true);
-        must(test('one', String)).equal(true);
-        must(test(true, Boolean)).equal(true);
-        must(test(false, Boolean)).equal(true);
+        assert(test(1, Number)).equal(true);
+        assert(test('one', String)).equal(true);
+        assert(test(true, Boolean)).equal(true);
+        assert(test(false, Boolean)).equal(true);
 
     });
 
     it('must match constructors', function() {
 
-        must(test(new Point(), Point)).equal(true);
-        must(test(Point, Point)).equal(false);
+        assert(test(new Point(), Point)).equal(true);
+        assert(test(Point, Point)).equal(false);
 
     });
 
     it('must match shapes', function() {
 
-        must(test(new Point(), { x: Number, y: 12 })).equal(true);
-        must(test({ y: 12 }, { x: Number, y: 12 })).equal(false);
+        assert(test(new Point(), { x: Number, y: 12 })).equal(true);
+        assert(test({ y: 12 }, { x: Number, y: 12 })).equal(false);
 
     });
 
     it('should match regular expressions', function() {
 
-        must(test('Do you know the movie jaws?', /^jaws/)).equal(false);
-        must(test('jaws? yeah I know it.', /^jaws/)).equal(true);
+        assert(test('Do you know the movie jaws?', /^jaws/)).equal(false);
+        assert(test('jaws? yeah I know it.', /^jaws/)).equal(true);
 
     });
 
     it('should match Any', function() {
 
-        must(test('A string', Any)).equal(true);
-        must(test(12, Any)).equal(true);
-        must(test(false, Any)).equal(true);
-        must(test({}, Any)).equal(true);
+        assert(test('A string', Any)).equal(true);
+        assert(test(12, Any)).equal(true);
+        assert(test(false, Any)).equal(true);
+        assert(test({}, Any)).equal(true);
 
     });
 
 });
-
-
-

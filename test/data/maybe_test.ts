@@ -1,5 +1,5 @@
 import * as tests from '../checks';
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import {
     Maybe,
     Nothing,
@@ -35,7 +35,7 @@ describe('maybe', () => {
 
             it('should return false', () => {
 
-              must(just(1).isNothing()).equal(false);
+              assert(just(1).isNothing()).equal(false);
 
             });
           
@@ -45,7 +45,7 @@ describe('maybe', () => {
 
             it('should return true', () => {
               
-          must(just(1).isJust()).equal(true);
+          assert(just(1).isJust()).equal(true);
 
             });
           
@@ -67,7 +67,7 @@ describe('maybe', () => {
 
             it('should return true', () => {
 
-              must(nothing().isNothing()).equal(true);
+              assert(nothing().isNothing()).equal(true);
 
             });
           
@@ -77,7 +77,7 @@ describe('maybe', () => {
 
             it('should return false', () => {
               
-          must(nothing().isJust()).equal(false);
+          assert(nothing().isJust()).equal(false);
 
             });
           
@@ -89,13 +89,13 @@ describe('maybe', () => {
 
         it('should be nothing with an empty object', function() {
 
-            must(fromObject({}) instanceof Nothing).equal(true);
+            assert(fromObject({}) instanceof Nothing).equal(true);
 
         });
 
         it('should be Just<A> with a populated object', function() {
 
-            must(fromObject({ a: 1 }) instanceof Just).equal(true);
+            assert(fromObject({ a: 1 }) instanceof Just).equal(true);
 
         });
 
@@ -105,21 +105,21 @@ describe('maybe', () => {
 
         it('should be nothing with false', function() {
 
-            must(fromBoolean(false) instanceof Nothing).equal(true);
+            assert(fromBoolean(false) instanceof Nothing).equal(true);
 
         });
 
         it('should be Just<A> with true', function() {
 
-            must(fromBoolean(true) instanceof Just).equal(true);
+            assert(fromBoolean(true) instanceof Just).equal(true);
 
         });
 
         it('should avoid JS downcasting', function() {
 
-            must(fromNullable(0) instanceof Just).equal(true);
+            assert(fromNullable(0) instanceof Just).equal(true);
 
-            must(fromNullable('') instanceof Just).equal(true);
+            assert(fromNullable('') instanceof Just).equal(true);
 
         });
 
@@ -129,13 +129,13 @@ describe('maybe', () => {
 
         it('should return nothing for an empty string', function() {
 
-            must(fromString('') instanceof Nothing).equal(true);
+            assert(fromString('') instanceof Nothing).equal(true);
 
         });
 
         it('should return Just<A> for a string', function() {
 
-            must(fromString('abc') instanceof Just).equal(true);
+            assert(fromString('abc') instanceof Just).equal(true);
 
         });
 
@@ -145,13 +145,13 @@ describe('maybe', () => {
 
         it('should return nothing for an empty array  ', function() {
 
-            must(fromArray([]) instanceof Nothing).equal(true);
+            assert(fromArray([]) instanceof Nothing).equal(true);
 
         });
 
         it('should return Just<A> for a populated array', function() {
 
-            must(fromArray([true, false, true]) instanceof Just).equal(true);
+            assert(fromArray([true, false, true]) instanceof Just).equal(true);
 
         });
 
@@ -161,9 +161,9 @@ describe('maybe', () => {
 
         it('should return Nothing for 0', function() {
 
-            must(fromNumber(0) instanceof Nothing).equal(true);
+            assert(fromNumber(0) instanceof Nothing).equal(true);
 
-            must(fromNumber(12) instanceof Just).equal(true);
+            assert(fromNumber(12) instanceof Just).equal(true);
 
         });
 
@@ -173,9 +173,9 @@ describe('maybe', () => {
 
         it('should return Nothing for NaN', function() {
 
-            must(fromNaN(NaN) instanceof Nothing).equal(true);
+            assert(fromNaN(NaN) instanceof Nothing).equal(true);
 
-            must(fromNaN(12) instanceof Just).equal(true);
+            assert(fromNaN(12) instanceof Just).equal(true);
 
         });
 
@@ -185,11 +185,11 @@ describe('maybe', () => {
 
         it('should return Nothing for null values', function() {
 
-            must(fromNullable(undefined) instanceof Nothing).equal(true);
+            assert(fromNullable(undefined) instanceof Nothing).equal(true);
 
-            must(fromNullable(null) instanceof Nothing).equal(true);
+            assert(fromNullable(null) instanceof Nothing).equal(true);
 
-            must(fromNullable('') instanceof Just).equal(true);
+            assert(fromNullable('') instanceof Just).equal(true);
 
         });
 
@@ -205,7 +205,7 @@ describe('maybe', () => {
                     .orElse(() => just('foo'))
                     .map(() => 'bar')
 
-                must(true).equal(true);
+                assert(true).equal(true);
 
             });
 

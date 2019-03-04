@@ -1,4 +1,4 @@
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import * as checks from '../../checks';
 import { Functor } from '../../../src/data/functor';
 import { Identity } from '../../../src/data/indentity';
@@ -93,7 +93,7 @@ describe('free', () => {
                         .chain(() => get('n'))
                         .chain((n: string) => remove(n));
 
-                must(
+                assert(
                     x
                         .resume()
                         .takeLeft())
@@ -101,7 +101,7 @@ describe('free', () => {
                     .instance
                     .of(Put);
 
-                must(
+                assert(
                     x
                         .resume()
                         .takeLeft()
@@ -112,7 +112,7 @@ describe('free', () => {
                     .instance
                     .of(Get);
 
-                must(
+                assert(
                     x.resume()
                         .takeLeft()
                         .next.resume()
@@ -160,7 +160,7 @@ describe('free', () => {
 
                 })
 
-                must(l).equate(["PUT 'num' '12'", "GET 'num'", "REMOVE 'num'"]);
+                assert(l).equate(["PUT 'num' '12'", "GET 'num'", "REMOVE 'num'"]);
 
             })
 
@@ -198,7 +198,7 @@ describe('free', () => {
 
                 });
 
-                must(r).equate({ a: '11', b: '12' });
+                assert(r).equate({ a: '11', b: '12' });
 
             })
 
@@ -238,7 +238,7 @@ describe('free', () => {
 
                 })
 
-                must(r.value).equate({ a: '11', b: '12' });
+                assert(r.value).equate({ a: '11', b: '12' });
 
             })
 
@@ -259,10 +259,10 @@ describe('free', () => {
             let aray = flatten(chain)((a: API<any>) => (typeof a.next === 'function') ?
                 a.next() : a.next);
 
-            must(aray[0]).be.instance.of(Put);
-            must(aray[1]).be.instance.of(Get);
-            must(aray[2]).be.instance.of(Remove);
-            must(aray[3]).be.instance.of(Put);
+            assert(aray[0]).be.instance.of(Put);
+            assert(aray[1]).be.instance.of(Get);
+            assert(aray[2]).be.instance.of(Remove);
+            assert(aray[3]).be.instance.of(Put);
 
         });
 
@@ -283,7 +283,7 @@ describe('free', () => {
                     (typeof curr.next === 'function') ?
                         curr.next() : curr.next));
 
-            must(r).equate(['Put', 'Get', 'Remove', 'Put']);
+            assert(r).equate(['Put', 'Get', 'Remove', 'Put']);
 
         });
 

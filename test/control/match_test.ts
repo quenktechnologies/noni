@@ -1,4 +1,4 @@
-import {must} from '@quenk/must';
+import {assert} from '@quenk/test/lib/assert';
 import { match } from '../../src/control/match';
 
 class ClassA { constructor(public a: string) { } }
@@ -21,7 +21,7 @@ describe('match', function() {
                 .orElse(() => new Date())
                 .end();
 
-        must((<ClassD>result).d).equal(12);
+        assert((<ClassD>result).d).equal(12);
 
     })
 
@@ -34,7 +34,7 @@ describe('match', function() {
                 .orElse(() => Date)
                 .end();
 
-        must(result).equal(Date);
+        assert(result).equal(Date);
 
     });
 
@@ -42,7 +42,7 @@ describe('match', function() {
 
         let f = () => match({}).caseOf(ClassA, () => 12).end();
 
-        must(f).throw();
+        assert(f).throw();
 
     });
 

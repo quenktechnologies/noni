@@ -1,4 +1,4 @@
-import { must } from '@quenk/must';
+import { assert } from '@quenk/test/lib/assert';
 import { camelCase, capitalize, uncapitalize } from '../../src/data/string';
 
 describe('string', () => {
@@ -7,7 +7,7 @@ describe('string', () => {
 
         it('should turn remove underscores and dashes', () => {
 
-            must(camelCase('this_is_our-camel'))
+            assert(camelCase('this_is_our-camel'))
                 .equal('ThisIsOurCamel')
 
         });
@@ -18,7 +18,7 @@ describe('string', () => {
 
         it('should work', () => {
 
-            must(capitalize('this is capitalized'))
+            assert(capitalize('this is capitalized'))
                 .equal('This is capitalized');
 
         });
@@ -29,7 +29,7 @@ describe('string', () => {
 
         it('should work', () => {
 
-            must(uncapitalize('This is uncapitalized'))
+            assert(uncapitalize('This is uncapitalized'))
                 .equal('this is uncapitalized');
         });
 
