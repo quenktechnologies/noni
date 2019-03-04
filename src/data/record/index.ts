@@ -9,26 +9,26 @@ import { concat } from '../array';
 /**
  * MapFunc
  */
-export type MapFunc<A,B> = (value: A, key: string, rec: Record<A>) => B;
+export type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
 
 /**
  * ReduceFunc
  */
-export type ReduceFunc<A,B> =  (pre: B, curr: A, key: string) => B;
+export type ReduceFunc<A, B> = (pre: B, curr: A, key: string) => B;
 
 /**
  * PartitionFunc
  */
-export type PartitionFunc<A, R extends Record<A>> 
-  = (a: A, k: string, r: R) => boolean
-  ;
+export type PartitionFunc<A, R extends Record<A>>
+    = (a: A, k: string, r: R) => boolean
+    ;
 
 /**
  * GroupFunc
  */
 export type GroupFunc<A, R extends Record<A>>
-  = (a: A, k: string, r: R) => string
-;
+    = (a: A, k: string, r: R) => string
+    ;
 
 /**
  * Record is an ES object with an index signature.
@@ -58,7 +58,7 @@ export const keys = <A>(value: Record<A>) => Object.keys(value);
  *
  * The order of keys processed is not guaranteed.
  */
-export const map = <A, B>  (o: Record<A>, f: MapFunc<A,B>)    : Record<B> =>
+export const map = <A, B>(o: Record<A>, f: MapFunc<A, B>): Record<B> =>
     keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), {});
 
 /**
@@ -68,7 +68,7 @@ export const map = <A, B>  (o: Record<A>, f: MapFunc<A,B>)    : Record<B> =>
  * there are no properites on the Record.
  * The order of keys processed is not guaranteed.
  */
-export const reduce = <A, B>  (o: Record<A>, accum: B, f: ReduceFunc<A,B>)    : B =>
+export const reduce = <A, B>(o: Record<A>, accum: B, f: ReduceFunc<A, B>): B =>
     keys(o).reduce((p, k) => f(p, o[k], k), accum);
 
 /**
@@ -77,39 +77,29 @@ export const reduce = <A, B>  (o: Record<A>, accum: B, f: ReduceFunc<A,B>)    : 
  * The return value's type is the product of the two types supplied.
  * This function may be unsafe.
  */
-export const merge = <A, R extends Record<A>, B, S extends Record<B>>
-    (left: R, right: S): R & S => (<any>Object).assign({}, left, right);
+export const merge = <L extends object, R extends object>
+    (left: L, right: R): L & R => (<any>Object).assign({}, left, right);
 
 /**
  * merge3 merges 3 records into one.
  */
-export const merge3 =
-    <A, R extends Record<A>,
-        B, S extends Record<B>,
-        C, T extends Record<C>>
-        (r: R, s: S, t: T) => (<any>Object).assign({}, r, s, t);
+export const merge3 = <A extends object, B extends object, C extends object>
+    (a: A, b: B, c: C): A & B & C => (<any>Object).assign({}, a, b, c);
 
 /**
  * merge4 merges 4 records into one.
  */
-export const merge4 =
-    <A, R extends Record<A>,
-        B, S extends Record<B>,
-        C, T extends Record<C>,
-        D, U extends Record<D>>
-        (r: R, s: S, t: T, u: U) => (<any>Object).assign({}, r, s, t, u);
+export const merge4 = <A extends object, B extends object,
+  C extends object, D extends object>
+  (a: A, b: B, c: C, d: D): A & B & C & D =>
+    (<any>Object).assign({}, a, b, c, d);
 
 /**
  * merge5 merges 5 records into one.
  */
-export const merge5 =
-    <A, R extends Record<A>,
-        B, S extends Record<B>,
-        C, T extends Record<C>,
-        D, U extends Record<D>,
-        E, V extends Record<E>>
-        (r: R, s: S, t: T, u: U, v: V) =>
-        (<any>Object).assign({}, r, s, t, u, v);
+export const merge5 = <A extends object, B extends object,
+    C extends Object, D extends object, E extends object>
+    (a: A, b: B, c: C, d: D, e: E) => (<any>Object).assign({}, a, b, c, d, e);
 
 /**
  * rmerge merges 2 records recursively.
@@ -189,28 +179,28 @@ export const exclude = <A, R extends Record<A>>(o: R, keys: string | string[]) =
  * of passing values and the second the failing values.
  */
 export const partition = <A, R extends Record<A>>
-  (r: R , f: PartitionFunc<A,R>): [Record<A>, Record<A>] =>
-        <[Record<A>, Record<A>]>reduce(r, [{}, {}], ([yes, no], c, k) =>
-            f(<A>c, k, r) ?
-                [merge(yes, { [k]: c }), no] :
-                [yes, merge(no, { [k]: c })]);
+    (r: R, f: PartitionFunc<A, R>): [Record<A>, Record<A>] =>
+    <[Record<A>, Record<A>]>reduce(r, [{}, {}], ([yes, no], c, k) =>
+        f(<A>c, k, r) ?
+            [merge(yes, { [k]: c }), no] :
+            [yes, merge(no, { [k]: c })]);
 
 /**
  * group the properties of a Record into another Record using a grouping 
  * function.
  */
 export const group = <A, R extends Record<A>>
-  (r: R, f: GroupFunc<A,R> ): Record<Record<A>> =>
-        reduce(r, <Record<Record<A>>>{}, (p, c, k) => {
+    (r: R, f: GroupFunc<A, R>): Record<Record<A>> =>
+    reduce(r, <Record<Record<A>>>{}, (p, c, k) => {
 
-            let g = f(<A>c, k, r);
+        let g = f(<A>c, k, r);
 
-            return merge(p, {
-                [g]: isRecord(p[g]) ?
-                    merge(p[g], { [k]: c }) : { [k]: c }
-            });
-
+        return merge(p, {
+            [g]: isRecord(p[g]) ?
+                merge(p[g], { [k]: c }) : { [k]: c }
         });
+
+    });
 
 /**
  * values returns a shallow array of the values of a record.

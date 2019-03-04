@@ -52,19 +52,19 @@ export declare const reduce: <A, B>(o: Record<A>, accum: B, f: ReduceFunc<A, B>)
  * The return value's type is the product of the two types supplied.
  * This function may be unsafe.
  */
-export declare const merge: <A, R extends Record<A>, B, S extends Record<B>>(left: R, right: S) => R & S;
+export declare const merge: <L extends object, R extends object>(left: L, right: R) => L & R;
 /**
  * merge3 merges 3 records into one.
  */
-export declare const merge3: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>>(r: R, s: S, t: T) => any;
+export declare const merge3: <A extends object, B extends object, C extends object>(a: A, b: B, c: C) => A & B & C;
 /**
  * merge4 merges 4 records into one.
  */
-export declare const merge4: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>, D, U extends Record<D>>(r: R, s: S, t: T, u: U) => any;
+export declare const merge4: <A extends object, B extends object, C extends object, D extends object>(a: A, b: B, c: C, d: D) => A & B & C & D;
 /**
  * merge5 merges 5 records into one.
  */
-export declare const merge5: <A, R extends Record<A>, B, S extends Record<B>, C, T extends Record<C>, D, U extends Record<D>, E, V extends Record<E>>(r: R, s: S, t: T, u: U, v: V) => any;
+export declare const merge5: <A extends object, B extends object, C extends Object, D extends object, E extends object>(a: A, b: B, c: C, d: D, e: E) => any;
 /**
  * rmerge merges 2 records recursively.
  *
