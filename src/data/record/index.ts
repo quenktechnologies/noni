@@ -38,6 +38,29 @@ export interface Record<A> {
     [key: string]: A
 }
 
+function assign(target:any, ..._varArgs:any[]) : any  { 
+
+      if (target == null) 
+        throw new TypeError('Cannot convert undefined or null to object');
+
+      var to = Object(target);
+
+      for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+
+        if (nextSource != null) { 
+        
+          for (var nextKey in nextSource) {
+            // Avoid bugs when hasOwnProperty is shadowed
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey))
+              to[nextKey] = nextSource[nextKey];
+
+          }
+        }
+      }
+      return to;
+    }
+
 /**
  * isRecord tests whether a value is a record.
  *
@@ -78,13 +101,13 @@ export const reduce = <A, B>(o: Record<A>, accum: B, f: ReduceFunc<A, B>): B =>
  * This function may be unsafe.
  */
 export const merge = <L extends object, R extends object>
-    (left: L, right: R): L & R => (<any>Object).assign({}, left, right);
+    (left: L, right: R): L & R => assign({}, left, right);
 
 /**
  * merge3 merges 3 records into one.
  */
 export const merge3 = <A extends object, B extends object, C extends object>
-    (a: A, b: B, c: C): A & B & C => (<any>Object).assign({}, a, b, c);
+    (a: A, b: B, c: C): A & B & C => assign({}, a, b, c);
 
 /**
  * merge4 merges 4 records into one.
@@ -99,7 +122,7 @@ export const merge4 = <A extends object, B extends object,
  */
 export const merge5 = <A extends object, B extends object,
     C extends Object, D extends object, E extends object>
-    (a: A, b: B, c: C, d: D, e: E) => (<any>Object).assign({}, a, b, c, d, e);
+    (a: A, b: B, c: C, d: D, e: E) => assign({}, a, b, c, d, e);
 
 /**
  * rmerge merges 2 records recursively.
