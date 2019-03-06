@@ -38,28 +38,28 @@ export interface Record<A> {
     [key: string]: A
 }
 
-function assign(target:any, ..._varArgs:any[]) : any  { 
+function assign(target: any, ..._varArgs: any[]): any {
 
-      if (target == null) 
+    if (target == null)
         throw new TypeError('Cannot convert undefined or null to object');
 
-      var to = Object(target);
+    var to = Object(target);
 
-      for (var index = 1; index < arguments.length; index++) {
+    for (var index = 1; index < arguments.length; index++) {
         var nextSource = arguments[index];
 
-        if (nextSource != null) { 
-        
-          for (var nextKey in nextSource) {
-            // Avoid bugs when hasOwnProperty is shadowed
-            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey))
-              to[nextKey] = nextSource[nextKey];
+        if (nextSource != null) {
 
-          }
+            for (var nextKey in nextSource) {
+                // Avoid bugs when hasOwnProperty is shadowed
+                if (Object.prototype.hasOwnProperty.call(nextSource, nextKey))
+                    to[nextKey] = nextSource[nextKey];
+
+            }
         }
-      }
-      return to;
     }
+    return to;
+}
 
 /**
  * isRecord tests whether a value is a record.
@@ -113,9 +113,9 @@ export const merge3 = <A extends object, B extends object, C extends object>
  * merge4 merges 4 records into one.
  */
 export const merge4 = <A extends object, B extends object,
-  C extends object, D extends object>
-  (a: A, b: B, c: C, d: D): A & B & C & D =>
-    (<any>Object).assign({}, a, b, c, d);
+    C extends object, D extends object>
+    (a: A, b: B, c: C, d: D): A & B & C & D =>
+    assign({}, a, b, c, d);
 
 /**
  * merge5 merges 5 records into one.
