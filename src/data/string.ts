@@ -2,6 +2,18 @@
  *  Common functions used to manipulate strings.
  */
 
+/** imports */
+import { get } from './record/path';
+import { Record, assign } from './record';
+
+export interface InterpolateOptions {
+    start?: string,
+    end?: string,
+    regex?: string,
+    leaveMissing?: boolean,
+    applyFunctions?: boolean
+};
+
 /**
  * startsWith polyfill.
  */
@@ -42,13 +54,57 @@ export const camelCase = (str: string): string =>
  *
  * Note: spaces are treated as part of the string.
  */
-export const capitalize = (str:string) : string => 
-`${str[0].toUpperCase()}${str.slice(1)}`;
+export const capitalize = (str: string): string =>
+    `${str[0].toUpperCase()}${str.slice(1)}`;
 
 /**
  * uncapitalize a string.
  *
  * Note: spaces are treated as part of the string.
  */
-export const uncapitalize = (str:string): string =>
-  `${str[0].toLowerCase()}${str.slice(1)}`;
+export const uncapitalize = (str: string): string =>
+    `${str[0].toLowerCase()}${str.slice(1)}`;
+
+const interpolateDefaults: InterpolateOptions = {
+
+    start: '\{',
+    end: '\}',
+    regex: '([\\w\$\.\-]+)',
+    leaveMissing: true,
+    applyFunctions: false
+
+};
+
+/**
+ * interpolate a template string replacing variable paths with values
+ * in the data object.
+ */
+export const interpolate = (
+    str: string,
+    data: Record<any>,
+    opts: InterpolateOptions = {}): string => {
+
+    let options = assign({}, interpolateDefaults, opts);
+    let reg = new RegExp(`${options.start}${options.regex}${options.end}`, 'g');
+
+    return str.replace(reg, (_, k) =>
+        get(k, data)
+            .map(v => {
+
+                if (typeof v === 'function')
+                    return v(k);
+                else
+                    return '' + v;
+
+            })
+            .orJust(() => {
+
+                if (opts.leaveMissing)
+                    return k;
+                else
+                    return '';
+
+            })
+            .get());
+
+}
