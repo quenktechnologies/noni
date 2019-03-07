@@ -909,6 +909,9 @@ img { max-width: 100%; }
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
+		<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+			<a href="../interfaces/_data_string_.interpolateoptions.html" class="tsd-kind-icon">Interpolate<wbr>Options</a>
+		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="_data_string_.html#camelcase" class="tsd-kind-icon">camel<wbr>Case</a>
 		</li>
@@ -920,6 +923,9 @@ img { max-width: 100%; }
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="_data_string_.html#endswith" class="tsd-kind-icon">ends<wbr>With</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_data_string_.html#interpolate" class="tsd-kind-icon">interpolate</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-external-module">
 			<a href="_data_string_.html#startswith" class="tsd-kind-icon">starts<wbr>With</a>
@@ -943,12 +949,19 @@ img { max-width: 100%; }
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
 					<section class="tsd-index-section ">
+						<h3>Interfaces</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_data_string_.interpolateoptions.html" class="tsd-kind-icon">Interpolate<wbr>Options</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#camelcase" class="tsd-kind-icon">camel<wbr>Case</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#capitalize" class="tsd-kind-icon">capitalize</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#contains" class="tsd-kind-icon">contains</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#endswith" class="tsd-kind-icon">ends<wbr>With</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#interpolate" class="tsd-kind-icon">interpolate</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#startswith" class="tsd-kind-icon">starts<wbr>With</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_data_string_.html#uncapitalize" class="tsd-kind-icon">uncapitalize</a></li>
 						</ul>
@@ -968,7 +981,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/8aeaa47/lib/data/string.ts#L30">data/string.ts:30</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/878237c/lib/data/string.ts#L42">data/string.ts:42</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -996,7 +1009,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/8aeaa47/lib/data/string.ts#L45">data/string.ts:45</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/878237c/lib/data/string.ts#L57">data/string.ts:57</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1025,7 +1038,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/8aeaa47/lib/data/string.ts#L24">data/string.ts:24</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/878237c/lib/data/string.ts#L36">data/string.ts:36</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1057,7 +1070,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/8aeaa47/lib/data/string.ts#L14">data/string.ts:14</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/878237c/lib/data/string.ts#L26">data/string.ts:26</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1087,6 +1100,41 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="interpolate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> interpolate</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">interpolate<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_data_record_index_.record.html" class="tsd-signature-type">Record</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_data_string_.interpolateoptions.html" class="tsd-signature-type">InterpolateOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/878237c/lib/data/string.ts#L82">data/string.ts:82</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>interpolate a template string replacing variable paths with values
+								in the data object.</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>str: <span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li>
+								<h5>data: <a href="../interfaces/_data_record_index_.record.html" class="tsd-signature-type">Record</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> opts: <a href="../interfaces/_data_string_.interpolateoptions.html" class="tsd-signature-type">InterpolateOptions</a><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 				<a name="startswith" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagConst">Const</span> starts<wbr>With</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
@@ -1096,7 +1144,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/8aeaa47/lib/data/string.ts#L8">data/string.ts:8</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/878237c/lib/data/string.ts#L20">data/string.ts:20</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1130,7 +1178,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/8aeaa47/lib/data/string.ts#L53">data/string.ts:53</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/878237c/lib/data/string.ts#L65">data/string.ts:65</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
