@@ -21,6 +21,10 @@ export interface Record<A> {
     [key: string]: A;
 }
 /**
+ * assign polyfill.
+ */
+export declare function assign(target: any, ..._varArgs: any[]): any;
+/**
  * isRecord tests whether a value is a record.
  *
  * This is a typeof check that excludes arrays.

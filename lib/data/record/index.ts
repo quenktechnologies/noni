@@ -38,7 +38,10 @@ export interface Record<A> {
     [key: string]: A
 }
 
-function assign(target: any, ..._varArgs: any[]): any {
+/**
+ * assign polyfill.
+ */
+export function assign(target: any, ..._varArgs: any[]): any {
 
     if (target == null)
         throw new TypeError('Cannot convert undefined or null to object');

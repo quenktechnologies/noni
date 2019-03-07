@@ -1,6 +1,14 @@
 /**
  *  Common functions used to manipulate strings.
  */
+import { Record } from './record';
+export interface InterpolateOptions {
+    start?: string;
+    end?: string;
+    regex?: string;
+    leaveMissing?: boolean;
+    applyFunctions?: boolean;
+}
 /**
  * startsWith polyfill.
  */
@@ -30,3 +38,8 @@ export declare const capitalize: (str: string) => string;
  * Note: spaces are treated as part of the string.
  */
 export declare const uncapitalize: (str: string) => string;
+/**
+ * interpolate a template string replacing variable paths with values
+ * in the data object.
+ */
+export declare const interpolate: (str: string, data: Record<any>, opts?: InterpolateOptions) => string;
