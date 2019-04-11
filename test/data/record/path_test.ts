@@ -11,7 +11,8 @@ import {
     unflatten,
     unescapeRecord,
     intersect,
-    difference
+  difference,
+  map
 } from '../../../src/data/record/path';
 import { Record } from '../../../src/data/record';
 
@@ -508,6 +509,18 @@ describe('path', () => {
             let r: Record<number> = { e: 4, b: 5, c: 6 };
 
             assert(difference(l, r)).equate({ a: 1 });
+
+        })
+
+    });
+
+    describe('map', () => {
+
+        it('should work', () => {
+
+            let o: Record<number> = { a: 1, b: 2, c: 3 };
+
+          assert(map(o, p => `n${p}`)).equate({ na: 1, nb:2, nc:3 });
 
         })
 

@@ -362,3 +362,14 @@ export const difference =<A,B>(a:Record<A>, b:Record<B>) : Record<A> =>
     return p;
 
   });
+
+/**
+ * map over the property names of a record.
+ */
+export const map = <A>(a:Record<A>, f:(s:string)=>string) : Record<A> => 
+  reduce(a, <Record<A>>{}, (p,c, k) => {
+
+    p[f(k)] = c;
+    return p;
+
+  });

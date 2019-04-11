@@ -93,3 +93,7 @@ export declare const intersect: <A, B>(a: Record<A>, b: Record<B>) => Record<A>;
  * property names in the right are retained.
  */
 export declare const difference: <A, B>(a: Record<A>, b: Record<B>) => Record<A>;
+/**
+ * map over the property names of a record.
+ */
+export declare const map: <A>(a: Record<A>, f: (s: string) => string) => Record<A>;
