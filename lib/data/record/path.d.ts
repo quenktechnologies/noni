@@ -79,3 +79,17 @@ export declare const flatten: <A>(r: Record<A>) => FlatRecord<A>;
  * to their full representation.
  */
 export declare const unflatten: <A>(r: FlatRecord<A>) => Record<A>;
+/**
+ * intersect set operation between the keys of two records.
+ *
+ * All the properties of the left record that have matching property
+ * names in the right are retained.
+ */
+export declare const intersect: <A, B>(a: Record<A>, b: Record<B>) => Record<A>;
+/**
+ * difference set operation between the keys of two records.
+ *
+ * All the properties on the left record that do not have matching
+ * property names in the right are retained.
+ */
+export declare const difference: <A, B>(a: Record<A>, b: Record<B>) => Record<A>;

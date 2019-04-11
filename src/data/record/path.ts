@@ -330,3 +330,35 @@ const prefix = (pfix: string, key: string) => (pfix === '') ?
  */
 export const unflatten = <A>(r: FlatRecord<A>): Record<A> =>
     reduce(r, {}, (p: Record<A>, c, k: string) => set(k, c, p));
+
+/**
+ * intersect set operation between the keys of two records.
+ *
+ * All the properties of the left record that have matching property
+ * names in the right are retained.
+ */
+export const intersect = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
+    reduce(a, <Record<A>>{}, (p, c, k) => {
+
+        if (b.hasOwnProperty(k))
+            p[k] = c;
+
+        return p;
+
+    });
+
+/**
+ * difference set operation between the keys of two records.
+ *
+ * All the properties on the left record that do not have matching
+ * property names in the right are retained.
+ */
+export const difference =<A,B>(a:Record<A>, b:Record<B>) : Record<A> => 
+  reduce(a, <Record<A>>{}, (p,c,k) => {
+
+    if(!b.hasOwnProperty(k))
+      p[k] = c;
+
+    return p;
+
+  });

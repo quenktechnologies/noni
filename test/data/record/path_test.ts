@@ -9,8 +9,11 @@ import {
     unescape,
     flatten,
     unflatten,
-    unescapeRecord
+    unescapeRecord,
+    intersect,
+    difference
 } from '../../../src/data/record/path';
+import { Record } from '../../../src/data/record';
 
 describe('path', () => {
 
@@ -483,5 +486,31 @@ describe('path', () => {
 
         })
     })
+
+    describe('intersect', () => {
+
+        it('should retain the left', () => {
+
+            let l: Record<number> = { a: 1, b: 2, c: 3 };
+            let r: Record<number> = { e: 4, b: 5, c: 6 };
+
+            assert(intersect(l, r)).equate({ b: 2, c: 3 });
+
+        });
+
+    });
+
+    describe('difference', () => {
+
+        it('should retain the ones without matches only', () => {
+
+            let l: Record<number> = { a: 1, b: 2, c: 3 };
+            let r: Record<number> = { e: 4, b: 5, c: 6 };
+
+            assert(difference(l, r)).equate({ a: 1 });
+
+        })
+
+    });
 
 });
