@@ -4,6 +4,14 @@
  */
 import { Record } from './record';
 /**
+ * PartitionFunc type.
+ */
+export declare type PartitionFunc<A> = (a: A, i: number, l: A[]) => boolean;
+/**
+ * GroupFunc type.
+ */
+export declare type GroupFunc<A> = (a: A, i: number, r: A[]) => string;
+/**
  * head returns the item at index 0 of an array
  */
 export declare const head: <A>(list: A[]) => A;
@@ -33,12 +41,12 @@ export declare const concat: <A>(list: A[], a: A) => A[];
  *
  * The first array contains values that return true and the second false.
  */
-export declare const partition: <A>(list: A[]) => (f: (a: A, i: number, l: A[]) => boolean) => [A[], A[]];
+export declare const partition: <A>(list: A[]) => (f: PartitionFunc<A>) => [A[], A[]];
 /**
- * group the properties of a Record into another Record using a grouping
- * function.
+ * group the elements of an array into a Record where each property
+ * is an array of elements assigned to it's property name.
  */
-export declare const group: <A>(list: A[]) => (f: (a: A, i: number, r: A[]) => string) => Record<A[]>;
+export declare const group: <A>(list: A[]) => (f: GroupFunc<A>) => Record<A[]>;
 /**
  * distribute breaks an array into an array of equally (approximate) sized
  * smaller arrays.

@@ -6,6 +6,16 @@ import { Record, merge } from './record';
 import { isMultipleOf } from '../math';
 
 /**
+ * PartitionFunc type.
+ */
+export type PartitionFunc<A> = (a: A, i: number, l: A[]) => boolean;
+
+/**
+ * GroupFunc type.
+ */
+export type GroupFunc<A> = (a: A, i: number, r: A[]) => string;
+
+/**
  * head returns the item at index 0 of an array
  */
 export const head = <A>(list: A[]) => list[0];
@@ -41,7 +51,7 @@ export const concat = <A>(list: A[], a: A): A[] => [...list, a];
  *
  * The first array contains values that return true and the second false.
  */
-export const partition = <A>(list: A[]) => (f: (a: A, i: number, l: A[]) => boolean)
+export const partition = <A>(list: A[]) => (f: PartitionFunc<A>)
     : [A[], A[]] => empty(list) ?
         [[], []] :
         list.reduce(([yes, no]: [A[], A[]], c: A, i: number) =>
@@ -50,18 +60,17 @@ export const partition = <A>(list: A[]) => (f: (a: A, i: number, l: A[]) => bool
                 [yes, concat(no, c)]), [[], []]);
 
 /**
- * group the properties of a Record into another Record using a grouping 
- * function.
+ * group the elements of an array into a Record where each property 
+ * is an array of elements assigned to it's property name.
  */
-export const group = <A>(list: A[]) => (f: (a: A, i: number, r: A[]) => string)
-    : Record<A[]> =>
+export const group = <A>(list: A[]) => (f: GroupFunc<A>): Record<A[]> =>
     list.reduce((p, c, i) => {
 
         let g = f(<A>c, i, list);
 
         return merge(p, {
             [g]: Array.isArray(p[g]) ?
-          concat(<A[]>p[g], c) : [c]
+                concat(<A[]>p[g], c) : [c]
         });
 
     }, <Record<A[]>>{});
@@ -71,13 +80,13 @@ export const group = <A>(list: A[]) => (f: (a: A, i: number, r: A[]) => string)
  * smaller arrays.
  */
 export const distribute = <A>(list: A[], size: number): A[][] => {
- 
-  let r =     list.reduce((p: [A[][], A[]], c: A, i: number): [A[][], A[]] =>
+
+    let r = list.reduce((p: [A[][], A[]], c: A, i: number): [A[][], A[]] =>
         isMultipleOf(size, i + 1) ?
             [concat(p[0], concat(p[1], c)), []] :
-      [p[0], concat(p[1], c)], (<[A[][], A[]]>[[], []]));
+            [p[0], concat(p[1], c)], (<[A[][], A[]]>[[], []]));
 
-  return (r[1].length === 0)  ? r[0] : concat(r[0], r[1]);
+    return (r[1].length === 0) ? r[0] : concat(r[0], r[1]);
 
 }
 
@@ -85,5 +94,5 @@ export const distribute = <A>(list: A[], size: number): A[][] => {
  * dedupe an array by filtering out elements
  * that appear twice.
  */
-export const dedupe = <A>(list: A[]) : A[] =>
-  list.filter((e,i,l)=> l.indexOf(e) === i);
+export const dedupe = <A>(list: A[]): A[] =>
+    list.filter((e, i, l) => l.indexOf(e) === i);
