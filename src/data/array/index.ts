@@ -2,8 +2,8 @@
  * The array module provides helper functions 
  * for working with JS arrays.
  */
-import { Record, merge } from './record';
-import { isMultipleOf } from '../math';
+import { Record, merge } from '../record';
+import { isMultipleOf } from '../../math';
 
 /**
  * PartitionFunc type.

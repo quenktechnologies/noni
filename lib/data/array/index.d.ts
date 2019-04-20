@@ -2,7 +2,7 @@
  * The array module provides helper functions
  * for working with JS arrays.
  */
-import { Record } from './record';
+import { Record } from '../record';
 /**
  * PartitionFunc type.
  */
