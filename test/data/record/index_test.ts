@@ -17,7 +17,8 @@ import {
     group,
     values,
     contains,
-    clone
+    clone,
+    filter
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -338,13 +339,15 @@ describe('record', () => {
 
         it('should partition records', () => {
 
-          let m = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6,
-            g: 7, h: 8, i: 9, j: 10 };
+            let m = {
+                a: 1, b: 2, c: 3, d: 4, e: 5, f: 6,
+                g: 7, h: 8, i: 9, j: 10
+            };
             let f = (n: number) => ((n % 2) === 0)
-          let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 },
+            let r = [{ b: 2, d: 4, f: 6, h: 8, j: 10 },
             { a: 1, c: 3, e: 5, g: 7, i: 9 }];
 
-            assert(partition<number, Record<number>>(m,f)).equate(r);
+            assert(partition<number, Record<number>>(m, f)).equate(r);
 
         });
     })
@@ -383,7 +386,7 @@ describe('record', () => {
                 }
             }
 
-            assert(group(m,f)).equate(r);
+            assert(group(m, f)).equate(r);
 
         });
 
@@ -432,6 +435,19 @@ describe('record', () => {
             };
 
             assert(clone(o)).equate({ n: 1, b: 12, d: [0, 2, 3] });
+
+        });
+
+    });
+
+    describe('filter', () => {
+
+        it('it should filter the keys of an object', () => {
+
+            let o = { a: 1, b: 2, c: 1, d: 2 };
+            let isTwo = (n: number) => n === 2;
+
+            assert(filter(o, isTwo)).equate({ b: 2, d: 2 });
 
         });
 

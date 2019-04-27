@@ -12,6 +12,11 @@ import { concat } from '../array';
 export type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
 
 /**
+ * FilterFunc
+ */
+export type FilterFunc<A> = (value:A, key:string, rec:Record<A>) => boolean;
+
+/**
  * ReduceFunc
  */
 export type ReduceFunc<A, B> = (pre: B, curr: A, key: string) => B;
@@ -96,6 +101,12 @@ export const map = <A, B>(o: Record<A>, f: MapFunc<A, B>): Record<B> =>
  */
 export const reduce = <A, B>(o: Record<A>, accum: B, f: ReduceFunc<A, B>): B =>
     keys(o).reduce((p, k) => f(p, o[k], k), accum);
+
+/**
+ * filter the keys of a record using a filter function.
+ */
+export const filter = <A> (o:Record<A>, f:FilterFunc<A>) : Record<A> => 
+  keys(o).reduce((p,k) => f(o[k], k, o) ? merge(p, { [k] : o[k]}) : p, {});
 
 /**
  * merge two objects into one.

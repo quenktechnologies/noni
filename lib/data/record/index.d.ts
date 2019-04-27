@@ -3,6 +3,10 @@
  */
 export declare type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
 /**
+ * FilterFunc
+ */
+export declare type FilterFunc<A> = (value: A, key: string, rec: Record<A>) => boolean;
+/**
  * ReduceFunc
  */
 export declare type ReduceFunc<A, B> = (pre: B, curr: A, key: string) => B;
@@ -50,6 +54,10 @@ export declare const map: <A, B>(o: Record<A>, f: MapFunc<A, B>) => Record<B>;
  * The order of keys processed is not guaranteed.
  */
 export declare const reduce: <A, B>(o: Record<A>, accum: B, f: ReduceFunc<A, B>) => B;
+/**
+ * filter the keys of a record using a filter function.
+ */
+export declare const filter: <A>(o: Record<A>, f: FilterFunc<A>) => Record<A>;
 /**
  * merge two objects into one.
  *
