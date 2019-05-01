@@ -2,7 +2,9 @@ import { assert } from '@quenk/test/lib/assert';
 import { Nothing } from '../../../src/data/maybe';
 import {
     tokenize,
-    get,
+  get,
+  getDefault,
+  getString,
     set,
     escape,
     escapeRecord,
@@ -249,9 +251,45 @@ describe('path', () => {
 
         it('should not cause crashes if the src is undefined', () => {
 
-          assert(get('foo',<any> null).isNothing()).true();
+            assert(get('foo', <any>null).isNothing()).true();
 
         });
+
+    });
+
+  describe('getDefault', () => {
+
+    let r:Record<number|object> = {a:{ b: {c:3} }, d:4, e:5};
+
+    it('should return the found value', () => {
+
+      assert(getDefault('a.b.c', r, 10)).equal(3);
+        
+      });
+
+    it('should return the default value if not found', () => {
+
+      assert(getDefault('a.b.c.d', r, 10)).equal(10);
+        
+      });
+      
+  });
+
+  describe('getString', () => {
+
+    let r:Record<number|object> = {a:{ b: {c:3} }, d:4, e:5};
+
+      it('should return the found value as a string', () => {
+ 
+      assert(getString('a.b.c', r)).equal('3');
+           
+      });
+
+    it('should return the empty string if not found', () => {
+
+      assert(getString('a.b.c.d', r)).equal('');
+
+    });
 
     });
 

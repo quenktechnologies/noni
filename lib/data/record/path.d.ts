@@ -46,6 +46,17 @@ export declare const unsafeGet: <A>(path: string, src: Record<A>) => A;
  */
 export declare const get: <A>(path: string, src: Record<A>) => Maybe<A>;
 /**
+ * getDefault is like get but takes a default value to return if
+ * the path is not found.
+ */
+export declare const getDefault: <A>(path: string, src: Record<A>, def: A) => A;
+/**
+ * getString casts the resulting value to a string.
+ *
+ * An empty string is provided if the path is not found.
+ */
+export declare const getString: <A>(path: string, src: Record<A>) => string;
+/**
  * set sets a value on an object given a path.
  */
 export declare const set: <A, R extends Record<A>>(p: string, v: A, r: R) => R;

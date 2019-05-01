@@ -177,8 +177,8 @@ export const tokenize = (str: Path): Token[] => {
  */
 export const unsafeGet = <A>(path: Path, src: Record<A>): A => {
 
-     if (src == null)
-    return <any>undefined;
+    if (src == null)
+        return <any>undefined;
 
     let toks = tokenize(path);
     let head: any = (<any>src)[<Token>toks.shift()];
@@ -191,6 +191,21 @@ export const unsafeGet = <A>(path: Path, src: Record<A>): A => {
  */
 export const get = <A>(path: Path, src: Record<A>): Maybe<A> =>
     fromNullable(unsafeGet(path, src));
+
+/**
+ * getDefault is like get but takes a default value to return if
+ * the path is not found.
+ */
+export const getDefault = <A>(path:Path, src: Record<A>, def:A) : A => 
+  get(path, src).orJust(()=> def).get();
+
+/**
+ * getString casts the resulting value to a string.
+ *
+ * An empty string is provided if the path is not found.
+ */
+export const getString = <A> (path:Path, src: Record<A>) : string =>
+  get(path, src).map(v => String(v)).orJust(()=> '').get();
 
 /**
  * set sets a value on an object given a path.
