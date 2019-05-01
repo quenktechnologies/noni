@@ -11,8 +11,8 @@ import {
     unflatten,
     unescapeRecord,
     intersect,
-  difference,
-  map
+    difference,
+    map
 } from '../../../src/data/record/path';
 import { Record } from '../../../src/data/record';
 
@@ -244,6 +244,12 @@ describe('path', () => {
                     }
                 }
             }).get()).equal('0');
+
+        });
+
+        it('should not cause crashes if the src is undefined', () => {
+
+          assert(get('foo',<any> null).isNothing()).true();
 
         });
 
@@ -520,7 +526,7 @@ describe('path', () => {
 
             let o: Record<number> = { a: 1, b: 2, c: 3 };
 
-          assert(map(o, p => `n${p}`)).equate({ na: 1, nb:2, nc:3 });
+            assert(map(o, p => `n${p}`)).equate({ na: 1, nb: 2, nc: 3 });
 
         })
 

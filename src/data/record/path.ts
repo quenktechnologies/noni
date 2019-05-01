@@ -177,6 +177,9 @@ export const tokenize = (str: Path): Token[] => {
  */
 export const unsafeGet = <A>(path: Path, src: Record<A>): A => {
 
+     if (src == null)
+    return <any>undefined;
+
     let toks = tokenize(path);
     let head: any = (<any>src)[<Token>toks.shift()];
     return toks.reduce((p, c) => (p == null) ? p : p[c], head);
@@ -353,23 +356,23 @@ export const intersect = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
  * All the properties on the left record that do not have matching
  * property names in the right are retained.
  */
-export const difference =<A,B>(a:Record<A>, b:Record<B>) : Record<A> => 
-  reduce(a, <Record<A>>{}, (p,c,k) => {
+export const difference = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
+    reduce(a, <Record<A>>{}, (p, c, k) => {
 
-    if(!b.hasOwnProperty(k))
-      p[k] = c;
+        if (!b.hasOwnProperty(k))
+            p[k] = c;
 
-    return p;
+        return p;
 
-  });
+    });
 
 /**
  * map over the property names of a record.
  */
-export const map = <A>(a:Record<A>, f:(s:string)=>string) : Record<A> => 
-  reduce(a, <Record<A>>{}, (p,c, k) => {
+export const map = <A>(a: Record<A>, f: (s: string) => string): Record<A> =>
+    reduce(a, <Record<A>>{}, (p, c, k) => {
 
-    p[f(k)] = c;
-    return p;
+        p[f(k)] = c;
+        return p;
 
-  });
+    });
