@@ -6,7 +6,7 @@ import { Chain } from '../chain';
  *
  * This is the type of function we expect for do notation.
  */
-export type DoFn<A, M extends Monad<A>> = ()=> Iterator<M>;
+export type DoFn<A, M extends Monad<A>> = () => Iterator<M>;
 
 /**
  * Monad provides a combination of an Applicative and Chain.
@@ -66,8 +66,18 @@ export const compose = <A, B, C, MB extends Monad<B>, MC extends Monad<C>>
  *
  * NOTE: You MUST wrap your return values manually, this function
  *       will not do it for you.
+ *
+ * NOTE1: Errors thrown in the body of a generator function simply 
+ * bring the generator to an end. According to MDN:
+ *
+ * "Much like a return statement, an error thrown inside the generator will
+ * make the generator finished -- unless caught within the generator's body."
+ *
+ * Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator.
+ *
+ * Beware of uncaught errors being swallowed in the function body.
  */
-export const doN = <A, M extends Monad<A>>(f: DoFn<A,M>): M => {
+export const doN = <A, M extends Monad<A>>(f: DoFn<A, M>): M => {
 
     let gen = f();
 
