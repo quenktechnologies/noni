@@ -45,7 +45,7 @@ export type Job<A> = (c: Supervisor<A>) => Aborter;
 /**
  * Callback in node platform style for asynchronous effects.
  */
-export type Callback<A> = (e?: Error, a?: A) => void;
+export type Callback<A> = (e: Error | undefined | null, a?: A) => void;
 
 /**
  * CallBackReceiver type takes a node style callback 
@@ -473,7 +473,8 @@ export const delay = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) =>
 export const fromAbortable = <A>(abort: Aborter) => (f: CallbackReceiver<A>)
     : Future<A> => new Run((s: Supervisor<A>) => {
 
-        f((err?: Error, a?: A) => (err != null) ? s.onError(err) : s.onSuccess(<A>a));
+        f((err: Error | null | undefined, a?: A) =>
+            (err != null) ? s.onError(err) : s.onSuccess(<A>a));
         return abort;
 
     });

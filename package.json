@@ -16,12 +16,12 @@
         "@quenk/must": "^1.0.5",
         "@quenk/test": "^2.1.0",
         "@types/bluebird": "^3.5.26",
-        "@types/mocha": "^5.2.6",
-        "@types/node": "^10.12.29",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.0.7",
         "bluebird": "^3.5.3",
-        "mocha": "^6.0.2",
-        "ts-node": "^8.0.2",
+        "mocha": "^6.1.4",
+        "ts-node": "^8.2.0",
         "typedoc": "^0.14.2",
-        "typescript": "^3.3.3333"
+        "typescript": "^3.5.1"
     }
 }

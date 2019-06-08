@@ -14,7 +14,7 @@ export type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
 /**
  * FilterFunc
  */
-export type FilterFunc<A> = (value:A, key:string, rec:Record<A>) => boolean;
+export type FilterFunc<A> = (value: A, key: string, rec: Record<A>) => boolean;
 
 /**
  * ReduceFunc
@@ -105,8 +105,8 @@ export const reduce = <A, B>(o: Record<A>, accum: B, f: ReduceFunc<A, B>): B =>
 /**
  * filter the keys of a record using a filter function.
  */
-export const filter = <A> (o:Record<A>, f:FilterFunc<A>) : Record<A> => 
-  keys(o).reduce((p,k) => f(o[k], k, o) ? merge(p, { [k] : o[k]}) : p, {});
+export const filter = <A>(o: Record<A>, f: FilterFunc<A>): Record<A> =>
+    keys(o).reduce((p, k) => f(o[k], k, o) ? merge(p, { [k]: o[k] }) : p, {});
 
 /**
  * merge two objects into one.
@@ -259,7 +259,7 @@ export const contains = <A>(r: Record<A>, key: string): boolean =>
  * are not class instances.
  */
 export const clone = <A, R extends Record<A>>(r: R): R =>
-    reduce(r, <any>{}, (p: R, c, k) => { p[k] = _clone(c); return p; });
+    <R><any>reduce(r, <Record<A>>{}, (p, c, k) => { p[k] = _clone(c); return p; });
 
 const _clone = (a: any): any => {
 
