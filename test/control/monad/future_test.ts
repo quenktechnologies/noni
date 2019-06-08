@@ -81,12 +81,6 @@ const promiseTask = () => new Promise((y, _) => {
 
 });
 
-const promiseErrTask = () => new Promise((_, n) => {
-
-    setTimeout(() => n(new Error('promise')), 500);
-
-});
-
 describe('future', () => {
 
     describe('Future', () => {
@@ -426,18 +420,21 @@ describe('future', () => {
 
             let failed = false;
 
-            return toPromise(sequential([
-                raise(new Error('1')),
-                raise(new Error('2'))
-            ])
-                .catch((e: Error) => {
+            let seq: Future<undefined[]> = sequential([
+                <Future<undefined>>raise(new Error('1')),
+                <Future<undefined>>raise(new Error('2'))
+            ]);
 
-                    if (e.message === '1')
-                        failed = true;
+            return toPromise(
+                seq
+                    .catch((e: Error) => {
 
-                    return pure(<{}[]>[]);
+                        if (e.message === '1')
+                            failed = true;
 
-                }))
+                        return pure(<undefined[]>[]);
+
+                    }))
                 .then(() => assert(failed).be.true())
 
         });
@@ -446,7 +443,7 @@ describe('future', () => {
 
     describe('reduce', () => {
 
-        let f = (p: number, c: number) =>  p + c; 
+        let f = (p: number, c: number) => p + c;
 
         it('should fail if any fail', () => {
 
@@ -678,15 +675,21 @@ describe('future', () => {
             let e = new Error('a');
             let failed = false;
 
-            return toPromise(parallel([raise(e), raise(e), raise(e)])
-                .catch((e: Error) => {
+            let par: Future<undefined[]> = parallel([
+                raise(e),
+                raise(e),
+                raise(e)]);
 
-                    if (e.message === 'a')
-                        failed = true;
+            return toPromise(
+                par
+                    .catch((e: Error) => {
 
-                    return pure(<{}[]>[]);
+                        if (e.message === 'a')
+                            failed = true;
 
-                }))
+                        return pure(<undefined[]>[]);
+
+                    }))
                 .then(() => assert(failed).be.true());
 
         });
@@ -806,13 +809,19 @@ describe('future', () => {
                 .map(n => {
                     assert(n).equal(12);
                     done();
-                }).fork(console.error, console.log);
+                }).fork(() => { }, () => { });
 
         });
 
         it('should not swallow errors', done => {
 
-            liftP(promiseErrTask)
+            let promiseErrTask = (): Promise<{}> => new Promise((_, n) => {
+
+                setTimeout(() => n(new Error('promise')), 500);
+
+            });
+
+            liftP<{}>(promiseErrTask)
                 .catch(e => {
 
                     assert(e.message).equal('promise');

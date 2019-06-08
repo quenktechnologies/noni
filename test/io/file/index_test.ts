@@ -1,6 +1,6 @@
 import { assert } from '@quenk/test/lib/assert';
 import { isAbsolute } from 'path';
-import { toPromise, pure, raise } from '../../../src/control/monad/future';
+import { Future, toPromise, pure, raise } from '../../../src/control/monad/future';
 import { reduce } from '../../../src/data/record';
 import {
     readTextFile,
@@ -28,6 +28,10 @@ const ABOUT = 'This is a flag🇹.\n';
 const FIXTURES = `${__dirname}/fixtures`;
 const ABOUT_FILE = `${FIXTURES}/about`;
 const RANDOM_FILE = '/sdkhr34038hkc';
+
+const pureFt: Future<unknown> = pure(<unknown>{});
+
+const errFt: Future<unknown> = raise(new Error('failed'));
 
 describe('file', () => {
 
@@ -234,10 +238,9 @@ describe('file', () => {
         it('should remove dirs', () => {
 
             let dest = `${FIXTURES}/../unlinkable`;
-
             return toPromise(makeDir(dest)
                 .chain(() => isDirectory(dest))
-                .chain(yes => !yes ? raise(new Error('failed!')) : pure({}))
+                .chain(yes => !yes ? errFt : pureFt)
                 .chain(() => unlink(dest))
                 .chain(() => exists(dest))
                 .map(yes => assert(yes).be.false()));
@@ -250,7 +253,7 @@ describe('file', () => {
 
             return toPromise(makeDir(dest)
                 .chain(() => isDirectory(dest))
-                .chain(yes => !yes ? raise(new Error('failed!')) : pure({}))
+                .chain(yes => !yes ? errFt : pureFt)
                 .chain(() => writeTextFile(file, 'will delete'))
                 .chain(() => readTextFile(file))
                 .map(txt => assert(txt).equal('will delete'))

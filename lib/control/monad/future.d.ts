@@ -35,7 +35,7 @@ export declare type Job<A> = (c: Supervisor<A>) => Aborter;
 /**
  * Callback in node platform style for asynchronous effects.
  */
-export declare type Callback<A> = (e?: Error, a?: A) => void;
+export declare type Callback<A> = (e: Error | undefined | null, a?: A) => void;
 /**
  * CallBackReceiver type takes a node style callback
  * and performs some side-effect.

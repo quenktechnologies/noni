@@ -82,8 +82,8 @@ export const statDirRec = (path: Path): Future<StatsM> =>
  */
 export const exists = (path: Path): Future<boolean> =>
     stat(path)
-        .chain(() => pure(true))
-        .catch(() => pure(false));
+        .chain(() => pure(<boolean>true))
+        .catch(() => pure(<boolean>false));
 
 /**
  * isDirectory (safe) wrapper.
@@ -91,8 +91,8 @@ export const exists = (path: Path): Future<boolean> =>
 export const isDirectory = (path: Path): Future<boolean> =>
     exists(path)
         .chain(yes => yes ?
-            stat(path).map(s => s.isDirectory()) :
-            pure(false));
+            stat(path).map(s => <boolean>s.isDirectory()) :
+            pure(<boolean>false));
 
 /**
  * isFile (safe) wrapper.
@@ -100,8 +100,8 @@ export const isDirectory = (path: Path): Future<boolean> =>
 export const isFile = (path: Path): Future<boolean> =>
     exists(path)
         .chain(yes => yes ?
-            stat(path).map(s => s.isFile()) :
-            pure(false));
+            stat(path).map(s => <boolean>s.isFile()) :
+            pure(<boolean>false));
 
 /**
  * readdir (safe) wrapper

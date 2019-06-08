@@ -83,26 +83,37 @@ export const is = <A>(expected: string) => (value: A) => typeof (value) === expe
  *             the function is RegExp then we uses the RegExp.test function
  *             instead.
  */
-export const test = <V,T>(value: V, t: Pattern<T>): boolean =>
-    ((prims.indexOf(typeof t) > -1) && (<Type>value === t)) ?
-        true :
-        ((typeof t === 'function') &&
-            (((<Function>t === String) && (typeof value === 'string')) ||
-                ((<Function>t === Number) && (typeof value === 'number')) ||
-                ((<Function>t === Boolean) && (typeof value === 'boolean')) ||
-                ((<Function>t === Array) && (Array.isArray(value))) ||
-                (<Function>t === Any) ||
-                (value instanceof <Function>t))) ?
-            true :
-            ((t instanceof RegExp) && ((typeof value === 'string') && t.test(value))) ?
-                true :
-                ((typeof t === 'object') && (typeof value === 'object')) ?
-                    Object
-                        .keys(t)
-                        .every(k => value.hasOwnProperty(k) ?
-                            test((<{ [key: string]: Type }>value)[k],
-                                (<{ [key: string]: Type }>t)[k]) : false) :
-                    false;
+export const test = <V, T>(value: V, t: Pattern<T>): boolean => {
+
+    if ((prims.indexOf(typeof t) > -1) && (<Type>value === t))
+
+        return true;
+
+    else if ((typeof t === 'function') &&
+        (((<Function>t === String) && (typeof value === 'string')) ||
+            ((<Function>t === Number) && (typeof value === 'number')) ||
+            ((<Function>t === Boolean) && (typeof value === 'boolean')) ||
+            ((<Function>t === Array) && (Array.isArray(value))) ||
+            (<Function>t === Any) ||
+            (value instanceof <Function>t)))
+
+        return true;
+
+    else if ((t instanceof RegExp) &&
+        ((typeof value === 'string') &&
+            t.test(value)))
+
+        return true;
+
+    else if ((typeof t === 'object') && (typeof value === 'object'))
+        return Object
+            .keys(t)
+            .every(k => Object.hasOwnProperty.call(value, k) ?
+                test((<{ [key: string]: Type }>value)[k],
+                    (<{ [key: string]: Type }>t)[k]) : false)
+    return false;
+
+}
 
 /**
  * show the type of a value.
@@ -115,9 +126,9 @@ export const show = <A>(value: A): string => {
     if (typeof value === 'object') {
 
         if (Array.isArray(value))
-            return `[${value.map(show)}]`
-        else if (value.constructor !== Object)
-            return ((<Type>value.constructor).name || value.constructor);
+            return `[${value.map(show)}];`
+        else if ((<any>value).constructor !== Object)
+            return ((<Type>(<any>value).constructor).name || (<any>value).constructor);
         else
             return JSON.stringify(value);
 
