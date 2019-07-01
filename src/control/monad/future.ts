@@ -1,3 +1,4 @@
+import { Milliseconds } from '../time';
 import { tick } from '../timer';
 import { Monad } from './';
 import { noop } from '../../data/function';
@@ -444,7 +445,7 @@ export const pure = <A>(a: A): Future<A> => new Pure(a);
 export const raise = <A>(e: Err): Future<A> => new Raise(e);
 
 /**
- * attempt a syncronous task, trapping any thrown errors in the Future.
+ * attempt a synchronous task, trapping any thrown errors in the Future.
  */
 export const attempt = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) => {
 
@@ -454,15 +455,17 @@ export const attempt = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) 
 });
 
 /**
- * delay a task by running it in the "next tick" without attempting
- * to trap any thrown errors.
+ * delay executes a function f after n milliseconds have passed.
+ *
+ * Any errors thrown are caught.
  */
-export const delay = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) => {
+export const delay = <A>(f: () => A, n: Milliseconds = 0): Future<A> =>
+    new Run((s: Supervisor<A>) => {
 
-    tick(() => s.onSuccess(f()));
-    return noop;
+        setTimeout(() => { try { s.onSuccess(f()); } catch (e) { s.onError(e); } }, n);
+        return noop;
 
-});
+    });
 
 /**
  * fromAbortable takes an Aborter and a node style async function and 

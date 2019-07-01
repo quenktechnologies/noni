@@ -210,14 +210,15 @@ export declare const pure: <A>(a: A) => Future<A>;
  */
 export declare const raise: <A>(e: Err) => Future<A>;
 /**
- * attempt a syncronous task, trapping any thrown errors in the Future.
+ * attempt a synchronous task, trapping any thrown errors in the Future.
  */
 export declare const attempt: <A>(f: () => A) => Future<A>;
 /**
- * delay a task by running it in the "next tick" without attempting
- * to trap any thrown errors.
+ * delay executes a function f after n milliseconds have passed.
+ *
+ * Any errors thrown are caught.
  */
-export declare const delay: <A>(f: () => A) => Future<A>;
+export declare const delay: <A>(f: () => A, n?: number) => Future<A>;
 /**
  * fromAbortable takes an Aborter and a node style async function and
  * produces a Future.
