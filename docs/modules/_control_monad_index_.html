@@ -963,7 +963,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">Do<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/365e6d9/lib/control/monad/index.ts#L9">control/monad/index.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5762cee/lib/control/monad/index.ts#L9">control/monad/index.ts:9</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1001,7 +1001,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/365e6d9/lib/control/monad/index.ts#L35">control/monad/index.ts:35</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5762cee/lib/control/monad/index.ts#L35">control/monad/index.ts:35</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1067,7 +1067,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/365e6d9/lib/control/monad/index.ts#L70">control/monad/index.ts:70</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5762cee/lib/control/monad/index.ts#L80">control/monad/index.ts:80</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1095,6 +1095,12 @@ pure(<span class="hljs-number">1</span>)
 </code></pre>
 							<p>NOTE: You MUST wrap your return values manually, this function
 							will not do it for you.</p>
+							<p>NOTE1: Errors thrown in the body of a generator function simply
+							bring the generator to an end. According to MDN:</p>
+							<p>&quot;Much like a return statement, an error thrown inside the generator will
+							make the generator finished -- unless caught within the generator&#39;s body.&quot;</p>
+							<p>Source: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator</a>.</p>
+							<p>Beware of uncaught errors being swallowed in the function body.</p>
 						</div>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
 						<ul class="tsd-type-parameters">
@@ -1125,7 +1131,7 @@ pure(<span class="hljs-number">1</span>)
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/365e6d9/lib/control/monad/index.ts#L26">control/monad/index.ts:26</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/5762cee/lib/control/monad/index.ts#L26">control/monad/index.ts:26</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
