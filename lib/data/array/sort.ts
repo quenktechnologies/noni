@@ -73,8 +73,8 @@ export const natural = (a: any = '', b: any = ''): Rank => {
         var aA = String(a).replace(reA, '');
         var bA = String(b).replace(reA, '');
         if (aA === bA) {
-            var aN = parseInt(a.replace(reN, ''), 10);
-            var bN = parseInt(b.replace(reN, ''), 10);
+            var aN = parseInt(String(a).replace(reN, ''), 10);
+            var bN = parseInt(String(b).replace(reN, ''), 10);
             return aN === bN ? 0 : aN > bN ? -1 : 1;
         } else {
             return aA > bA ? -1 : 1;
