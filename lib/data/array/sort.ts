@@ -70,8 +70,8 @@ export const natural = (a: any = '', b: any = ''): Rank => {
     var bInt = parseInt(b, 10);
 
     if (isNaN(aInt) && isNaN(bInt)) {
-        var aA = a.replace(reA, '');
-        var bA = b.replace(reA, '');
+        var aA = String(a).replace(reA, '');
+        var bA = String(b).replace(reA, '');
         if (aA === bA) {
             var aN = parseInt(a.replace(reN, ''), 10);
             var bN = parseInt(b.replace(reN, ''), 10);
