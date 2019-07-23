@@ -196,16 +196,16 @@ export const get = <A>(path: Path, src: Record<A>): Maybe<A> =>
  * getDefault is like get but takes a default value to return if
  * the path is not found.
  */
-export const getDefault = <A>(path:Path, src: Record<A>, def:A) : A => 
-  get(path, src).orJust(()=> def).get();
+export const getDefault = <A>(path: Path, src: Record<A>, def: A): A =>
+    get(path, src).orJust(() => def).get();
 
 /**
  * getString casts the resulting value to a string.
  *
  * An empty string is provided if the path is not found.
  */
-export const getString = <A> (path:Path, src: Record<A>) : string =>
-  get(path, src).map(v => String(v)).orJust(()=> '').get();
+export const getString = <A>(path: Path, src: Record<A>): string =>
+    get(path, src).map(v => String(v)).orJust(() => '').get();
 
 /**
  * set sets a value on an object given a path.
@@ -391,3 +391,15 @@ export const map = <A>(a: Record<A>, f: (s: string) => string): Record<A> =>
         return p;
 
     });
+
+/**
+ * project a Record according to the field specification given.
+ *
+ * Only properties that appear in the spec and set to true will be retained.
+ * This function is not safe. It may leave undefined values in the resulting
+ * record.
+ */
+export const project =
+    <A>(spec: FlatRecord<boolean>, rec: Record<A>): Record<A> =>
+        reduce(spec, <Record<A>>{}, (p, c, k) =>
+            (c === true) ? set(k, unsafeGet(k, rec), p) : p);

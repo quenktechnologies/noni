@@ -2,9 +2,9 @@ import { assert } from '@quenk/test/lib/assert';
 import { Nothing } from '../../../src/data/maybe';
 import {
     tokenize,
-  get,
-  getDefault,
-  getString,
+    get,
+    getDefault,
+    getString,
     set,
     escape,
     escapeRecord,
@@ -14,7 +14,8 @@ import {
     unescapeRecord,
     intersect,
     difference,
-    map
+    map,
+    project
 } from '../../../src/data/record/path';
 import { Record } from '../../../src/data/record';
 
@@ -257,39 +258,39 @@ describe('path', () => {
 
     });
 
-  describe('getDefault', () => {
+    describe('getDefault', () => {
 
-    let r:Record<number|object> = {a:{ b: {c:3} }, d:4, e:5};
+        let r: Record<number | object> = { a: { b: { c: 3 } }, d: 4, e: 5 };
 
-    it('should return the found value', () => {
+        it('should return the found value', () => {
 
-      assert(getDefault('a.b.c', r, 10)).equal(3);
-        
-      });
+            assert(getDefault('a.b.c', r, 10)).equal(3);
 
-    it('should return the default value if not found', () => {
+        });
 
-      assert(getDefault('a.b.c.d', r, 10)).equal(10);
-        
-      });
-      
-  });
+        it('should return the default value if not found', () => {
 
-  describe('getString', () => {
+            assert(getDefault('a.b.c.d', r, 10)).equal(10);
 
-    let r:Record<number|object> = {a:{ b: {c:3} }, d:4, e:5};
-
-      it('should return the found value as a string', () => {
- 
-      assert(getString('a.b.c', r)).equal('3');
-           
-      });
-
-    it('should return the empty string if not found', () => {
-
-      assert(getString('a.b.c.d', r)).equal('');
+        });
 
     });
+
+    describe('getString', () => {
+
+        let r: Record<number | object> = { a: { b: { c: 3 } }, d: 4, e: 5 };
+
+        it('should return the found value as a string', () => {
+
+            assert(getString('a.b.c', r)).equal('3');
+
+        });
+
+        it('should return the empty string if not found', () => {
+
+            assert(getString('a.b.c.d', r)).equal('');
+
+        });
 
     });
 
@@ -567,6 +568,33 @@ describe('path', () => {
             assert(map(o, p => `n${p}`)).equate({ na: 1, nb: 2, nc: 3 });
 
         })
+
+    });
+
+    describe('project', () => {
+
+        const src = { a: 1, b: 2, c: [3], d: { a: 1, b: 2, c: 3 } };
+
+        it('should take no prisoners', () => {
+
+            assert(project({ 'a': true, c: true }, src))
+                .equate({ a: 1, c: [3] });
+
+        });
+
+        it('should go deep', () => {
+
+            assert(project({ 'd.b': true }, src))
+                .equate({ d: { b: 2 } });
+
+        });
+
+        it('should negate', () => {
+
+            assert(project({ a: false, b: false, c: true, d: false }, src))
+                .equate({ c: [3] });
+
+        });
 
     });
 

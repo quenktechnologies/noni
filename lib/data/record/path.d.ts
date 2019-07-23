@@ -108,3 +108,11 @@ export declare const difference: <A, B>(a: Record<A>, b: Record<B>) => Record<A>
  * map over the property names of a record.
  */
 export declare const map: <A>(a: Record<A>, f: (s: string) => string) => Record<A>;
+/**
+ * project a Record according to the field specification given.
+ *
+ * Only properties that appear in the spec and set to true will be retained.
+ * This function is not safe. It may leave undefined values in the resulting
+ * record.
+ */
+export declare const project: <A>(spec: FlatRecord<boolean>, rec: Record<A>) => Record<A>;
