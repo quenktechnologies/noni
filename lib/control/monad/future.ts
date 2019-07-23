@@ -59,6 +59,11 @@ export type CallbackReceiver<A> = (cb: Callback<A>) => void;
  */
 export type Reducer<A, B> = (p: B, c: A, i: number) => B;
 
+/**
+ * FutureFunc function type.
+ */
+export type FutureFunc<A, B> = (a: A) => Future<B>
+
 export abstract class Future<A> implements Monad<A> {
 
     of(a: A): Future<A> {
@@ -577,6 +582,7 @@ export const sequential = <A>(list: Future<A>[]): Future<A[]> => new Run(s => {
         i++;
 
     }
+
     next();
 
     return () => { if (abort) abort.abort(); }
@@ -593,6 +599,7 @@ export const reduce = <A, B>(list: Future<A>[], init: B, f: Reducer<A, B>)
     : Future<B> => new Run((s: Supervisor<B>) => {
 
         let i = 0;
+
         let onErr = (e: Error) => s.onError(e);
 
         let onSuccess = (a: A) => {
@@ -665,7 +672,6 @@ export const race = <A>(list: Future<A>[])
         return () => abortAll();
 
     });
-
 
 /**
  * toPromise transforms a Future into a Promise.

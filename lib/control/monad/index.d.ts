@@ -23,12 +23,21 @@ export interface Monad<A> extends Applicative<A>, Chain<A> {
  */
 export declare const join: <A, M extends Monad<A>>(outer: Monad<M>) => M;
 /**
- * compose two functions that return return Monads.
- *
- * Given two functions  (a:A) => Monad<B> and (b:B) => Monad<C>
- * you get a function (a:A) => Monad<C>
+ * compose right composes functions that produce Monads so that the output
+ * of the second is the input of the first.
  */
-export declare const compose: <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(f: (a: A) => MB) => (g: (b: B) => MC) => (a: A) => MC;
+export declare const compose: <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(g: (b: B) => MC, f: (a: A) => MB) => (value: A) => Chain<C>;
+/**
+ * pipe left composes functions that produce Monads so that the output of the
+ * first is the input of the second.
+ */
+export declare const pipe: <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(f: (a: A) => MB, g: (b: B) => MC) => (value: A) => Chain<C>;
+/**
+ * pipeN is like pipe but takes variadic parameters.
+ *
+ * Because of this, the resulting function only maps from A -> B.
+ */
+export declare const pipeN: <A, B, MB extends Monad<B>>(f: (a: A) => MB, ...list: ((b: B) => MB)[]) => (value: A) => MB;
 /**
  * doN simulates haskell's do notation using ES6's generator syntax.
  *

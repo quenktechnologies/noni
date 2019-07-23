@@ -45,6 +45,10 @@ export declare type CallbackReceiver<A> = (cb: Callback<A>) => void;
  * Reducer function type.
  */
 export declare type Reducer<A, B> = (p: B, c: A, i: number) => B;
+/**
+ * FutureFunc function type.
+ */
+export declare type FutureFunc<A, B> = (a: A) => Future<B>;
 export declare abstract class Future<A> implements Monad<A> {
     of(a: A): Future<A>;
     map<B>(f: (a: A) => B): Future<B>;
