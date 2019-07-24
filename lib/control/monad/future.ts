@@ -424,6 +424,21 @@ export class Compute<A> implements Supervisor<A> {
 
             let next = <Future<A>>this.stack.pop();
 
+            if ((next == null) || (typeof next.__exec !== 'function')) {
+
+                try {
+
+                    throw new Error(`Invalid Compute stack member: "${next}"!`);
+
+                } catch (e) {
+
+                    this.onError(e);
+                    return this;
+
+                }
+
+            }
+
             if (!next.__exec(this)) return this; // short-circuit
 
         }
