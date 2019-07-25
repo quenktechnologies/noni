@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Eq | @quenk/noni</title>
+	<title>&quot;platform/node/module/pointer&quot; | @quenk/noni</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -909,102 +909,313 @@ img { max-width: 100%; }
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
-		<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-has-type-parameter">
-			<a href="_data_eq_.eq.html" class="tsd-kind-icon">Eq</a>
-			<ul>
-				<li class=" tsd-kind-method tsd-parent-kind-interface">
-					<a href="_data_eq_.eq.html#eq" class="tsd-kind-icon">eq</a>
-				</li>
-			</ul>
+		<li class=" tsd-kind-class tsd-parent-kind-external-module">
+			<a href="../classes/_platform_node_module_pointer_.failure.html" class="tsd-kind-icon">Failure</a>
 		</li>
-		<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
-			<a href="../modules/_data_eq_.html#valueeq" class="tsd-kind-icon">value<wbr>Eq</a>
+		<li class=" tsd-kind-class tsd-parent-kind-external-module">
+			<a href="../classes/_platform_node_module_pointer_.import.html" class="tsd-kind-icon">Import</a>
+		</li>
+		<li class=" tsd-kind-class tsd-parent-kind-external-module">
+			<a href="../classes/_platform_node_module_pointer_.member.html" class="tsd-kind-icon">Member</a>
+		</li>
+		<li class=" tsd-kind-class tsd-parent-kind-external-module">
+			<a href="../classes/_platform_node_module_pointer_.module.html" class="tsd-kind-icon">Module</a>
+		</li>
+		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#name" class="tsd-kind-icon">Name</a>
+		</li>
+		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#path" class="tsd-kind-icon">Path</a>
+		</li>
+		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#pointer" class="tsd-kind-icon">Pointer</a>
+		</li>
+		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#position" class="tsd-kind-icon">Position</a>
+		</li>
+		<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#token" class="tsd-kind-icon">Token</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#state_finished" class="tsd-kind-icon">STATE_<wbr>FINISHED</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#state_member" class="tsd-kind-icon">STATE_<wbr>MEMBER</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#state_path" class="tsd-kind-icon">STATE_<wbr>PATH</a>
+		</li>
+		<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#token_hash" class="tsd-kind-icon">TOKEN_<wbr>HASH</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#compile" class="tsd-kind-icon">compile</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#interp" class="tsd-kind-icon">interp</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-external-module">
+			<a href="_platform_node_module_pointer_.html#tokenize" class="tsd-kind-icon">tokenize</a>
 		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
-		<section class="tsd-panel tsd-comment">
-			<div class="tsd-comment tsd-typography">
-				<div class="lead">
-					<p>Eq provides an interface for equality checking of types that
-					are typically wrappers for other values. (e.g. Monads).</p>
-				</div>
-			</div>
-		</section>
-		<section class="tsd-panel tsd-type-parameters">
-			<h3>Type parameters</h3>
-			<ul class="tsd-type-parameters">
-				<li>
-					<h4>A</h4>
-				</li>
-			</ul>
-		</section>
-		<section class="tsd-panel tsd-hierarchy">
-			<h3>Hierarchy</h3>
-			<ul class="tsd-hierarchy">
-				<li>
-					<span class="target">Eq</span>
-					<ul class="tsd-hierarchy">
-						<li>
-							<a href="_data_maybe_.maybe.html" class="tsd-signature-type">Maybe</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</section>
-		<section class="tsd-panel">
-			<h3>Implemented by</h3>
-			<ul class="tsd-hierarchy">
-				<li><a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a></li>
-				<li><a href="../classes/_control_monad_free_.free.html" class="tsd-signature-type">Free</a></li>
-				<li><a href="../classes/_data_indentity_.identity.html" class="tsd-signature-type">Identity</a></li>
-				<li><a href="../classes/_data_either_.left.html" class="tsd-signature-type">Left</a></li>
-				<li><a href="../classes/_control_monad_free_.pure.html" class="tsd-signature-type">Pure</a></li>
-				<li><a href="../classes/_data_either_.right.html" class="tsd-signature-type">Right</a></li>
-				<li><a href="../classes/_control_monad_free_.suspend.html" class="tsd-signature-type">Suspend</a></li>
-			</ul>
-		</section>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
 					<section class="tsd-index-section ">
-						<h3>Methods</h3>
+						<h3>Classes</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_data_eq_.eq.html#eq" class="tsd-kind-icon">eq</a></li>
+							<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_platform_node_module_pointer_.failure.html" class="tsd-kind-icon">Failure</a></li>
+							<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_platform_node_module_pointer_.import.html" class="tsd-kind-icon">Import</a></li>
+							<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_platform_node_module_pointer_.member.html" class="tsd-kind-icon">Member</a></li>
+							<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_platform_node_module_pointer_.module.html" class="tsd-kind-icon">Module</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Type aliases</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#name" class="tsd-kind-icon">Name</a></li>
+							<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#path" class="tsd-kind-icon">Path</a></li>
+							<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#pointer" class="tsd-kind-icon">Pointer</a></li>
+							<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#position" class="tsd-kind-icon">Position</a></li>
+							<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#token" class="tsd-kind-icon">Token</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Variables</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#state_finished" class="tsd-kind-icon">STATE_<wbr>FINISHED</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#state_member" class="tsd-kind-icon">STATE_<wbr>MEMBER</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#state_path" class="tsd-kind-icon">STATE_<wbr>PATH</a></li>
+							<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#token_hash" class="tsd-kind-icon">TOKEN_<wbr>HASH</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Functions</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#compile" class="tsd-kind-icon">compile</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#interp" class="tsd-kind-icon">interp</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_platform_node_module_pointer_.html#tokenize" class="tsd-kind-icon">tokenize</a></li>
 						</ul>
 					</section>
 				</div>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
-			<h2>Methods</h2>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-				<a name="eq" class="tsd-anchor"></a>
-				<h3>eq</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-					<li class="tsd-signature tsd-kind-icon">eq<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">A</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+			<h2>Type aliases</h2>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+				<a name="name" class="tsd-anchor"></a>
+				<h3>Name</h3>
+				<div class="tsd-signature tsd-kind-icon">Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L35">platform/node/module/pointer.ts:35</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Name of an export.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+				<a name="path" class="tsd-anchor"></a>
+				<h3>Path</h3>
+				<div class="tsd-signature tsd-kind-icon">Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L25">platform/node/module/pointer.ts:25</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Path</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+				<a name="pointer" class="tsd-anchor"></a>
+				<h3>Pointer</h3>
+				<div class="tsd-signature tsd-kind-icon">Pointer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L20">platform/node/module/pointer.ts:20</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Pointer is a syntax for indicating the path to a module and desired export.
+							It has the following syntax:
+						<module_path>#<member></p>
+					</div>
+					<p>where <module_path> is a valid node module and <member> is the desired
+					export.</p>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+				<a name="position" class="tsd-anchor"></a>
+				<h3>Position</h3>
+				<div class="tsd-signature tsd-kind-icon">Position<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L30">platform/node/module/pointer.ts:30</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Position of a token within a pointer string.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+				<a name="token" class="tsd-anchor"></a>
+				<h3>Token</h3>
+				<div class="tsd-signature tsd-kind-icon">Token<span class="tsd-signature-symbol">:</span> <a href="../classes/_platform_node_module_pointer_.module.html" class="tsd-signature-type">Module</a><span class="tsd-signature-symbol"> | </span><a href="../classes/_platform_node_module_pointer_.member.html" class="tsd-signature-type">Member</a></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L40">platform/node/module/pointer.ts:40</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Token</p>
+					</div>
+				</div>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Variables</h2>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+				<a name="state_finished" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> STATE_<wbr>FINISHED</h3>
+				<div class="tsd-signature tsd-kind-icon">STATE_<wbr>FINISHED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">3</span><span class="tsd-signature-symbol"> =&nbsp;3</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L10">platform/node/module/pointer.ts:10</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+				<a name="state_member" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> STATE_<wbr>MEMBER</h3>
+				<div class="tsd-signature tsd-kind-icon">STATE_<wbr>MEMBER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">2</span><span class="tsd-signature-symbol"> =&nbsp;2</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L9">platform/node/module/pointer.ts:9</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+				<a name="state_path" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> STATE_<wbr>PATH</h3>
+				<div class="tsd-signature tsd-kind-icon">STATE_<wbr>PATH<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> =&nbsp;1</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L8">platform/node/module/pointer.ts:8</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+				<a name="token_hash" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> TOKEN_<wbr>HASH</h3>
+				<div class="tsd-signature tsd-kind-icon">TOKEN_<wbr>HASH<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"#"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;#&quot;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L7">platform/node/module/pointer.ts:7</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Functions</h2>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="compile" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> compile</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>ptr<span class="tsd-signature-symbol">: </span><a href="_platform_node_module_pointer_.html#pointer" class="tsd-signature-type">Pointer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">, </span><a href="../classes/_platform_node_module_pointer_.import.html" class="tsd-signature-type">Import</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/data/eq.ts#L11">data/eq.ts:11</a></li>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L177">platform/node/module/pointer.ts:177</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
-								<p>eq (equality test).</p>
+								<p>compile a Pointer into an Import object.</p>
 							</div>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>e: <span class="tsd-signature-type">A</span></h5>
+								<h5>ptr: <a href="_platform_node_module_pointer_.html#pointer" class="tsd-signature-type">Pointer</a></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						<h4 class="tsd-returns-title">Returns <a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">, </span><a href="../classes/_platform_node_module_pointer_.import.html" class="tsd-signature-type">Import</a><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="interp" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> interp</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">interp<span class="tsd-signature-symbol">(</span>ptr<span class="tsd-signature-symbol">: </span><a href="_platform_node_module_pointer_.html#pointer" class="tsd-signature-type">Pointer</a>, loader<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">NodeRequire</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">, </span><a href="_data_type_index_.html#type" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L197">platform/node/module/pointer.ts:197</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>iterp a Pointer as a module import returning the exported member from
+								the specified module.</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>ptr: <a href="_platform_node_module_pointer_.html#pointer" class="tsd-signature-type">Pointer</a></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> loader: <span class="tsd-signature-type">NodeRequire</span><span class="tsd-signature-symbol"> =&nbsp;require</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">, </span><a href="_data_type_index_.html#type" class="tsd-signature-type">Type</a><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+				<a name="tokenize" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagConst">Const</span> tokenize</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+					<li class="tsd-signature tsd-kind-icon">tokenize<span class="tsd-signature-symbol">(</span>ptr<span class="tsd-signature-symbol">: </span><a href="_platform_node_module_pointer_.html#pointer" class="tsd-signature-type">Pointer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_platform_node_module_pointer_.failure.html" class="tsd-signature-type">Failure</a><span class="tsd-signature-symbol">, </span><a href="_platform_node_module_pointer_.html#token" class="tsd-signature-type">Token</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/quenktechnologies/noni/blob/b50ca73/lib/platform/node/module/pointer.ts#L104">platform/node/module/pointer.ts:104</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>tokenize a Pointer into its useful lexical parts.</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>ptr: <a href="_platform_node_module_pointer_.html#pointer" class="tsd-signature-type">Pointer</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../classes/_data_either_.either.html" class="tsd-signature-type">Either</a><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_platform_node_module_pointer_.failure.html" class="tsd-signature-type">Failure</a><span class="tsd-signature-symbol">, </span><a href="_platform_node_module_pointer_.html#token" class="tsd-signature-type">Token</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
