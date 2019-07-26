@@ -214,3 +214,36 @@ export const interp = (ptr: Pointer, loader = require): Either<Error, Type> => {
     }
 
 }
+
+/**
+ * isPointer tests whether a string can be used as a valid
+ * pointer.
+ */
+export const isPointer = (ptr: string): boolean =>
+    compile(ptr).isRight();
+
+/**
+ * getPath retrieves the module path of a valid Pointer.
+ *
+ * If the ptr is not valid an empty string is returned.
+ */
+export const getPath = (ptr: Pointer): Path => {
+
+    let eM = compile(ptr);
+
+    return eM.isLeft() ? '' : eM.takeRight().module;
+
+}
+
+/**
+ * getMember retrieves the member part of a valid Pointer.
+ *
+ * If the ptr is not valid an empty string is returned.
+ */
+export const getMember = (ptr: Pointer): Name => {
+
+    let eM = compile(ptr);
+
+    return eM.isLeft() ? '' : eM.takeRight().member;
+
+}

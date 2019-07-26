@@ -83,3 +83,20 @@ export declare const compile: (ptr: string) => Either<Error, Import>;
  * the specified module.
  */
 export declare const interp: (ptr: string, loader?: NodeRequire) => Either<Error, any>;
+/**
+ * isPointer tests whether a string can be used as a valid
+ * pointer.
+ */
+export declare const isPointer: (ptr: string) => boolean;
+/**
+ * getPath retrieves the module path of a valid Pointer.
+ *
+ * If the ptr is not valid an empty string is returned.
+ */
+export declare const getPath: (ptr: string) => string;
+/**
+ * getMember retrieves the member part of a valid Pointer.
+ *
+ * If the ptr is not valid an empty string is returned.
+ */
+export declare const getMember: (ptr: string) => string;
