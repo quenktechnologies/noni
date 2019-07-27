@@ -79,6 +79,12 @@ export declare const tokenize: (ptr: string) => Either<Failure, Token[]>;
  */
 export declare const compile: (ptr: string) => Either<Error, Import>;
 /**
+ * compileList compiles a list of pointers.
+ *
+ * If any of the compilations fail the whole process is considered failed.
+ */
+export declare const compileList: (ptrs: string[]) => Either<Error, Import[]>;
+/**
  * iterp a Pointer as a module import returning the exported member from
  * the specified module.
  */

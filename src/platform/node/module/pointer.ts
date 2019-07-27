@@ -191,6 +191,15 @@ export const compile = (ptr: Pointer): Either<Error, Import> => {
 }
 
 /**
+ * compileList compiles a list of pointers.
+ *
+ * If any of the compilations fail the whole process is considered failed.
+ */
+export const compileList = (ptrs: Pointer[]): Either<Error, Import[]> =>
+    ptrs.reduce((p, c) => p.chain(l => compile(c).map(i => l.concat(i))),
+        <Either<Error, Import[]>>right([]));
+
+/**
  * iterp a Pointer as a module import returning the exported member from 
  * the specified module.
  */

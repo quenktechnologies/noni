@@ -2,6 +2,7 @@ import { assert } from '@quenk/test/lib/assert';
 import {
     tokenize,
     compile,
+    compileList,
     interp,
     Module,
     Member
@@ -78,6 +79,31 @@ describe('pointer', () => {
 
             assert(result.module).equal('@quenk/test');
             assert(result.member).equal('assert');
+
+        });
+
+    });
+
+    describe('compileList', () => {
+
+        it('should compile a list of Pointers', () => {
+
+            let eResult = compileList([
+                '@quenk/test#assert',
+                '@quenk/test#must',
+                '@quenk/test#should'
+            ]);
+
+            assert(eResult.isRight()).true();
+
+            let result = eResult.takeRight();
+
+            assert(result[0].module).equal('@quenk/test');
+            assert(result[0].member).equal('assert');
+            assert(result[1].module).equal('@quenk/test');
+            assert(result[1].member).equal('must');
+            assert(result[2].module).equal('@quenk/test');
+            assert(result[2].member).equal('should');
 
         });
 
