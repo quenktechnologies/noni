@@ -97,7 +97,7 @@ export const doN = <A, M extends Monad<A>>(f: DoFn<A, M>): M => {
 
     let next = (val: A): M => {
 
-        let r = gen.next(val);
+        let r = gen.next(<any>val);
 
         if (r.done)
             return r.value;
