@@ -67,3 +67,10 @@ export declare const remove: <A>(list: A[], target: A) => A[];
  * of the original array with the element removed.
  */
 export declare const removeAt: <A>(list: A[], idx: number) => A[];
+/**
+ * make an array of elements of a given size using a function to provide
+ * each element.
+ *
+ * The function receives the index number for each step.
+ */
+export declare const make: <A>(size: number, f: (n: number) => A) => any[];

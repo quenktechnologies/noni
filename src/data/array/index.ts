@@ -142,3 +142,20 @@ export const removeAt = <A>(list: A[], idx: number): A[] => {
     }
 
 }
+
+/**
+ * make an array of elements of a given size using a function to provide
+ * each element.
+ *
+ * The function receives the index number for each step.
+ */
+export const make = <A>(size: number, f: (n: number) => A) => {
+
+    let a = new Array(size);
+
+    for (let i = 0; i < size; i++)
+        a[i] = f(i);
+
+    return a;
+
+}

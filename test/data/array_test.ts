@@ -10,7 +10,8 @@ import {
     distribute,
     dedupe,
     remove,
-    removeAt
+    removeAt,
+    make
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -193,5 +194,15 @@ describe('array', () => {
         });
 
     })
+
+    describe('make', () => {
+
+        it('should make arrays', () => {
+
+            assert(make(6, n => n)).equate([0, 1, 2, 3, 4, 5]);
+
+        });
+
+    });
 
 })
