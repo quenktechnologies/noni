@@ -7,8 +7,10 @@ import {
     map,
     partition,
     group,
-  distribute,
-  dedupe
+    distribute,
+    dedupe,
+    remove,
+    removeAt
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -131,11 +133,11 @@ describe('array', () => {
 
         });
 
-      it('should work with odd numbered arrays', () => {
+        it('should work with odd numbered arrays', () => {
 
-        assert(distribute([1,2,3,4], 3))
-        .equate([[1,2,3], [4]]);
-          
+            assert(distribute([1, 2, 3, 4], 3))
+                .equate([[1, 2, 3], [4]]);
+
         });
 
     });
@@ -144,17 +146,52 @@ describe('array', () => {
 
         it('should remove duplicates', () => {
 
-          assert(dedupe([1,2,3,44,5,6,7,1,2,3,6,7,4]))
-          .equate([1,2,3,44,5,6,7,4]);
-          
+            assert(dedupe([1, 2, 3, 44, 5, 6, 7, 1, 2, 3, 6, 7, 4]))
+                .equate([1, 2, 3, 44, 5, 6, 7, 4]);
+
         });
 
         it('should not change already deduped arrays', () => {
 
-          assert(dedupe([1,2,3,4,5,6,7,8,9]))
-          .equate([1,2,3,4,5,6,7,8,9]);
-          
+            assert(dedupe([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+                .equate([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
         });
-      
+
     });
+
+    describe('remove', () => {
+
+        it('should remove the target', () => {
+
+            let a = { a: 1 };
+            let b = { b: 1 };
+            let c = { c: 1 };
+
+            let list = [a, b, c, 3];
+
+            assert(remove(list, b)).equate([a, c, 3]);
+            assert(list).equate([a, b, c, 3]);
+
+        });
+
+    });
+
+    describe('removeAt', () => {
+
+        it('should remove the target', () => {
+
+            let a = { a: 1 };
+            let b = { b: 1 };
+            let c = { c: 1 };
+
+            let list = [a, b, c, 3];
+
+            assert(removeAt(list, 2)).equate([a, b, 3]);
+            assert(list).equate([a, b, c, 3]);
+
+        });
+
+    })
+
 })

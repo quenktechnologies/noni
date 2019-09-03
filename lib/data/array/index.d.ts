@@ -57,3 +57,13 @@ export declare const distribute: <A>(list: A[], size: number) => A[][];
  * that appear twice.
  */
 export declare const dedupe: <A>(list: A[]) => A[];
+/**
+ * remove an element from an array returning a new copy with the element
+ * removed.
+ */
+export declare const remove: <A>(list: A[], target: A) => A[];
+/**
+ * removeAt removes an element at the specified index returning a copy
+ * of the original array with the element removed.
+ */
+export declare const removeAt: <A>(list: A[], idx: number) => A[];

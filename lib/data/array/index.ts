@@ -96,3 +96,49 @@ export const distribute = <A>(list: A[], size: number): A[][] => {
  */
 export const dedupe = <A>(list: A[]): A[] =>
     list.filter((e, i, l) => l.indexOf(e) === i);
+
+/**
+ * remove an element from an array returning a new copy with the element
+ * removed.
+ */
+export const remove = <A>(list: A[], target: A): A[] => {
+
+    let idx = list.indexOf(target);
+
+    if (idx === -1) {
+
+        return list.slice();
+
+    } else {
+
+        let a = list.slice();
+
+        a.splice(idx, 1);
+
+        return a;
+
+    }
+
+}
+
+/**
+ * removeAt removes an element at the specified index returning a copy 
+ * of the original array with the element removed.
+ */
+export const removeAt = <A>(list: A[], idx: number): A[] => {
+
+    if ((list.length > idx) && (idx > -1)) {
+
+        let a = list.slice();
+
+        a.splice(idx, 1);
+
+        return a;
+
+    } else {
+
+        return list.slice();
+
+    }
+
+}
