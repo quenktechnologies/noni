@@ -1,3 +1,4 @@
+import { Type } from '../../data/type';
 import { Applicative } from '../applicative';
 import { Chain } from '../chain';
 
@@ -6,7 +7,7 @@ import { Chain } from '../chain';
  *
  * This is the type of function we expect for do notation.
  */
-export type DoFn<A, M extends Monad<A>> = () => Iterator<M>;
+export type DoFn<A, M extends Monad<A>> = () => Generator<M, M, Type>;
 
 /**
  * Monad provides a combination of an Applicative and Chain.
@@ -95,17 +96,17 @@ export const doN = <A, M extends Monad<A>>(f: DoFn<A, M>): M => {
 
     let gen = f();
 
-    let next = (val: A): M => {
+    let next = (val?: A): M => {
 
-        let r = gen.next(<any>val);
+        let r = gen.next(<A>val);
 
         if (r.done)
             return r.value;
         else
-            return <M>r.value.chain(next);
+            return (<M>(<M>r.value).chain(next));
 
     }
 
-    return next(<any>undefined);
+    return next();
 
 }

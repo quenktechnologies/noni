@@ -17,11 +17,11 @@
         "@quenk/test": "^2.1.0",
         "@types/bluebird": "^3.5.26",
         "@types/mocha": "^5.2.7",
-        "@types/node": "^12.7.3",
+        "@types/node": "^12.7.5",
         "bluebird": "^3.5.3",
         "mocha": "^6.2.0",
         "ts-node": "^8.3.0",
         "typedoc": "^0.15.0",
-        "typescript": "^3.6.2"
+        "typescript": "^3.6.3"
     }
 }

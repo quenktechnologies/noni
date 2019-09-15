@@ -19,9 +19,11 @@ describe('monad', () => {
                 let d = yield pure(c + 1);
                 let e = yield pure(d * 3);
 
-                return e;
+                yield pure('string');
 
-            })).equal(12);
+                return pure(e);
+
+            }).value).equal(12);
 
 
         });

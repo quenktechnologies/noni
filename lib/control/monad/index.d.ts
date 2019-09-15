@@ -1,3 +1,4 @@
+import { Type } from '../../data/type';
 import { Applicative } from '../applicative';
 import { Chain } from '../chain';
 /**
@@ -5,7 +6,7 @@ import { Chain } from '../chain';
  *
  * This is the type of function we expect for do notation.
  */
-export declare type DoFn<A, M extends Monad<A>> = () => Iterator<M>;
+export declare type DoFn<A, M extends Monad<A>> = () => Generator<M, M, Type>;
 /**
  * Monad provides a combination of an Applicative and Chain.
  *
