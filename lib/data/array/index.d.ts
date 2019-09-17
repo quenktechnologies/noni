@@ -74,3 +74,7 @@ export declare const removeAt: <A>(list: A[], idx: number) => A[];
  * The function receives the index number for each step.
  */
 export declare const make: <A>(size: number, f: (n: number) => A) => any[];
+/**
+ * combine a list of of lists into one list.
+ */
+export declare const combine: <A>(list: A[][]) => A[];

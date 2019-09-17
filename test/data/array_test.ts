@@ -11,7 +11,8 @@ import {
     dedupe,
     remove,
     removeAt,
-    make
+    make,
+    combine
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -200,6 +201,16 @@ describe('array', () => {
         it('should make arrays', () => {
 
             assert(make(6, n => n)).equate([0, 1, 2, 3, 4, 5]);
+
+        });
+
+    });
+
+    describe('combine', () => {
+
+        it('should work', () => {
+
+            assert(combine([[1], [2, 3, 4], [5, 6]])).equate([1, 2, 3, 4, 5, 6]);
 
         });
 

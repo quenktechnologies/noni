@@ -159,3 +159,9 @@ export const make = <A>(size: number, f: (n: number) => A) => {
     return a;
 
 }
+
+/**
+ * combine a list of of lists into one list.
+ */
+export const combine = <A>(list: A[][]): A[] =>
+    list.reduce((p, c) => p.concat(c), []);
