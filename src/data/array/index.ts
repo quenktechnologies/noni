@@ -51,7 +51,7 @@ export const concat = <A>(list: A[], a: A): A[] => [...list, a];
  *
  * The first array contains values that return true and the second false.
  */
-export const partition = <A>(list: A[]) => (f: PartitionFunc<A>)
+export const partition = <A>(list: A[], f: PartitionFunc<A>)
     : [A[], A[]] => empty(list) ?
         [[], []] :
         list.reduce(([yes, no]: [A[], A[]], c: A, i: number) =>
@@ -63,7 +63,7 @@ export const partition = <A>(list: A[]) => (f: PartitionFunc<A>)
  * group the elements of an array into a Record where each property 
  * is an array of elements assigned to it's property name.
  */
-export const group = <A>(list: A[]) => (f: GroupFunc<A>): Record<A[]> =>
+export const group = <A>(list: A[], f: GroupFunc<A>): Record<A[]> =>
     list.reduce((p, c, i) => {
 
         let g = f(<A>c, i, list);

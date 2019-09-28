@@ -77,13 +77,13 @@ describe('array', () => {
             let f = (n: number) => ((n % 2) === 0)
             let r = [[2, 4, 6, 8, 10], [1, 3, 5, 7, 9]];
 
-            assert(partition(m)(f)).equate(r);
+            assert(partition(m, f)).equate(r);
 
         });
 
         it('should not blow up on empty arrays', () => {
 
-            assert(partition([])((n: number) => n > 1)).equate([[], []]);
+            assert(partition([], (n: number) => n > 1)).equate([[], []]);
 
         });
 
@@ -101,7 +101,7 @@ describe('array', () => {
                 object: [{ n: 'o' }]
             }
 
-            assert(group(m)(f)).equate(r);
+            assert(group(m, f)).equate(r);
 
         })
     });

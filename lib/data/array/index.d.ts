@@ -41,12 +41,12 @@ export declare const concat: <A>(list: A[], a: A) => A[];
  *
  * The first array contains values that return true and the second false.
  */
-export declare const partition: <A>(list: A[]) => (f: PartitionFunc<A>) => [A[], A[]];
+export declare const partition: <A>(list: A[], f: PartitionFunc<A>) => [A[], A[]];
 /**
  * group the elements of an array into a Record where each property
  * is an array of elements assigned to it's property name.
  */
-export declare const group: <A>(list: A[]) => (f: GroupFunc<A>) => Record<A[]>;
+export declare const group: <A>(list: A[], f: GroupFunc<A>) => Record<A[]>;
 /**
  * distribute breaks an array into an array of equally (approximate) sized
  * smaller arrays.
