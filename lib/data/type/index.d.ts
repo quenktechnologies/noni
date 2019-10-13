@@ -69,3 +69,10 @@ export declare const test: <V, T>(value: V, t: Pattern<T>) => boolean;
  * object literal with recursive references.
  */
 export declare const show: <A>(value: A) => string;
+/**
+ * toString casts a value to a string.
+ *
+ * If the value is null or undefined an empty string is returned instead of
+ * the default.
+ */
+export declare const toString: (val: any) => string;

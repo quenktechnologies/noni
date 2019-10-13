@@ -139,3 +139,12 @@ export const show = <A>(value: A): string => {
     }
 
 }
+
+/**
+ * toString casts a value to a string.
+ *
+ * If the value is null or undefined an empty string is returned instead of
+ * the default.
+ */
+export const toString = (val: Type): string =>
+    (val == null) ? '' : String(val);
