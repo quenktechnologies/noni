@@ -18,7 +18,8 @@ import {
     values,
     contains,
     clone,
-    filter
+    filter,
+    isRecord
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -62,6 +63,7 @@ type RE = {
     }
 };
 
+class RecType { }
 
 const a = { a: 1 };
 const b = { b: 2 };
@@ -287,24 +289,24 @@ describe('record', () => {
                     h: [1]
                 }
             }, {
-                    c: {
-                        e: { e1: 6 }
-                    }
-                }), {
-                    c: {
-                        c1: 'c1'
-                    }
-                }), {
-                    c: {
-                        h: [2, 3, 4, 5, 6]
-                    }
-                }), {
-                    b: {
-                        bv: 'b2'
-                    }
-                }), {
-                    a: {}
-                });
+                c: {
+                    e: { e1: 6 }
+                }
+            }), {
+                c: {
+                    c1: 'c1'
+                }
+            }), {
+                c: {
+                    h: [2, 3, 4, 5, 6]
+                }
+            }), {
+                b: {
+                    bv: 'b2'
+                }
+            }), {
+                a: {}
+            });
 
             assert(r).equate(
                 {
@@ -448,6 +450,36 @@ describe('record', () => {
             let isTwo = (n: number) => n === 2;
 
             assert(filter(o, isTwo)).equate({ b: 2, d: 2 });
+
+        });
+
+    });
+
+    describe('isRecord', () => {
+
+        it('should fail arrays', () => {
+
+            assert(isRecord([])).false();
+
+        });
+
+        it('should fail dates', () => {
+
+            assert(isRecord(new Date())).false();
+
+        });
+
+        it('should fail regular expressions', () => {
+
+            assert(isRecord(/^/)).false();
+            assert(isRecord(new RegExp('a'))).false();
+
+        });
+
+        it('should pass objects', () => {
+
+            assert(isRecord({})).true();
+            assert(isRecord(new RecType())).true();
 
         });
 

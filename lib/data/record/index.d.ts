@@ -31,9 +31,12 @@ export declare function assign(target: any, ..._varArgs: any[]): any;
 /**
  * isRecord tests whether a value is a record.
  *
- * This is a typeof check that excludes arrays.
+ * The following are not considered records:
+ * 1. Array
+ * 2. Date
+ * 3. RegExp
  *
- * Unsafe.
+ * This function is unsafe.
  */
 export declare const isRecord: <A>(value: any) => value is Record<A>;
 /**

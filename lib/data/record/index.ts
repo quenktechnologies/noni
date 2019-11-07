@@ -72,12 +72,18 @@ export function assign(target: any, ..._varArgs: any[]): any {
 /**
  * isRecord tests whether a value is a record.
  *
- * This is a typeof check that excludes arrays.
- * 
- * Unsafe.
+ * The following are not considered records:
+ * 1. Array
+ * 2. Date
+ * 3. RegExp
+ *
+ * This function is unsafe.
  */
 export const isRecord = <A>(value: any): value is Record<A> =>
-    (typeof value === 'object') && (!Array.isArray(value));
+    (typeof value === 'object') &&
+    (!Array.isArray(value)) &&
+    (!(value instanceof Date)) &&
+    (!(value instanceof RegExp))
 
 /**
  * keys produces a list of property names from a Record.
