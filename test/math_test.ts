@@ -431,6 +431,9 @@ describe('math', () => {
             assert(round(4.485, 2)).equal(4.49);
             assert(round(-4.485, 2)).equal(-4.49);
 
+            assert(round(1.1234567891534568, 10)).equal(1.1234567892);
+            assert(round(-1.1234567891534568, 10)).equal(-1.1234567892);
+
         });
 
     });
