@@ -12,7 +12,8 @@ import {
     remove,
     removeAt,
     make,
-    combine
+    combine,
+    compact
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -211,6 +212,17 @@ describe('array', () => {
         it('should work', () => {
 
             assert(combine([[1], [2, 3, 4], [5, 6]])).equate([1, 2, 3, 4, 5, 6]);
+
+        });
+
+    });
+
+    describe('compact', () => {
+
+        it('should work', () => {
+
+            assert(compact([1, undefined, 2, '', 0, null, 4]))
+                .equate([1, 2, '', 0, 4]);
 
         });
 

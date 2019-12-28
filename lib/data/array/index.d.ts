@@ -78,3 +78,7 @@ export declare const make: <A>(size: number, f: (n: number) => A) => any[];
  * combine a list of of lists into one list.
  */
 export declare const combine: <A>(list: A[][]) => A[];
+/**
+ * compact removes any occurences of null or undefined in the list.
+ */
+export declare const compact: <A>(list: A[]) => A[];

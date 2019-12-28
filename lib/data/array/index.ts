@@ -165,3 +165,9 @@ export const make = <A>(size: number, f: (n: number) => A) => {
  */
 export const combine = <A>(list: A[][]): A[] =>
     list.reduce((p, c) => p.concat(c), []);
+
+/**
+ * compact removes any occurences of null or undefined in the list.
+ */
+export const compact = <A>(list: A[]): A[] =>
+    list.filter(v => (v != null));
