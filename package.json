@@ -14,7 +14,7 @@
     "types": "lib/index.d.ts",
     "devDependencies": {
         "@quenk/must": "^1.0.5",
-        "@quenk/test": "^2.1.2",
+        "@quenk/test": "^2.1.3",
         "@types/mocha": "^5.2.7",
         "@types/node": "^13.1.0",
         "mocha": "^6.2.2",

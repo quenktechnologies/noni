@@ -5,6 +5,7 @@
  * be able track integrity and may result in runtime errors if not used carefully.
  */
 import { concat } from '../array';
+import { isArray } from '../type';
 
 /**
  * MapFunc
@@ -81,6 +82,7 @@ export function assign(target: any, ..._varArgs: any[]): any {
  */
 export const isRecord = <A>(value: any): value is Record<A> =>
     (typeof value === 'object') &&
+    (value != null) &&
     (!Array.isArray(value)) &&
     (!(value instanceof Date)) &&
     (!(value instanceof RegExp))
@@ -269,9 +271,9 @@ export const clone = <A, R extends Record<A>>(r: R): R =>
 
 const _clone = (a: any): any => {
 
-    if (Array.isArray(a))
+    if (isArray(a))
         return a.map(_clone);
-    else if (typeof a === 'object')
+    else if (isRecord(a))
         return clone(a);
     else
         return a;

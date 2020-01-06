@@ -440,6 +440,13 @@ describe('record', () => {
 
         });
 
+        it('should not try to treat null like an object', () => {
+
+            assert(clone({ a: null })).equate({ a: null });
+            assert(clone(<any>undefined)).equal(undefined);
+
+        });
+
     });
 
     describe('filter', () => {
@@ -480,6 +487,12 @@ describe('record', () => {
 
             assert(isRecord({})).true();
             assert(isRecord(new RecType())).true();
+
+        });
+
+        it('should fail null', () => {
+
+            assert(isRecord(null)).false();
 
         });
 
