@@ -1,7 +1,4 @@
 /**
- * json provides TypeScript definitions for JSON objects.
- */
-/**
  * JSONValue are values that can appear in a JSON document.
  */
 export declare type JSONValue = JSONObject | JSONArray | JSONString | JSONBoolean | JSONNumber | JSONNull | undefined;

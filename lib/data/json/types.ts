@@ -1,8 +1,4 @@
 /**
- * json provides TypeScript definitions for JSON objects.
- */
-
-/**
  * JSONValue are values that can appear in a JSON document.
  */
 export type JSONValue

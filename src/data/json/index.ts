@@ -1,3 +1,7 @@
+/**
+ * json provides type definitions for working with parsed JSON.
+ */
+
 import { Err, attempt } from '../../control/error';
 
 /**

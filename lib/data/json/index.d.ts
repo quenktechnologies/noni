@@ -1,3 +1,6 @@
+/**
+ * json provides type definitions for working with parsed JSON.
+ */
 import { Err } from '../../control/error';
 /**
  * Provides typescript definitions for JSON strings unserialzed into JavaScript objects.
