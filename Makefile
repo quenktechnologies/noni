@@ -12,7 +12,6 @@ docs: lib
 	--mode modules \
 	--out $@ \
 	--tsconfig lib/tsconfig.json \
-	--theme minimal lib  \
 	--excludeNotExported \
-	--excludePrivate && \
+	--excludePrivate lib && \
 	echo "" > docs/.nojekyll
