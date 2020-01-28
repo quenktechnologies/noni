@@ -40,4 +40,4 @@ export declare const raise: (e: Err) => never;
 /**
  * attempt a synchronous computation that may throw an exception.
  */
-export declare const attempt: <A>(f: () => A) => Either<Err, A>;
+export declare const attempt: <A>(f: () => A) => Except<A>;

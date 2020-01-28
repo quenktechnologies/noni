@@ -1,5 +1,5 @@
 import { Monad } from './';
-import { Err } from '../error';
+import { Err, Except } from '../error';
 /**
  * OnError callback function type.
  */
@@ -218,11 +218,15 @@ export declare const raise: <A>(e: Err) => Future<A>;
  */
 export declare const attempt: <A>(f: () => A) => Future<A>;
 /**
- * delay executes a function f after n milliseconds have passed.
+ * delay execution of a function f after n milliseconds have passed.
  *
- * Any errors thrown are caught.
+ * Any errors thrown are caught and processed in the Future chain.
  */
 export declare const delay: <A>(f: () => A, n?: number) => Future<A>;
+/**
+ * wait n milliseconds before continuing the Future chain.
+ */
+export declare const wait: (n: number) => Future<void>;
 /**
  * fromAbortable takes an Aborter and a node style async function and
  * produces a Future.
@@ -274,7 +278,7 @@ export declare const toPromise: <A>(ft: Future<A>) => Promise<A>;
 /**
  * fromExcept converts an Except to a Future.
  */
-export declare const fromExcept: <A>(e: import("../../data/either").Either<Err, A>) => Future<A>;
+export declare const fromExcept: <A>(e: Except<A>) => Future<A>;
 /**
  * liftP turns a function that produces a Promise into a Future.
  */

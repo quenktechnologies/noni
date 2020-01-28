@@ -88,7 +88,7 @@ export declare const compileList: (ptrs: string[]) => Either<Error, Import[]>;
  * iterp a Pointer as a module import returning the exported member from
  * the specified module.
  */
-export declare const interp: (ptr: string, loader?: NodeJS.Require) => Either<Error, any>;
+export declare const interp: (ptr: string, loader?: NodeRequire) => Either<Error, any>;
 /**
  * isPointer tests whether a string can be used as a valid
  * pointer.

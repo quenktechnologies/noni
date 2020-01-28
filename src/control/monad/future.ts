@@ -475,14 +475,29 @@ export const attempt = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) 
 });
 
 /**
- * delay executes a function f after n milliseconds have passed.
+ * delay execution of a function f after n milliseconds have passed.
  *
- * Any errors thrown are caught.
+ * Any errors thrown are caught and processed in the Future chain.
  */
 export const delay = <A>(f: () => A, n: Milliseconds = 0): Future<A> =>
     new Run((s: Supervisor<A>) => {
 
-        setTimeout(() => { try { s.onSuccess(f()); } catch (e) { s.onError(e); } }, n);
+        setTimeout(() => {
+            try { s.onSuccess(f()); } catch (e) { s.onError(e); }
+        }, n);
+
+        return noop;
+
+    });
+
+/**
+ * wait n milliseconds before continuing the Future chain.
+ */
+export const wait = (n: Milliseconds): Future<void> =>
+    new Run((s: Supervisor<void>) => {
+
+        setTimeout(() => { s.onSuccess(undefined); }, n);
+
         return noop;
 
     });

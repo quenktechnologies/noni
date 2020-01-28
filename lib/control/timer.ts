@@ -9,7 +9,6 @@ export const tick = (f: () => void) => (typeof window == 'undefined') ?
     setTimeout(f, 0) :
     process.nextTick(f);
 
-
 /**
  * debounce delays the application of a function until the specified time
  * has passed.

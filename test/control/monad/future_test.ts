@@ -14,6 +14,7 @@ import {
     pure,
     attempt,
     delay,
+    wait,
     fromAbortable,
     fromCallback,
     raise,
@@ -327,6 +328,31 @@ describe('future', () => {
             toPromise(delay(() => 11)
                 .chain(inc))
                 .then((n: number) => assert(n).equal(12)))
+
+    });
+
+    describe('wait', () => {
+
+        it('should pause chain execution', () => {
+
+            let then = Date.now();
+
+            return toPromise(
+                wait(1000)
+                    .chain((): Future<void> => {
+
+                        let x = Date.now() - then;
+
+                        if (x < 1000)
+                            return <Future<void>>raise(
+                                new Error(`waited ${x} milliseconds `
+                                    + `instead of 1000`))!
+                        else
+                            return <Future<void>>pure(undefined);
+
+                    }))
+
+        })
 
     });
 
