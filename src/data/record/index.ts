@@ -101,6 +101,14 @@ export const map = <A, B>(o: Record<A>, f: MapFunc<A, B>): Record<B> =>
     keys(o).reduce((p, k) => merge(p, { [k]: f(o[k], k, o) }), {});
 
 /**
+ * mapTo maps over a Record's properties producing an array of each result.
+ *
+ * The order of elements in the array is not guaranteed.
+ */
+export const mapTo = <A, B>(o: Record<A>, f: MapFunc<A, B>): B[] =>
+    keys(o).map(k => f(o[k], k, o));
+
+/**
  * reduce a Record's keys to a single value.
  *
  * The initial value (accum) must be supplied to avoid errors when

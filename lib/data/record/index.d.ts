@@ -50,6 +50,12 @@ export declare const keys: <A>(value: Record<A>) => string[];
  */
 export declare const map: <A, B>(o: Record<A>, f: MapFunc<A, B>) => Record<B>;
 /**
+ * mapTo maps over a Record's properties producing an array of each result.
+ *
+ * The order of elements in the array is not guaranteed.
+ */
+export declare const mapTo: <A, B>(o: Record<A>, f: MapFunc<A, B>) => B[];
+/**
  * reduce a Record's keys to a single value.
  *
  * The initial value (accum) must be supplied to avoid errors when

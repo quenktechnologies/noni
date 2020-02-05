@@ -3,6 +3,7 @@ import {
     Record,
     keys,
     map,
+    mapTo,
     reduce,
     merge,
     merge3,
@@ -128,6 +129,19 @@ describe('record', () => {
 
         })
     })
+
+    describe('mapTo', () => {
+
+        it('should produce an array', () => {
+
+            assert(mapTo({ a: 1, b: 2, c: 3 },
+                (value: number, key: string, rec: Record<number>) =>
+                    `${key}-${value}-${keys(rec).length}`))
+                .equate(['a-1-3', 'b-2-3', 'c-3-3']);
+
+        })
+    })
+
 
     describe('reduce', () => {
 
@@ -443,7 +457,6 @@ describe('record', () => {
         it('should not try to treat null like an object', () => {
 
             assert(clone({ a: null })).equate({ a: null });
-            assert(clone(<any>undefined)).equal(undefined);
 
         });
 
