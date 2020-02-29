@@ -26,7 +26,7 @@ export declare const empty: <A>(list: A[]) => boolean;
 /**
  * contains indicates whether an element exists in an array.
  */
-export declare const contains: <A>(list: A[]) => (a: A) => boolean;
+export declare const contains: <A>(list: A[], a: A) => boolean;
 /**
  * map is a curried version of the Array#map method.
  */

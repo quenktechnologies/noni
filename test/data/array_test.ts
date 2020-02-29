@@ -42,8 +42,8 @@ describe('array', () => {
 
         it('should work', () => {
 
-            assert(contains([1, 2, 3])(2)).equal(true);
-            assert(contains([1, 2, 3])(4)).equal(false);
+            assert(contains([1, 2, 3], 2)).equal(true);
+            assert(contains([1, 2, 3], 4)).equal(false);
 
         });
 
