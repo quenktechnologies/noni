@@ -19,6 +19,8 @@ import {
     values,
     contains,
     clone,
+    count,
+    empty,
     filter,
     isRecord
 } from '../../../src/data/record';
@@ -506,6 +508,28 @@ describe('record', () => {
         it('should fail null', () => {
 
             assert(isRecord(null)).false();
+
+        });
+
+    });
+
+    describe('count', function() {
+
+        it('should work', () => {
+
+            assert(count({})).equal(0);
+            assert(count({ '1': 1, '2': 2, '3': 3 })).equal(3);
+
+        });
+
+    });
+
+    describe('empty', () => {
+
+        it('should work', () => {
+
+            assert(empty({})).true();
+            assert(empty({ a: 1, b: 2, c: 3 })).false();
 
         });
 

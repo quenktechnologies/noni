@@ -42,7 +42,7 @@ export declare const isRecord: <A>(value: any) => value is Record<A>;
 /**
  * keys produces a list of property names from a Record.
  */
-export declare const keys: <A>(value: Record<A>) => string[];
+export declare const keys: (value: object) => string[];
 /**
  * map over a Record's properties producing a new record.
  *
@@ -107,7 +107,7 @@ export declare const rmerge5: <A, R extends Record<A>, B, S extends Record<B>, C
 /**
  * exclude removes the specified properties from a Record.
  */
-export declare const exclude: <A, R extends Record<A>>(o: R, keys: string | string[]) => {};
+export declare const exclude: <A, R extends Record<A>>(o: R, keys: string | string[]) => Record<A>;
 /**
  * partition a Record into two sub-records using a separating function.
  *
@@ -127,7 +127,7 @@ export declare const values: <A>(r: Record<A>) => A[];
 /**
  * contains indicates whether a Record has a given key.
  */
-export declare const contains: <A>(r: Record<A>, key: string) => boolean;
+export declare const contains: (r: object, key: string) => boolean;
 /**
  * clone a Record.
  *
@@ -136,3 +136,11 @@ export declare const contains: <A>(r: Record<A>, key: string) => boolean;
  * are not class instances.
  */
 export declare const clone: <A, R extends Record<A>>(r: R) => R;
+/**
+ * count how many properties exist on the record.
+ */
+export declare const count: (r: object) => number;
+/**
+ * empty tests whether the object has any properties or not.
+ */
+export declare const empty: (r: object) => boolean;

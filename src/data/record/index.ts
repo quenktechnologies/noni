@@ -90,7 +90,7 @@ export const isRecord = <A>(value: any): value is Record<A> =>
 /**
  * keys produces a list of property names from a Record.
  */
-export const keys = <A>(value: Record<A>) => Object.keys(value);
+export const keys = (value: object) => Object.keys(value);
 
 /**
  * map over a Record's properties producing a new record.
@@ -216,7 +216,8 @@ const deepMerge = <A, R extends Record<A>>(pre: R, curr: A, key: string) =>
 /**
  * exclude removes the specified properties from a Record.
  */
-export const exclude = <A, R extends Record<A>>(o: R, keys: string | string[]) => {
+export const exclude = <A, R extends Record<A>>
+    (o: R, keys: string | string[]): Record<A> => {
 
     let list: string[] = Array.isArray(keys) ? keys : [keys];
 
@@ -264,7 +265,7 @@ export const values = <A>(r: Record<A>): A[] =>
 /**
  * contains indicates whether a Record has a given key.
  */
-export const contains = <A>(r: Record<A>, key: string): boolean =>
+export const contains = (r: object, key: string): boolean =>
     Object.hasOwnProperty.call(r, key);
 
 /**
@@ -275,7 +276,8 @@ export const contains = <A>(r: Record<A>, key: string): boolean =>
  * are not class instances.
  */
 export const clone = <A, R extends Record<A>>(r: R): R =>
-    <R><any>reduce(r, <Record<A>>{}, (p, c, k) => { p[k] = _clone(c); return p; });
+    <R><any>reduce(r, <Record<A>>{},
+        (p, c, k) => { p[k] = _clone(c); return p; });
 
 const _clone = (a: any): any => {
 
@@ -287,3 +289,13 @@ const _clone = (a: any): any => {
         return a;
 
 };
+
+/**
+ * count how many properties exist on the record.
+ */
+export const count = (r: object): number => keys(r).length;
+
+/**
+ * empty tests whether the object has any properties or not.
+ */
+export const empty = (r: object): boolean => count(r) === 0;
