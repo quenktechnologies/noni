@@ -30,7 +30,7 @@ export declare const isString: (value: any) => value is string;
 /**
  * isNumber test.
  */
-export declare const isNumber: (value: any) => value is Number;
+export declare const isNumber: (value: any) => value is number;
 /**
  * isBoolean test.
  */

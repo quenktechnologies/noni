@@ -38,23 +38,26 @@ export const isArray = Array.isArray;
 /**
  * isString test.
  */
-export const isString = (value: Type): value is string => typeof value === 'string';
+export const isString = (value: Type): value is string =>
+    typeof value === 'string';
 
 /**
  * isNumber test.
  */
-export const isNumber = (value: Type): value is Number =>
+export const isNumber = (value: Type): value is number =>
     (typeof value === 'number') && (!isNaN(value))
 
 /**
  * isBoolean test.
  */
-export const isBoolean = (value: Type): value is boolean => typeof value === 'boolean';
+export const isBoolean = (value: Type): value is boolean =>
+    typeof value === 'boolean';
 
 /**
  * isFunction test.
  */
-export const isFunction = (value: Type): value is (<A, B>(a: A) => B) => typeof value === 'function';
+export const isFunction = (value: Type): value is (<A, B>(a: A) => B) =>
+    typeof value === 'function';
 
 /**
  * isPrim test.
@@ -67,7 +70,8 @@ export const isPrim = (value: Type) =>
 /**
  * is performs a typeof of check on a type.
  */
-export const is = <A>(expected: string) => (value: A) => typeof (value) === expected;
+export const is = <A>(expected: string) => (value: A) =>
+    typeof (value) === expected;
 
 /**
  * test whether a value conforms to some pattern.
@@ -128,7 +132,8 @@ export const show = <A>(value: A): string => {
         if (Array.isArray(value))
             return `[${value.map(show)}];`
         else if ((<any>value).constructor !== Object)
-            return ((<Type>(<any>value).constructor).name || (<any>value).constructor);
+            return ((<Type>(<any>value).constructor).name ||
+                (<any>value).constructor);
         else
             return JSON.stringify(value);
 
