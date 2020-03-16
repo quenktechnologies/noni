@@ -108,3 +108,15 @@ export const interpolate = (
             .get());
 
 }
+
+/**
+ * propercase converts a string into Proper Case.
+ */
+export const propercase = (str: string): string =>
+    str
+        .trim()
+        .toLowerCase()
+        .split(' ')
+        .map(tok => (tok.length > 0) ?
+            `${tok[0].toUpperCase()}${tok.slice(1)}` : tok)
+        .join(' ');

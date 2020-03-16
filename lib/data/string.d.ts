@@ -43,3 +43,7 @@ export declare const uncapitalize: (str: string) => string;
  * in the data object.
  */
 export declare const interpolate: (str: string, data: Record<any>, opts?: InterpolateOptions) => string;
+/**
+ * propercase converts a string into Proper Case.
+ */
+export declare const propercase: (str: string) => string;
