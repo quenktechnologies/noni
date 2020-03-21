@@ -5,6 +5,7 @@ import {
     contains,
     empty,
     map,
+    flatMap,
     partition,
     group,
     distribute,
@@ -68,7 +69,18 @@ describe('array', () => {
 
         });
 
-    });
+    })
+
+    describe('flatMap', () => {
+
+        it('should flatMap over all elements', () => {
+
+            assert(flatMap([[1, 2], [3, 4], [5, 6]], v => v))
+                .equate([1, 2, 3, 4, 5, 6]);
+
+        })
+
+    })
 
     describe('partition', () => {
 

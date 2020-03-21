@@ -12,6 +12,10 @@ export declare type PartitionFunc<A> = (a: A, i: number, l: A[]) => boolean;
  */
 export declare type GroupFunc<A> = (a: A, i: number, r: A[]) => string;
 /**
+ * MapFunc type.
+ */
+export declare type MapFunc<A, B> = (elm: A, idx: number, all: A[]) => B[];
+/**
  * head returns the item at index 0 of an array
  */
 export declare const head: <A>(list: A[]) => A;
@@ -31,6 +35,11 @@ export declare const contains: <A>(list: A[], a: A) => boolean;
  * map is a curried version of the Array#map method.
  */
 export declare const map: <A, B>(list: A[]) => (f: (a: A) => B) => B[];
+/**
+ * flatMap allows a function to produce a combined set of arrays from a map
+ * operation over each member of a list.
+ */
+export declare const flatMap: <A, B>(list: A[], f: MapFunc<A, B>) => B[];
 /**
  * concat concatenates an element to an array without destructuring
  * the element if itself is an array.
