@@ -144,3 +144,13 @@ export declare const count: (r: object) => number;
  * empty tests whether the object has any properties or not.
  */
 export declare const empty: (r: object) => boolean;
+/**
+ * some tests whether at least one property of a Record passes the
+ * test implemented by the provided function.
+ */
+export declare const some: <A, B>(o: Record<A>, f: MapFunc<A, B>) => boolean;
+/**
+ * every tests whether each  property of a Record passes the
+ * test implemented by the provided function.
+ */
+export declare const every: <A, B>(o: Record<A>, f: MapFunc<A, B>) => boolean;

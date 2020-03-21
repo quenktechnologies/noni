@@ -22,7 +22,9 @@ import {
     count,
     empty,
     filter,
-    isRecord
+    isRecord,
+    some,
+    every
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -530,6 +532,30 @@ describe('record', () => {
 
             assert(empty({})).true();
             assert(empty({ a: 1, b: 2, c: 3 })).false();
+
+        });
+
+    });
+
+    describe('some', () => {
+
+        it('should work', () => {
+
+            assert(some({ a: 1, b: 2, c: 3 }, v => v === 2)).true();
+
+            assert(some({ a: 1, b: 2, c: 3 }, v => v === 9)).false();
+
+        });
+
+    });
+
+    describe('every', () => {
+
+        it('should work', () => {
+
+            assert(every({ a: 2, b: 2, c: 2 }, v => v === 2)).true();
+
+            assert(every({ a: 1, b: 2, c: 3 }, v => v === 2)).false();
 
         });
 

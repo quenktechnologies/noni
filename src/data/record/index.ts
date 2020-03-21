@@ -299,3 +299,17 @@ export const count = (r: object): number => keys(r).length;
  * empty tests whether the object has any properties or not.
  */
 export const empty = (r: object): boolean => count(r) === 0;
+
+/**
+ * some tests whether at least one property of a Record passes the
+ * test implemented by the provided function.
+ */
+export const some = <A, B>(o: Record<A>, f: MapFunc<A, B>): boolean =>
+    keys(o).some((k) => f(o[k], k, o));
+
+/**
+ * every tests whether each  property of a Record passes the
+ * test implemented by the provided function.
+ */
+export const every = <A, B>(o: Record<A>, f: MapFunc<A, B>): boolean =>
+    keys(o).every((k) => f(o[k], k, o));
