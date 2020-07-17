@@ -1,8 +1,8 @@
 import { Milliseconds } from '../time';
 import { tick } from '../timer';
-import { Monad } from './';
-import { noop } from '../../data/function';
 import { Err, Except, convert } from '../error';
+import { noop } from '../../data/function';
+import { Monad, DoFn, doN as _doN} from './';
 
 /**
  * OnError callback function type.
@@ -730,3 +730,10 @@ export const liftP = <A>(f: () => Promise<A>): Future<A> => new Run(s => {
     return noop;
 
 });
+
+/**
+ * doN provides a do notation function specialized to Futures.
+ *
+ * Use this function to avoid explicit type assertions with control/monad#doN.
+ */
+export const doN = <A>(f: DoFn<A, Future<A>>): Future<A>  => _doN(f);

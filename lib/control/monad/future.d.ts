@@ -1,5 +1,5 @@
-import { Monad } from './';
 import { Err, Except } from '../error';
+import { Monad, DoFn } from './';
 /**
  * OnError callback function type.
  */
@@ -283,3 +283,9 @@ export declare const fromExcept: <A>(e: Except<A>) => Future<A>;
  * liftP turns a function that produces a Promise into a Future.
  */
 export declare const liftP: <A>(f: () => Promise<A>) => Future<A>;
+/**
+ * doN provides a do notation function specialized to Futures.
+ *
+ * Use this function to avoid explicit type assertions with control/monad#doN.
+ */
+export declare const doN: <A>(f: DoFn<A, Future<A>>) => Future<A>;

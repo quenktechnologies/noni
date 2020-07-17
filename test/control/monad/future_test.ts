@@ -24,7 +24,8 @@ import {
     parallel,
     toPromise,
     liftP,
-    race
+    race,
+    doN
 } from '../../../src/control/monad/future';
 
 const value = 12;
@@ -860,4 +861,24 @@ describe('future', () => {
 
     });
 
+    describe('doN', () => {
+
+        it('should work', () => {
+
+            let fn1 = () => pure(1);
+            let fn2 = (n: number) => pure(n + 1);
+            let fn3 = (n: number) => pure(n + n);
+
+            return toPromise<number>(doN<number>(function*() {
+
+                let val1 = yield fn1();
+                let val2 = yield fn2(val1);
+                let val3 = yield fn3(val2);
+
+                return pure(val3);
+
+            }))
+                .then(v => { assert(v).equal(4); });
+        });
+    });
 });
