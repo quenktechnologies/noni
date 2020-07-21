@@ -110,3 +110,5 @@ export const doN = <A, M extends Monad<A>>(f: DoFn<A, M>): M => {
     return next();
 
 }
+
+export const doMonad = doN;

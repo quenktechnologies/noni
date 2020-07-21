@@ -22,91 +22,91 @@ export interface StatsM {
 /**
  * stat (safe) wrapper.
  */
-export declare const stat: (path: string) => Future<fs.Stats>;
+export declare const stat: (path: Path) => Future<fs.Stats>;
 /**
  * statDir runs a `stat` on each file/directory found within a directory.
  */
-export declare const statDir: (path: string) => Future<StatsM>;
+export declare const statDir: (path: Path) => Future<StatsM>;
 /**
  * statDirAbs is like statDir but expands the names to be absolute.
  */
-export declare const statDirAbs: (path: string) => Future<StatsM>;
+export declare const statDirAbs: (path: Path) => Future<StatsM>;
 /**
  * statDirRec preforms a stat recursively for each file or directory found
  * at the given path.
  */
-export declare const statDirRec: (path: string) => Future<StatsM>;
+export declare const statDirRec: (path: Path) => Future<StatsM>;
 /**
  * exists (safe) wrapper.
  */
-export declare const exists: (path: string) => Future<boolean>;
+export declare const exists: (path: Path) => Future<boolean>;
 /**
  * isDirectory (safe) wrapper.
  */
-export declare const isDirectory: (path: string) => Future<boolean>;
+export declare const isDirectory: (path: Path) => Future<boolean>;
 /**
  * isFile (safe) wrapper.
  */
-export declare const isFile: (path: string) => Future<boolean>;
+export declare const isFile: (path: Path) => Future<boolean>;
 /**
  * readdir (safe) wrapper
  */
-export declare const readdir: (path: string) => Future<string[]>;
+export declare const readdir: (path: Path) => Future<string[]>;
 /**
  * readFile (safe) wrapper
  */
-export declare const readFile: (path: string, options: object) => Future<Contents>;
+export declare const readFile: (path: Path, options: object) => Future<Contents>;
 /**
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
-export declare const readTextFile: (path: string) => Future<string>;
+export declare const readTextFile: (path: Path) => Future<string>;
 /**
  * list the files/directories found at a path.
  */
-export declare const list: (path: string) => Future<string[]>;
+export declare const list: (path: Path) => Future<string[]>;
 /**
  * listAbs is like list except the paths are absolute.
  */
-export declare const listAbs: (path: string) => Future<string[]>;
+export declare const listAbs: (path: Path) => Future<Path[]>;
 /**
  * listRec applies list recursively.
  */
-export declare const listRec: (path: string) => Future<string[]>;
+export declare const listRec: (path: Path) => Future<Path[]>;
 /**
  * listDirs reads a directory path and returns a list of
  * all that are directories.
  */
-export declare const listDirs: (path: string) => Future<string[]>;
+export declare const listDirs: (path: Path) => Future<string[]>;
 /**
  * listDirsAbs is like listDirs but provides the
  * absolute path of each directory.
  */
-export declare const listDirsAbs: (path: string) => Future<string[]>;
+export declare const listDirsAbs: (path: Path) => Future<Path[]>;
 /**
  * listDirsRec recursively lists all the directories under a path.
  */
-export declare const listDirsRec: (path: string) => Future<string[]>;
+export declare const listDirsRec: (path: Path) => Future<Path[]>;
 /**
  * listFiles reads a directory path and returns a list of all
  * that are files.
  */
-export declare const listFiles: (path: string) => Future<string[]>;
+export declare const listFiles: (path: Path) => Future<string[]>;
 /**
  * listFilesAbs is like listFiles but provides the absoulte path of each file.
  */
-export declare const listFilesAbs: (path: string) => Future<string[]>;
+export declare const listFilesAbs: (path: Path) => Future<Path[]>;
 /**
  * listFilesRec recursively lists all the files under a path.
  */
-export declare const listFilesRec: (path: string) => Future<string[]>;
+export declare const listFilesRec: (path: Path) => Future<Path[]>;
 /**
  * writeFile (safe) wrapper.
  */
-export declare const writeFile: (path: string, contents: Contents, options: object) => Future<void>;
+export declare const writeFile: (path: Path, contents: Contents, options: object) => Future<void>;
 /**
  * writeTextFile writes the passed contents to a a file location.
  */
-export declare const writeTextFile: (path: string, contents: string) => Future<void>;
+export declare const writeTextFile: (path: Path, contents: string) => Future<void>;
 /**
  * makeDir makes a directory at the specified path.
  *
@@ -116,23 +116,23 @@ export declare const writeTextFile: (path: string, contents: string) => Future<v
  * parent directory creation so this function will fail if the parent
  * path does not exist.
  */
-export declare const makeDir: (path: string, options?: Record<number | boolean>) => Future<void>;
+export declare const makeDir: (path: Path, options?: Record<boolean | number>) => Future<void>;
 /**
  * unlink a path from the file system.
  *
  * Does not matter whether it is a file or directory.
  * Use with caution!
  */
-export declare const unlink: (path: string) => Future<void>;
+export declare const unlink: (path: Path) => Future<void>;
 /**
  * removeFile removes a file and only a file.
  *
  * Will fail if the path is not a file.
  */
-export declare const removeFile: (path: string) => Future<void>;
+export declare const removeFile: (path: Path) => Future<void>;
 /**
  * removeDir removes a directory and only a directory.
  *
  * Will fail if the path is not a directory.
  */
-export declare const removeDir: (path: string) => Future<void>;
+export declare const removeDir: (path: Path) => Future<void>;

@@ -3,6 +3,7 @@
  * Provides an API for working with module pointers.
  */
 import { Either } from '../../../data/either';
+import { Type } from '../../../data/type';
 export declare const TOKEN_HASH = "#";
 export declare const STATE_PATH = 1;
 export declare const STATE_MEMBER = 2;
@@ -73,22 +74,22 @@ export declare class Import {
 /**
  * tokenize a Pointer into its useful lexical parts.
  */
-export declare const tokenize: (ptr: string) => Either<Failure, Token[]>;
+export declare const tokenize: (ptr: Pointer) => Either<Failure, Token[]>;
 /**
  * compile a Pointer into an Import object.
  */
-export declare const compile: (ptr: string) => Either<Error, Import>;
+export declare const compile: (ptr: Pointer) => Either<Error, Import>;
 /**
  * compileList compiles a list of pointers.
  *
  * If any of the compilations fail the whole process is considered failed.
  */
-export declare const compileList: (ptrs: string[]) => Either<Error, Import[]>;
+export declare const compileList: (ptrs: Pointer[]) => Either<Error, Import[]>;
 /**
  * iterp a Pointer as a module import returning the exported member from
  * the specified module.
  */
-export declare const interp: (ptr: string, loader?: NodeRequire) => Either<Error, any>;
+export declare const interp: (ptr: Pointer, loader?: NodeRequire) => Either<Error, Type>;
 /**
  * isPointer tests whether a string can be used as a valid
  * pointer.
@@ -99,10 +100,10 @@ export declare const isPointer: (ptr: string) => boolean;
  *
  * If the ptr is not valid an empty string is returned.
  */
-export declare const getPath: (ptr: string) => string;
+export declare const getPath: (ptr: Pointer) => Path;
 /**
  * getMember retrieves the member part of a valid Pointer.
  *
  * If the ptr is not valid an empty string is returned.
  */
-export declare const getMember: (ptr: string) => string;
+export declare const getMember: (ptr: Pointer) => Name;

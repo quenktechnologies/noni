@@ -18,7 +18,7 @@ export declare class Any {
  *
  * Does not consider an Array an object.
  */
-export declare const isObject: (value: any) => value is object;
+export declare const isObject: (value: Type) => value is object;
 /**
  * isArray test.
  */
@@ -26,23 +26,23 @@ export declare const isArray: (arg: any) => arg is any[];
 /**
  * isString test.
  */
-export declare const isString: (value: any) => value is string;
+export declare const isString: (value: Type) => value is string;
 /**
  * isNumber test.
  */
-export declare const isNumber: (value: any) => value is number;
+export declare const isNumber: (value: Type) => value is number;
 /**
  * isBoolean test.
  */
-export declare const isBoolean: (value: any) => value is boolean;
+export declare const isBoolean: (value: Type) => value is boolean;
 /**
  * isFunction test.
  */
-export declare const isFunction: (value: any) => value is <A, B>(a: A) => B;
+export declare const isFunction: (value: Type) => value is <A, B>(a: A) => B;
 /**
  * isPrim test.
  */
-export declare const isPrim: (value: any) => boolean;
+export declare const isPrim: (value: Type) => boolean;
 /**
  * is performs a typeof of check on a type.
  */
@@ -75,4 +75,4 @@ export declare const show: <A>(value: A) => string;
  * If the value is null or undefined an empty string is returned instead of
  * the default.
  */
-export declare const toString: (val: any) => string;
+export declare const toString: (val: Type) => string;

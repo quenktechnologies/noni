@@ -1,3 +1,4 @@
+import { Milliseconds } from '../time';
 import { Err, Except } from '../error';
 import { Monad, DoFn } from './';
 /**
@@ -222,11 +223,11 @@ export declare const attempt: <A>(f: () => A) => Future<A>;
  *
  * Any errors thrown are caught and processed in the Future chain.
  */
-export declare const delay: <A>(f: () => A, n?: number) => Future<A>;
+export declare const delay: <A>(f: () => A, n?: Milliseconds) => Future<A>;
 /**
  * wait n milliseconds before continuing the Future chain.
  */
-export declare const wait: (n: number) => Future<void>;
+export declare const wait: (n: Milliseconds) => Future<void>;
 /**
  * fromAbortable takes an Aborter and a node style async function and
  * produces a Future.
@@ -284,8 +285,8 @@ export declare const fromExcept: <A>(e: Except<A>) => Future<A>;
  */
 export declare const liftP: <A>(f: () => Promise<A>) => Future<A>;
 /**
- * doN provides a do notation function specialized to Futures.
+ * doFuture provides a do notation function specialized to Futures.
  *
  * Use this function to avoid explicit type assertions with control/monad#doN.
  */
-export declare const doN: <A>(f: DoFn<A, Future<A>>) => Future<A>;
+export declare const doFuture: <A>(f: DoFn<A, Future<A>>) => Future<A>;

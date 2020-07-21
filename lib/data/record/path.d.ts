@@ -33,43 +33,43 @@ export declare type Token = string;
 /**
  * tokenize a path into a list of sequential property names.
  */
-export declare const tokenize: (str: string) => string[];
+export declare const tokenize: (str: Path) => Token[];
 /**
  * unsafeGet retrieves a value at the specified path
  * on any ES object.
  *
  * This function does not check if getting the value succeeded or not.
  */
-export declare const unsafeGet: <A>(path: string, src: Record<A>) => A;
+export declare const unsafeGet: <A>(path: Path, src: Record<A>) => A;
 /**
  * get a value from a Record given its path safely.
  */
-export declare const get: <A>(path: string, src: Record<A>) => Maybe<A>;
+export declare const get: <A>(path: Path, src: Record<A>) => Maybe<A>;
 /**
  * getDefault is like get but takes a default value to return if
  * the path is not found.
  */
-export declare const getDefault: <A>(path: string, src: Record<A>, def: A) => A;
+export declare const getDefault: <A>(path: Path, src: Record<A>, def: A) => A;
 /**
  * getString casts the resulting value to a string.
  *
  * An empty string is provided if the path is not found.
  */
-export declare const getString: <A>(path: string, src: Record<A>) => string;
+export declare const getString: <A>(path: Path, src: Record<A>) => string;
 /**
  * set sets a value on an object given a path.
  */
-export declare const set: <A, R extends Record<A>>(p: string, v: A, r: R) => R;
+export declare const set: <A, R extends Record<A>>(p: Path, v: A, r: R) => R;
 /**
  * escape a path so that occurences of dots are not interpreted as paths.
  *
  * This function escapes dots and dots only.
  */
-export declare const escape: (p: string) => string;
+export declare const escape: (p: Path) => Path;
 /**
  * unescape a path that has been previously escaped.
  */
-export declare const unescape: (p: string) => string;
+export declare const unescape: (p: Path) => Path;
 /**
  * escapeRecord escapes each property of a record recursively.
  */

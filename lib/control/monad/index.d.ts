@@ -82,3 +82,4 @@ export declare const pipeN: <A, B, MB extends Monad<B>>(f: (a: A) => MB, ...list
  * Beware of uncaught errors being swallowed in the function body.
  */
 export declare const doN: <A, M extends Monad<A>>(f: DoFn<A, M>) => M;
+export declare const doMonad: <A, M extends Monad<A>>(f: DoFn<A, M>) => M;

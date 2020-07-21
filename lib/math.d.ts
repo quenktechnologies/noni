@@ -17,7 +17,7 @@ export declare type NegativeInteger = number;
 /**
  * isMultipleOf tests whether the Integer 'y' is a multiple of x.
  */
-export declare const isMultipleOf: (x: number, y: number) => boolean;
+export declare const isMultipleOf: (x: Integer, y: Integer) => boolean;
 /**
  * round a number "x" to "n" places (n defaults to 0 places).
  *
@@ -46,4 +46,4 @@ export declare const isMultipleOf: (x: number, y: number) => boolean;
  * for more details.
  *
  */
-export declare const round: (x: number, n?: number) => number;
+export declare const round: (x: number, n?: PositiveInteger) => number;

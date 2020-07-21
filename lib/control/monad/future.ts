@@ -732,8 +732,8 @@ export const liftP = <A>(f: () => Promise<A>): Future<A> => new Run(s => {
 });
 
 /**
- * doN provides a do notation function specialized to Futures.
+ * doFuture provides a do notation function specialized to Futures.
  *
  * Use this function to avoid explicit type assertions with control/monad#doN.
  */
-export const doN = <A>(f: DoFn<A, Future<A>>): Future<A>  => _doN(f);
+export const doFuture = <A>(f: DoFn<A, Future<A>>): Future<A>  => _doN(f);
