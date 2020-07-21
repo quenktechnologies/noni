@@ -25,7 +25,7 @@ import {
     toPromise,
     liftP,
     race,
-    doN
+    doFuture
 } from '../../../src/control/monad/future';
 
 const value = 12;
@@ -861,7 +861,7 @@ describe('future', () => {
 
     });
 
-    describe('doN', () => {
+    describe('doFuture', () => {
 
         it('should work', () => {
 
@@ -869,7 +869,7 @@ describe('future', () => {
             let fn2 = (n: number) => pure(n + 1);
             let fn3 = (n: number) => pure(n + n);
 
-            return toPromise<number>(doN<number>(function*() {
+            return toPromise<number>(doFuture<number>(function*() {
 
                 let val1 = yield fn1();
                 let val2 = yield fn2(val1);
