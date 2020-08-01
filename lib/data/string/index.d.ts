@@ -1,7 +1,7 @@
 /**
  *  Common functions used to manipulate strings.
  */
-import { Record } from './record';
+import { Record } from '../record';
 export interface InterpolateOptions {
     start?: string;
     end?: string;

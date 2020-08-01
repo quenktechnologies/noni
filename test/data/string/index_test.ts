@@ -5,7 +5,7 @@ import {
     uncapitalize,
     interpolate,
     propercase
-} from '../../src/data/string';
+} from '../../../src/data/string';
 
 describe('string', () => {
 

@@ -3,8 +3,8 @@
  */
 
 /** imports */
-import { get } from './record/path';
-import { Record, assign } from './record';
+import { get } from '../record/path';
+import { Record, assign } from '../record';
 
 export interface InterpolateOptions {
     start?: string,
