@@ -1,4 +1,11 @@
 /**
+ * badKeys is a list of keys we don't want to copy around between objects.
+ *
+ * Mostly due to prototype pollution but who knows what other keys may become
+ * a problem as the language matures.
+ */
+export declare const badKeys: string[];
+/**
  * Key is a single level path on a record.
  *
  * Dots are not treated as path separators but rather literal dots.
@@ -172,3 +179,7 @@ export declare const every: <A, B>(o: Record<A>, f: MapFunc<A, B>) => boolean;
  * The function modifies the passed record.
  */
 export declare const set: <A, R extends Record<A>>(r: R, k: Key, value: A) => R;
+/**
+ * isBadKey tests whether a key is problematic (Like __proto__).
+ */
+export declare const isBadKey: (key: string) => boolean;

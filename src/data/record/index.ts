@@ -6,7 +6,14 @@
  */
 import { concat } from '../array';
 import { isArray } from '../type';
-import { isBadKey } from './path';
+
+/**
+ * badKeys is a list of keys we don't want to copy around between objects.
+ *
+ * Mostly due to prototype pollution but who knows what other keys may become
+ * a problem as the language matures.
+ */
+export const badKeys = ['__proto__'];
 
 /**
  * Key is a single level path on a record.
@@ -65,18 +72,16 @@ export function assign(target: any, ..._varArgs: any[]): any {
     for (var index = 1; index < arguments.length; index++) {
         var nextSource = arguments[index];
 
-        if (nextSource != null) {
-
-            for (var nextKey in nextSource) {
+        if (nextSource != null)
+            for (var nextKey in nextSource)
                 // Avoid bugs when hasOwnProperty is shadowed
                 if (Object.prototype.hasOwnProperty.call(nextSource, nextKey))
-                        // TODO: Should this clone the value to break references?
-                        set(to, nextKey, nextSource[nextKey]);
-
-            }
-        }
+                    // TODO: Should this clone the value to break references?
+                    set(to, nextKey, nextSource[nextKey]);
     }
+
     return to;
+
 }
 
 /**
@@ -340,3 +345,9 @@ export const set = <A, R extends Record<A>>(r: R, k: Key, value: A): R => {
     return r;
 
 }
+
+/**
+ * isBadKey tests whether a key is problematic (Like __proto__).
+ */
+export const isBadKey = (key: string): boolean =>
+    badKeys.indexOf(key) !== -1;

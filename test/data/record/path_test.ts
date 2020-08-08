@@ -560,9 +560,10 @@ describe('path', () => {
 
                 '__proto__.admin': true,
 
-                'root.__proto__.admin': true,
+                // Need to figure out where this goes.
+                //'root.__proto__.admin': true,
 
-                'root.child.__proto__': true
+                'root.child.__proto__.admin': true
 
             });
 

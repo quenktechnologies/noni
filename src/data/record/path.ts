@@ -14,20 +14,20 @@
  */
 /** imports **/
 import { Maybe, fromNullable } from '../maybe';
-import { Record, clone, reduce, merge, isRecord } from './';
+import {
+    Record,
+    clone,
+    reduce,
+    merge,
+    set as setKey,
+    isRecord,
+    isBadKey
+} from './';
 
 const TOKEN_DOT = '.';
 const TOKEN_BRACKET_LEFT = '[';
 const TOKEN_BRACKET_RIGHT = ']';
 const TOKEN_ESCAPE = '\\';
-
-/**
- * badKeys is a list of keys we don't want to copy around between objects.
- *
- * Mostly due to prototype pollution but who knows what other keys may become
- * a problem as the language matures.
- */
-export const badKeys = ['__proto__'];
 
 /**
  * Path representing a path to a value in an object.
@@ -232,7 +232,7 @@ const _set = (r: any, value: any, toks: string[]): any => {
     if (toks.length === 0) return value;
 
     o = isRecord(r) ? clone(r) : {};
-    o[toks[0]] = _set(o[toks[0]], value, toks.slice(1));
+    o = setKey(o, toks[0], _set(o[toks[0]], value, toks.slice(1)));
 
     return o;
 
@@ -308,9 +308,9 @@ export const escapeRecord = <A>(r: Record<A>): Record<A> =>
     reduce(r, <Record<A>>{}, (p, c, k) => {
 
         if (typeof c === 'object')
-            p[escape(k)] = <A><any>escapeRecord(<Record<A>><any>c);
+            p = setKey(p, escape(k), <A><any>escapeRecord(<Record<A>><any>c));
         else
-            p[escape(k)] = c;
+            p = setKey(p, escape(k), c);
 
         return p
 
@@ -323,9 +323,9 @@ export const unescapeRecord = <A>(r: Record<A>): Record<A> =>
     reduce(r, <Record<any>>{}, (p, c, k) => {
 
         if (isRecord(c))
-            p[unescape(k)] = unescapeRecord(<any>c);
+            p = setKey(p, unescape(k), unescapeRecord(<any>c));
         else
-            p[unescape(k)] = c;
+            p = setKey(p, unescape(k), c);
 
         return p
 
@@ -345,7 +345,7 @@ const flatImpl = <A>(pfix: string) => (prev: FlatRecord<any>) =>
     (r: Record<A>): FlatRecord<A> =>
         reduce(r, prev, (p, c, k) => isRecord(c) ?
             (flatImpl(prefix(pfix, k))(p)(<Record<any>>c)) :
-            merge(p, { [prefix(pfix, k)]: c }));
+            merge(p, setKey({}, prefix(pfix, k),  c )));
 
 const prefix = (pfix: string, key: string) => (pfix === '') ?
     escape(key) : `${pfix}.${escape(key)}`;
@@ -367,7 +367,7 @@ export const intersect = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
     reduce(a, <Record<A>>{}, (p, c, k) => {
 
         if (b.hasOwnProperty(k))
-            p[k] = c;
+            p = setKey(p, k, c);
 
         return p;
 
@@ -383,7 +383,7 @@ export const difference = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
     reduce(a, <Record<A>>{}, (p, c, k) => {
 
         if (!b.hasOwnProperty(k))
-            p[k] = c;
+            p = setKey(p, k, c);
 
         return p;
 
@@ -395,7 +395,7 @@ export const difference = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
 export const map = <A>(a: Record<A>, f: (s: string) => string): Record<A> =>
     reduce(a, <Record<A>>{}, (p, c, k) => {
 
-        p[f(k)] = c;
+        p = setKey(p, f(k), c);
         return p;
 
     });
@@ -411,12 +411,6 @@ export const project =
     <A>(spec: FlatRecord<boolean>, rec: Record<A>): Record<A> =>
         reduce(spec, <Record<A>>{}, (p, c, k) =>
             (c === true) ? set(k, unsafeGet(k, rec), p) : p);
-
-/**
- * isBadKey tests whether a key is problematic (Like __proto__).
- */
-export const isBadKey = (key: string): boolean =>
-    badKeys.indexOf(key) !== -1;
 
 /**
  * sanitize is used internally to remove nefarious keys from an object.
