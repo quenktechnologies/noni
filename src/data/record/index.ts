@@ -1,8 +1,8 @@
 /**
  * The record module provides functions for treating ES objects as records.
  *
- * Some of the functions provided here are inherently unsafe (tsc will not
- * be able track integrity and may result in runtime errors if not used carefully.
+ * Some of the functions provided here are not type safe and may result in
+ * runtime errors if not used carefully.
  */
 import { concat } from '../array';
 import { isArray } from '../type';
