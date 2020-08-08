@@ -22,6 +22,14 @@ const TOKEN_BRACKET_RIGHT = ']';
 const TOKEN_ESCAPE = '\\';
 
 /**
+ * badKeys is a list of keys we don't want to copy around between objects.
+ *
+ * Mostly due to prototype pollution but who knows what other keys may become
+ * a problem as the language matures.
+ */
+export const badKeys = ['__proto__'];
+
+/**
  * Path representing a path to a value in an object.
  */
 export type Path = string;
@@ -223,7 +231,7 @@ const _set = (r: any, value: any, toks: string[]): any => {
 
     if (toks.length === 0) return value;
 
-    o = isRecord(r) ? clone(r) : {}
+    o = isRecord(r) ? clone(r) : {};
     o[toks[0]] = _set(o[toks[0]], value, toks.slice(1));
 
     return o;
@@ -403,3 +411,23 @@ export const project =
     <A>(spec: FlatRecord<boolean>, rec: Record<A>): Record<A> =>
         reduce(spec, <Record<A>>{}, (p, c, k) =>
             (c === true) ? set(k, unsafeGet(k, rec), p) : p);
+
+/**
+ * isBadKey tests whether a key is problematic (Like __proto__).
+ */
+export const isBadKey = (key: string): boolean =>
+    badKeys.indexOf(key) !== -1;
+
+/**
+ * sanitize is used internally to remove nefarious keys from an object.
+ *
+ * Notably the __proto__ key.
+ */
+export const sanitize = <R extends object>(r: R): R =>
+    reduce(<any>r, <any>{}, (p, c, k) => {
+        isBadKey(k) ?
+            p :
+            merge(p, {
+                [k]: isRecord(c) ? sanitize(c) : c
+            })
+    });

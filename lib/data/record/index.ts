@@ -6,6 +6,14 @@
  */
 import { concat } from '../array';
 import { isArray } from '../type';
+import { isBadKey } from './path';
+
+/**
+ * Key is a single level path on a record.
+ *
+ * Dots are not treated as path separators but rather literal dots.
+ */
+export type Key = string;
 
 /**
  * MapFunc
@@ -45,12 +53,12 @@ export interface Record<A> {
 }
 
 /**
- * assign polyfill.
+ * assign is an Object.assign polyfill.
+ *
+ * It is used internally and should probably never be used directly in 
+ * production code.
  */
 export function assign(target: any, ..._varArgs: any[]): any {
-
-    if (target == null)
-        throw new TypeError('Cannot convert undefined or null to object');
 
     var to = Object(target);
 
@@ -62,7 +70,8 @@ export function assign(target: any, ..._varArgs: any[]): any {
             for (var nextKey in nextSource) {
                 // Avoid bugs when hasOwnProperty is shadowed
                 if (Object.prototype.hasOwnProperty.call(nextSource, nextKey))
-                    to[nextKey] = nextSource[nextKey];
+                        // TODO: Should this clone the value to break references?
+                        set(to, nextKey, nextSource[nextKey]);
 
             }
         }
@@ -85,7 +94,7 @@ export const isRecord = <A>(value: any): value is Record<A> =>
     (value != null) &&
     (!Array.isArray(value)) &&
     (!(value instanceof Date)) &&
-    (!(value instanceof RegExp))
+    (!(value instanceof RegExp));
 
 /**
  * keys produces a list of property names from a Record.
@@ -208,7 +217,7 @@ const deepMerge = <A, R extends Record<A>>(pre: R, curr: A, key: string) =>
 
             [key]: isRecord(pre[key]) ?
                 rmerge((<any>pre[key]), curr) :
-                curr
+                curr // TODO: this should be cloned to break references.
 
         }) :
         merge((<any>pre), { [key]: curr });
@@ -244,14 +253,15 @@ export const partition = <A, R extends Record<A>>
  * function.
  */
 export const group = <A, R extends Record<A>>
-    (r: R, f: GroupFunc<A, R>): Record<Record<A>> =>
-    reduce(r, <Record<Record<A>>>{}, (p, c, k) => {
+    (rec: R, f: GroupFunc<A, R>): Record<Record<A>> =>
+    reduce(rec, <Record<Record<A>>>{}, (prev, curr, key) => {
 
-        let g = f(<A>c, k, r);
+        let category = f(<A>curr, key, rec);
 
-        return merge(p, {
-            [g]: isRecord(p[g]) ?
-                merge(p[g], { [k]: c }) : { [k]: c }
+        return merge(prev, {
+            [category]: isRecord(prev[category]) ?
+                merge(prev[category], { [key]: curr }) :
+                set({}, key, curr)
         });
 
     });
@@ -277,7 +287,7 @@ export const contains = (r: object, key: string): boolean =>
  */
 export const clone = <A, R extends Record<A>>(r: R): R =>
     <R><any>reduce(r, <Record<A>>{},
-        (p, c, k) => { p[k] = _clone(c); return p; });
+        (p, c, k) => { set(p, k, _clone(c)); return p; });
 
 const _clone = (a: any): any => {
 
@@ -305,11 +315,28 @@ export const empty = (r: object): boolean => count(r) === 0;
  * test implemented by the provided function.
  */
 export const some = <A, B>(o: Record<A>, f: MapFunc<A, B>): boolean =>
-    keys(o).some((k) => f(o[k], k, o));
+    keys(o).some(k => f(o[k], k, o));
 
 /**
- * every tests whether each  property of a Record passes the
+ * every tests whether each property of a Record passes the
  * test implemented by the provided function.
  */
 export const every = <A, B>(o: Record<A>, f: MapFunc<A, B>): boolean =>
-    keys(o).every((k) => f(o[k], k, o));
+    keys(o).every(k => f(o[k], k, o));
+
+/**
+ * set the value of a key on a Record ignoring problematic keys.
+ *
+ * This function exists to avoid unintentionally setting problem keys such
+ * as __proto__ on an object.
+ *
+ * The function modifies the passed record.
+ */
+export const set = <A, R extends Record<A>>(r: R, k: Key, value: A): R => {
+
+    if (!isBadKey(k))
+        (<Record<A>>r)[k] = value;
+
+    return r;
+
+}

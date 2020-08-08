@@ -391,6 +391,18 @@ describe('path', () => {
 
         });
 
+        it('should not overwrite Object#prototype', () => {
+
+            let result: any = set('__proto__', { admin: true }, {});
+            let result2: any = set('root.__proto__', { admin: true }, {});
+            let result3: any = set('root.child.__proto__', { admin: true }, {});
+
+            assert(result.admin).undefined();
+            assert(result2.root.admin).undefined();
+            assert(result3.root.child.admin).undefined();
+
+        });
+
     });
 
     describe('escape', () => {
@@ -428,6 +440,20 @@ describe('path', () => {
                         }
                     }
                 })
+
+        });
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec = JSON.parse(`{
+
+            "__proto__": { "admin": true }          
+
+          }`);
+
+            let result = escapeRecord(rec);
+
+            assert(result.admin).undefined();
 
         });
 
@@ -474,6 +500,20 @@ describe('path', () => {
 
         });
 
+        it('should not overwrite Object#prototype', () => {
+
+            let rec = JSON.parse(`{
+
+            "__proto__": { "admin": true }          
+
+          }`);
+
+            let result = unescapeRecord(rec);
+
+            assert(result.admin).undefined();
+
+        });
+
     });
 
     describe('flatten', () => {
@@ -500,6 +540,33 @@ describe('path', () => {
 
             })
         })
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec = JSON.parse(`{
+        
+             "__proto__": { "admin": true },
+
+             "root": { "__proto__": { "admin": true } },
+
+             "root": { "child": { "__proto__": { "admin": true } } }
+            
+            }`);
+
+            let result: any = flatten(rec);
+
+            assert(result.admin).undefined();
+            assert(result).equate({
+
+                '__proto__.admin': true,
+
+                'root.__proto__.admin': true,
+
+                'root.child.__proto__': true
+
+            });
+
+        });
     })
 
     describe('unflatten', () => {
@@ -531,6 +598,26 @@ describe('path', () => {
             assert(unflatten(b4)).equate(after)
 
         })
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec = {
+
+                '__proto__.admin': true,
+
+                'root.__proto__.admin': true,
+
+                'root.child.__proto__': true
+
+            };
+
+            let result: any = unflatten(rec);
+
+            assert(result.admin).undefined();
+            assert(result.root.admin).undefined();
+            assert(result.root.child.admin).undefined();
+
+        });
     })
 
     describe('intersect', () => {
@@ -541,6 +628,19 @@ describe('path', () => {
             let r: Record<number> = { e: 4, b: 5, c: 6 };
 
             assert(intersect(l, r)).equate({ b: 2, c: 3 });
+
+        });
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec1 = JSON.parse(`{
+                "__proto__": { "admin": true }
+            }`);
+
+            let rec2 = JSON.parse(`{ "__proto__": { } }`);
+            let result = intersect(rec1, rec2);
+
+            assert(result.admin).undefined();
 
         });
 
@@ -555,7 +655,19 @@ describe('path', () => {
 
             assert(difference(l, r)).equate({ a: 1 });
 
-        })
+        });
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec = JSON.parse(`{
+                "__proto__": { "admin": true }
+            }`);
+
+            let result = difference(rec, {});
+
+            assert(result.admin).undefined();
+
+        });
 
     });
 
@@ -566,6 +678,18 @@ describe('path', () => {
             let o: Record<number> = { a: 1, b: 2, c: 3 };
 
             assert(map(o, p => `n${p}`)).equate({ na: 1, nb: 2, nc: 3 });
+
+        });
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec = JSON.parse(`{
+             "__proto__": { "admin": true } 
+            }`);
+
+            let result = map(rec, p => p);
+
+            assert(result.admin).undefined();
 
         })
 
@@ -593,6 +717,28 @@ describe('path', () => {
 
             assert(project({ a: false, b: false, c: true, d: false }, src))
                 .equate({ c: [3] });
+
+        });
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec = JSON.parse(`{ 
+                 
+                    "__proto__": { "admin": true },
+                     
+                    "root": { "__proto__": { "admin": true } },
+
+                    "root": { "child": { "__proto__": { "admin": true } } }
+
+            }`);
+
+            let spec = { '__proto__': true, root: true };
+
+            let result: any = project(spec, rec);
+
+            assert(result.admin).undefined();
+            assert(result.root.admin).undefined();
+            assert(result.root.child.admin).undefined();
 
         });
 

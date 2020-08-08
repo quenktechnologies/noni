@@ -16,6 +16,13 @@
 import { Maybe } from '../maybe';
 import { Record } from './';
 /**
+ * badKeys is a list of keys we don't want to copy around between objects.
+ *
+ * Mostly due to prototype pollution but who knows what other keys may become
+ * a problem as the language matures.
+ */
+export declare const badKeys: string[];
+/**
  * Path representing a path to a value in an object.
  */
 export declare type Path = string;
@@ -116,3 +123,13 @@ export declare const map: <A>(a: Record<A>, f: (s: string) => string) => Record<
  * record.
  */
 export declare const project: <A>(spec: FlatRecord<boolean>, rec: Record<A>) => Record<A>;
+/**
+ * isBadKey tests whether a key is problematic (Like __proto__).
+ */
+export declare const isBadKey: (key: string) => boolean;
+/**
+ * sanitize is used internally to remove nefarious keys from an object.
+ *
+ * Notably the __proto__ key.
+ */
+export declare const sanitize: <R extends object>(r: R) => R;

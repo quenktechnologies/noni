@@ -1,4 +1,10 @@
 /**
+ * Key is a single level path on a record.
+ *
+ * Dots are not treated as path separators but rather literal dots.
+ */
+export declare type Key = string;
+/**
  * MapFunc
  */
 export declare type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
@@ -25,7 +31,10 @@ export interface Record<A> {
     [key: string]: A;
 }
 /**
- * assign polyfill.
+ * assign is an Object.assign polyfill.
+ *
+ * It is used internally and should probably never be used directly in
+ * production code.
  */
 export declare function assign(target: any, ..._varArgs: any[]): any;
 /**
@@ -119,7 +128,7 @@ export declare const partition: <A, R extends Record<A>>(r: R, f: PartitionFunc<
  * group the properties of a Record into another Record using a grouping
  * function.
  */
-export declare const group: <A, R extends Record<A>>(r: R, f: GroupFunc<A, R>) => Record<Record<A>>;
+export declare const group: <A, R extends Record<A>>(rec: R, f: GroupFunc<A, R>) => Record<Record<A>>;
 /**
  * values returns a shallow array of the values of a record.
  */
@@ -150,7 +159,16 @@ export declare const empty: (r: object) => boolean;
  */
 export declare const some: <A, B>(o: Record<A>, f: MapFunc<A, B>) => boolean;
 /**
- * every tests whether each  property of a Record passes the
+ * every tests whether each property of a Record passes the
  * test implemented by the provided function.
  */
 export declare const every: <A, B>(o: Record<A>, f: MapFunc<A, B>) => boolean;
+/**
+ * set the value of a key on a Record ignoring problematic keys.
+ *
+ * This function exists to avoid unintentionally setting problem keys such
+ * as __proto__ on an object.
+ *
+ * The function modifies the passed record.
+ */
+export declare const set: <A, R extends Record<A>>(r: R, k: Key, value: A) => R;

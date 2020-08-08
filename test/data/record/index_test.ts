@@ -1,6 +1,7 @@
 import { assert } from '@quenk/test/lib/assert';
 import {
     Record,
+    assign,
     keys,
     map,
     mapTo,
@@ -24,7 +25,8 @@ import {
     filter,
     isRecord,
     some,
-    every
+    every,
+    set
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -113,6 +115,21 @@ const re: RE = {
 
 describe('record', () => {
 
+    describe('assign', () => {
+
+        it('should not modify Object.prototype', () => {
+
+            let b: { [key: string]: boolean } = {};
+            let a = assign(b, JSON.parse('{ "__proto__": { "admin": true } }'));
+
+            assert(a).equate({});
+            assert(b.admin).undefined();
+            assert(a.admin).undefined();
+
+        });
+
+    });
+
     describe('keys', () => {
 
         it('should provide a list of a Record keys', () => {
@@ -132,6 +149,20 @@ describe('record', () => {
                 .equate({ a: 'a-1-3', b: 'b-2-3', c: 'c-3-3' });
 
         })
+
+        it('should not modify Object.prototype', () => {
+
+            let jsonObj: { [key: string]: number } =
+                JSON.parse('{ "a":1, "__proto__": { "b": 2 } }');
+
+            let mappedObj = map(jsonObj, v => v * 10);
+            let newObj: { [key: string]: number } = {};
+
+            assert(mappedObj.b).undefined();
+            assert(newObj.b).undefined();
+
+        });
+
     })
 
     describe('mapTo', () => {
@@ -168,6 +199,18 @@ describe('record', () => {
             assert(r).equate({ a: 1, b: 2, c: 4, e: 4 });
 
         })
+
+        it('should not modify Object.prototype', () => {
+
+            let b: { [key: string]: boolean } = {};
+            let a = merge(b, JSON.parse('{ "__proto__": { "admin": true } }'));
+
+            assert(a).equate({});
+            assert(b.admin).undefined();
+            assert(a.admin).undefined();
+
+        });
+
     })
 
     describe('merge3', () => {
@@ -224,6 +267,121 @@ describe('record', () => {
                     }
                 });
         })
+
+        // These test will pass pre patch because rmerge merges each property at
+        // least twice. The second merge basically forgets about the __proto__
+        // property as it is not enumerable. Multiple merges may not be very
+        // efficient and is likely to change so these tests should remain in 
+        // case the internal algorithim changes. ~LKM
+        it('should not modify Object.prototype (part 1)', () => {
+
+            let target: any = { user: true };
+
+            let result = rmerge(target,
+                JSON.parse(`{
+
+                              "__proto__": {
+
+                                "admin": true
+
+                              }
+
+                            }`));
+
+            assert(result.admin).undefined();
+
+        });
+
+        it('should not modify Object.prototype (part 2)', () => {
+
+            let target: any = {};
+
+            let result = rmerge(target,
+                JSON.parse(`{
+
+                                "nested": {
+
+                                      "__proto__": {
+
+                                        "admin": true
+
+                                      }
+
+                                  }
+
+                            }`));
+
+            assert(result.nested.admin).undefined();
+
+        });
+
+        it('should not modify Object.prototype (part 3)', () => {
+
+            let target: any = {
+
+                active: true,
+
+                nested0: { active: true },
+
+                nested1: { active: true, nested2: { active: true } }
+
+            };
+
+            let result = rmerge(target,
+                JSON.parse(`{
+
+                              "__proto__": {
+
+                                "admin": true
+
+                              },
+
+                              "nested0": { 
+                                
+                                "user": true,
+
+                                "__proto__": { "admin": true } 
+
+                              },
+
+                              "nested1": {
+
+                                "nested2": {
+
+                                  "__proto__": { "admin": true }
+
+                                }
+
+                              },
+
+                              "nested3": {
+
+                                "nested4": {
+
+                                  "nested5": {
+
+                                    "__proto__": { "admin": true }
+
+                                  }
+
+                                }
+
+                              }
+
+                            }`));
+
+            assert(result.admin).undefined();
+            assert(result.active).true();
+            assert(result.nested0.admin).undefined();
+            assert(result.nested0.user).true();
+            assert(result.nested0.active).true();
+            assert(result.nested1.active).true();
+            assert(result.nested1.nested2.admin).undefined();
+            assert(result.nested1.nested2.active).true();
+            assert(result.nested3.nested4.nested5.admin).undefined();
+
+        });
+
     })
 
     describe('rmerge3', () => {
@@ -341,7 +499,7 @@ describe('record', () => {
         })
     })
 
-    describe('fling', () => {
+    describe('exclude', () => {
 
         it('should remove unwanted keys', () => {
 
@@ -353,6 +511,20 @@ describe('record', () => {
                 .equate({ four: 4, five: 5, six: 6 });
 
         })
+
+        it('should not change Object#prototype', () => {
+
+            let result = exclude(JSON.parse(`{
+                "one": 1,
+                "two": 2,
+                "__proto__": { "admin": 1 }
+
+                }`), 'two');
+
+            assert(result.admin).undefined();
+
+        })
+
     })
 
     describe('partition', () => {
@@ -368,6 +540,26 @@ describe('record', () => {
             { a: 1, c: 3, e: 5, g: 7, i: 9 }];
 
             assert(partition<number, Record<number>>(m, f)).equate(r);
+
+        });
+
+        it('should not overwrite Object#prototype', () => {
+
+            let rec: Record<Record<object | number>> = JSON.parse(`{
+                "a": { "value": 1 },
+                "b": {"value": 1, "__proto__": { "admin": true } },
+                "c": {"value": 2, "__proto__": { "admin": true } },
+                "__proto__": { "admin": true }
+            }`);
+
+            let f = (r: Record<object | number>) => r.value === 1;
+            let [left, right] = partition(rec, f);
+
+            assert(left.admin).undefined();
+            assert(right.admin).undefined();
+            assert(left.a.admin).undefined();
+            assert(left.b.admin).undefined();
+            assert(right.c.admin).undefined();
 
         });
     })
@@ -410,7 +602,32 @@ describe('record', () => {
 
         });
 
+        it('should not overwrite Object#prototype', () => {
+
+            let obj: Record<number | object> = JSON.parse(`{
+                "a": 1,
+                "b": 2,
+                "c": 3,
+                "d": 4,
+                "__proto__": { "admin": true }
+            }`);
+
+            let f = (n: number | object) => typeof (n);
+            let result = <any>group(obj, f);
+
+            assert(result.object.admin).undefined();
+            assert(result).equate({
+
+                'number': { a: 1, b: 2, c: 3, d: 4 },
+
+                'object': {}
+
+            });
+
+        });
+
     });
+
 
     describe('values', () => {
 
@@ -474,6 +691,20 @@ describe('record', () => {
             let isTwo = (n: number) => n === 2;
 
             assert(filter(o, isTwo)).equate({ b: 2, d: 2 });
+
+        });
+
+        it('it should not replace Object#prototype', () => {
+
+            let obj = JSON.parse(`{
+                "a": 1,
+                "__proto__": { "admin": true },
+                "b": 2
+            }`);
+            let isTwo = (n: number) => n === 2;
+            let result = filter(obj, isTwo);
+
+            assert(result.admin).undefined();
 
         });
 
@@ -556,6 +787,27 @@ describe('record', () => {
             assert(every({ a: 2, b: 2, c: 2 }, v => v === 2)).true();
 
             assert(every({ a: 1, b: 2, c: 3 }, v => v === 2)).false();
+
+        });
+
+    });
+
+    describe('set', () => {
+
+        it('should work', () => {
+
+            let rec: Record<any> = set({}, 'admin', true);
+
+            assert(rec.admin).true();
+
+        });
+
+        it('should ignore bad keys', () => {
+
+            let rec: Record<any> = set(<Record<any>>{},
+                '__proto__', { 'admin': true });
+
+            assert(rec.admin).undefined();
 
         });
 
