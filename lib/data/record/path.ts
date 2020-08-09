@@ -20,8 +20,7 @@ import {
     reduce,
     merge,
     set as setKey,
-    isRecord,
-    isBadKey
+    isRecord
 } from './';
 
 const TOKEN_DOT = '.';
@@ -345,7 +344,7 @@ const flatImpl = <A>(pfix: string) => (prev: FlatRecord<any>) =>
     (r: Record<A>): FlatRecord<A> =>
         reduce(r, prev, (p, c, k) => isRecord(c) ?
             (flatImpl(prefix(pfix, k))(p)(<Record<any>>c)) :
-            merge(p, setKey({}, prefix(pfix, k),  c )));
+            merge(p, setKey({}, prefix(pfix, k), c)));
 
 const prefix = (pfix: string, key: string) => (pfix === '') ?
     escape(key) : `${pfix}.${escape(key)}`;
@@ -358,70 +357,13 @@ export const unflatten = <A>(r: FlatRecord<A>): Record<A> =>
     reduce(r, {}, (p: Record<A>, c, k: string) => set(k, c, p));
 
 /**
- * intersect set operation between the keys of two records.
- *
- * All the properties of the left record that have matching property
- * names in the right are retained.
- */
-export const intersect = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
-    reduce(a, <Record<A>>{}, (p, c, k) => {
-
-        if (b.hasOwnProperty(k))
-            p = setKey(p, k, c);
-
-        return p;
-
-    });
-
-/**
- * difference set operation between the keys of two records.
- *
- * All the properties on the left record that do not have matching
- * property names in the right are retained.
- */
-export const difference = <A, B>(a: Record<A>, b: Record<B>): Record<A> =>
-    reduce(a, <Record<A>>{}, (p, c, k) => {
-
-        if (!b.hasOwnProperty(k))
-            p = setKey(p, k, c);
-
-        return p;
-
-    });
-
-/**
- * map over the property names of a record.
- */
-export const map = <A>(a: Record<A>, f: (s: string) => string): Record<A> =>
-    reduce(a, <Record<A>>{}, (p, c, k) => {
-
-        p = setKey(p, f(k), c);
-        return p;
-
-    });
-
-/**
  * project a Record according to the field specification given.
  *
  * Only properties that appear in the spec and set to true will be retained.
- * This function is not safe. It may leave undefined values in the resulting
- * record.
+ * This function may violate type safety and may leave undefined holes in the 
+ * result.
  */
 export const project =
     <A>(spec: FlatRecord<boolean>, rec: Record<A>): Record<A> =>
         reduce(spec, <Record<A>>{}, (p, c, k) =>
             (c === true) ? set(k, unsafeGet(k, rec), p) : p);
-
-/**
- * sanitize is used internally to remove nefarious keys from an object.
- *
- * Notably the __proto__ key.
- */
-export const sanitize = <R extends object>(r: R): R =>
-    reduce(<any>r, <any>{}, (p, c, k) => {
-        isBadKey(k) ?
-            p :
-            merge(p, {
-                [k]: isRecord(c) ? sanitize(c) : c
-            })
-    });
