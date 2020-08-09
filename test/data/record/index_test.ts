@@ -18,7 +18,7 @@ import {
     partition,
     group,
     values,
-    contains,
+    hasKey,
     clone,
     count,
     empty,
@@ -26,7 +26,8 @@ import {
     isRecord,
     some,
     every,
-    set
+    set,
+  compact
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -384,11 +385,11 @@ describe('record', () => {
 
         it('should not reuse objects', () => {
 
-          let obj = { child: { name: "Araus" } };
-          let result = rmerge({}, obj);
+            let obj = { child: { name: "Araus" } };
+            let result = rmerge({}, obj);
 
-          assert(result.child !== obj.child).true();
-          
+            assert(result.child !== obj.child).true();
+
         });
 
     })
@@ -649,14 +650,14 @@ describe('record', () => {
 
     });
 
-    describe('contains', () => {
+    describe('hasKey', () => {
 
         it('should work', () => {
 
             let foo = { n: 12 };
 
-            assert(contains(foo, 'n')).equal(true);
-            assert(contains(foo, 'x')).equal(false);
+            assert(hasKey(foo, 'n')).equal(true);
+            assert(hasKey(foo, 'x')).equal(false);
 
         });
 
@@ -820,6 +821,18 @@ describe('record', () => {
 
         });
 
+    });
+
+    describe('compact', () => {
+
+        it('should work', () => {
+
+          let obj = {name: 'Me', age: undefined, dob: null};
+
+          assert(compact(obj)).equate({name: 'Me'});
+          
+        });
+      
     });
 
 });

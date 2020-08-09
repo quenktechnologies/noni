@@ -233,7 +233,6 @@ export const rmerge5 =
 
 const deepMerge = <A, R extends Record<A>>(pre: R, curr: A, key: string) =>
     isRecord(curr) ?
-        // TODO: this should be cloned to break references.
         merge(pre, set({}, key, isRecord(pre[key]) ?
             rmerge((<any>pre[key]), curr) :
             merge({}, curr)
@@ -291,9 +290,9 @@ export const values = <A>(r: Record<A>): A[] =>
     reduce(r, [], (p: A[], c) => concat(p, <A>c));
 
 /**
- * contains indicates whether a Record has a given key.
+ * hasKey indicates whether a Record has a given key.
  */
-export const contains = (r: object, key: string): boolean =>
+export const hasKey = (r: object, key: string): boolean =>
     Object.hasOwnProperty.call(r, key);
 
 /**
@@ -371,3 +370,19 @@ export const set = <A, R extends Record<A>>(r: R, k: Key, value: A): R => {
  */
 export const isBadKey = (key: string): boolean =>
     badKeys.indexOf(key) !== -1;
+
+/**
+ * compact a Record by removing any properties that == null.
+ */
+export const compact = <A>(rec:Record<A>) : Record<A> => {
+
+  let result: Record<A> = {};
+
+  for(let key in rec)
+    if(rec.hasOwnProperty(key))
+      if(rec[key] != null)
+      result = set(result, key, rec[key]);
+
+  return result;
+
+}
