@@ -117,7 +117,7 @@ describe('record', () => {
 
     describe('assign', () => {
 
-        it('should not modify Object.prototype', () => {
+        it('should not modify Object#prototype', () => {
 
             let b: { [key: string]: boolean } = {};
             let a = assign(b, JSON.parse('{ "__proto__": { "admin": true } }'));
@@ -380,6 +380,15 @@ describe('record', () => {
             assert(result.nested1.nested2.active).true();
             assert(result.nested3.nested4.nested5.admin).undefined();
 
+        });
+
+        it('should not reuse objects', () => {
+
+          let obj = { child: { name: "Araus" } };
+          let result = rmerge({}, obj);
+
+          assert(result.child !== obj.child).true();
+          
         });
 
     })

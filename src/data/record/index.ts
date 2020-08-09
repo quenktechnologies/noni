@@ -75,7 +75,6 @@ export function assign(target: any, ..._varArgs: any[]): any {
             for (let nextKey in nextSource)
                 // Avoid bugs when hasOwnProperty is shadowed
                 if (Object.prototype.hasOwnProperty.call(nextSource, nextKey))
-                    // TODO: Should this clone the value to break references?
                     set(to, nextKey, nextSource[nextKey]);
     }
 
@@ -237,7 +236,7 @@ const deepMerge = <A, R extends Record<A>>(pre: R, curr: A, key: string) =>
         // TODO: this should be cloned to break references.
         merge(pre, set({}, key, isRecord(pre[key]) ?
             rmerge((<any>pre[key]), curr) :
-            curr
+            merge({}, curr)
         )) :
         merge((<any>pre), set({}, key, curr));
 
