@@ -2,16 +2,19 @@
 import * as fs from 'fs';
 import { Stats } from 'fs';
 import { Future } from '../control/monad/future';
-import { Record } from '../data/record';
 export { Stats };
 /**
  * Path to a file.
  */
 export declare type Path = string;
 /**
+ * TypedArray
+ */
+export declare type TypedArray = Int8Array | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array;
+/**
  * Contents of a file.
  */
-export declare type Contents = string | DataView | object;
+export declare type Contents = string | DataView | TypedArray;
 /**
  * StatsM is a map of Stats where the key is the filename
  * and the value the Stats.
@@ -116,7 +119,7 @@ export declare const writeTextFile: (path: Path, contents: string) => Future<voi
  * parent directory creation so this function will fail if the parent
  * path does not exist.
  */
-export declare const makeDir: (path: Path, options?: Record<boolean | number>) => Future<void>;
+export declare const makeDir: (path: Path, options?: object) => Future<void>;
 /**
  * unlink a path from the file system.
  *

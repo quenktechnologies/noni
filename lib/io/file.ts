@@ -1,8 +1,10 @@
 import * as fs from 'fs';
+
 import { Stats } from 'fs';
 import { join } from 'path';
+
 import { Future, pure, parallel, fromCallback } from '../control/monad/future';
-import { Record, reduce, merge } from '../data/record';
+import { reduce, merge } from '../data/record';
 
 export { Stats };
 
@@ -12,12 +14,27 @@ export { Stats };
 export type Path = string;
 
 /**
+ * TypedArray
+ */
+export type TypedArray
+    = Int8Array
+    | Uint8Array
+    | Int16Array
+    | Uint16Array
+    | Int32Array
+    | Uint32Array
+    | Uint8ClampedArray
+    | Float32Array
+    | Float64Array
+    ;
+
+/**
  * Contents of a file.
  */
 export type Contents
     = string
     | DataView
-    | object
+    | TypedArray
     ;
 
 /**
@@ -218,9 +235,12 @@ export const writeTextFile = (path: Path, contents: string): Future<void> =>
  * parent directory creation so this function will fail if the parent
  * path does not exist.
  */
-export const makeDir = (path: Path, options: Record<boolean | number> = {})
+export const makeDir = (path: Path, options: object = {})
     : Future<void> =>
-    fromCallback(cb => fs.mkdir(path, merge({ recursive: true }, options), cb));
+    fromCallback(cb => fs.mkdir(
+        path,
+        <any>merge({ recursive: true }, options), cb)
+    );
 
 /**
  * unlink a path from the file system.
