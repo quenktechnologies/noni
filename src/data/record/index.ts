@@ -386,3 +386,9 @@ export const compact = <A>(rec:Record<A>) : Record<A> => {
   return result;
 
 }
+
+/**
+ * rcompact recursively compacts a Record.
+ */
+export const rcompact = <A> (rec: Record<A>) : Record<A> => 
+  compact(<Record<A>>map(rec, val => isRecord(val) ? rcompact(val) : val));

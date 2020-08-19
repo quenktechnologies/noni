@@ -27,7 +27,8 @@ import {
     some,
     every,
     set,
-  compact
+  compact,
+  rcompact
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -825,7 +826,7 @@ describe('record', () => {
 
     describe('compact', () => {
 
-        it('should work', () => {
+        it('should compact records', () => {
 
           let obj = {name: 'Me', age: undefined, dob: null};
 
@@ -834,5 +835,54 @@ describe('record', () => {
         });
       
     });
+
+    describe('rcompact', () => {
+
+        it('should compact nested records', () => {
+
+          let obj = {
+
+            name: {
+
+              first: 'Me',
+
+              last: undefined,
+
+              other: {
+
+                maiden: null,
+
+                nick: 'Me Me'
+
+              }
+
+            },
+
+            age: undefined, 
+
+            dob: null
+
+          };
+
+          assert(rcompact(obj)).equate({
+
+            name: {
+
+              first: 'Me',
+
+              other: {
+
+                nick: 'Me Me'
+
+              }
+
+            }
+
+          });
+          
+        });
+      
+    });
+
 
 });

@@ -192,3 +192,7 @@ export declare const isBadKey: (key: string) => boolean;
  * compact a Record by removing any properties that == null.
  */
 export declare const compact: <A>(rec: Record<A>) => Record<A>;
+/**
+ * rcompact recursively compacts a Record.
+ */
+export declare const rcompact: <A>(rec: Record<A>) => Record<A>;
