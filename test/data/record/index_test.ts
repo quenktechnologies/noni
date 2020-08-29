@@ -29,7 +29,9 @@ import {
     set,
     compact,
     rcompact,
-    make
+    make,
+    pickKey,
+    pickValue
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -903,6 +905,26 @@ describe('record', () => {
                     rec[key] = obj[key];
 
             assert(rec.admin).undefined();
+
+        });
+
+    });
+
+    describe('pickKey', () => {
+
+        it('should pick the correct key', () => {
+
+            assert(pickKey({ a: 1, b: 2, c: 3 }, p => p == 2).get()).equal('b');
+
+        });
+
+    });
+
+    describe('pickValue', () => {
+
+        it('should pick the correct value', () => {
+
+            assert(pickValue({ a: 1, b: 2, c: 3 }, p => p == 2).get()).equal(2);
 
         });
 

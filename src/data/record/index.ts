@@ -6,6 +6,7 @@
  */
 import { concat } from '../array';
 import { isArray } from '../type';
+import { nothing, just, Maybe } from '../maybe';
 
 /**
  * badKeys is a list of keys we don't want to copy around between objects.
@@ -50,6 +51,11 @@ export type PartitionFunc<A, R extends Record<A>>
 export type GroupFunc<A, R extends Record<A>>
     = (a: A, k: string, r: R) => string
     ;
+
+/**
+ * PickFunc used by pickKey and pickValue.
+ */
+export type PickFunc<A> = (value: A, key: string, rec: Record<A>) => boolean;
 
 /**
  * Record is an object with an index signature.
@@ -400,7 +406,7 @@ export const rcompact = <A>(rec: Record<A>): Record<A> =>
  * This function is intended to assist with curbing prototype pollution by
  * configuring a setter for __proto__ that ignores changes.
  */
-export const make = <T>(init: Record<T> = {}): Record<T> => {
+export const make = <A>(init: Record<A> = {}): Record<A> => {
 
     let rec: any = {};
 
@@ -418,6 +424,22 @@ export const make = <T>(init: Record<T> = {}): Record<T> => {
         if (init.hasOwnProperty(key))
             rec[key] = init[key];
 
-    return <Record<T>>rec;
+    return <Record<A>>rec;
 
 }
+
+/**
+ * pickKey selects the value of the first property in a Record that passes the
+ * provided test.
+ */
+export const pickKey = <A>(rec: Record<A>, test: PickFunc<A>): Maybe<string> =>
+    reduce(rec, nothing(), (p, c, k) =>
+        p.isJust() ? p : test(c, k, rec) ? just(k) : p);
+
+/**
+ * pickValue selects the value of the first property in a Record that passes the
+ * provided test.
+ */
+export const pickValue = <A>(rec: Record<A>, test: PickFunc<A>): Maybe<A> =>
+    reduce(rec, nothing(), (p, c, k) =>
+        p.isJust() ? p : test(c, k, rec) ? just(c) : p);

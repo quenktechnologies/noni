@@ -1,3 +1,4 @@
+import { Maybe } from '../maybe';
 /**
  * badKeys is a list of keys we don't want to copy around between objects.
  *
@@ -31,6 +32,10 @@ export declare type PartitionFunc<A, R extends Record<A>> = (a: A, k: string, r:
  * GroupFunc used by group.
  */
 export declare type GroupFunc<A, R extends Record<A>> = (a: A, k: string, r: R) => string;
+/**
+ * PickFunc used by pickKey and pickValue.
+ */
+export declare type PickFunc<A> = (value: A, key: string, rec: Record<A>) => boolean;
 /**
  * Record is an object with an index signature.
  */
@@ -203,4 +208,14 @@ export declare const rcompact: <A>(rec: Record<A>) => Record<A>;
  * This function is intended to assist with curbing prototype pollution by
  * configuring a setter for __proto__ that ignores changes.
  */
-export declare const make: <T>(init?: Record<T>) => Record<T>;
+export declare const make: <A>(init?: Record<A>) => Record<A>;
+/**
+ * pickKey selects the value of the first property in a Record that passes the
+ * provided test.
+ */
+export declare const pickKey: <A>(rec: Record<A>, test: PickFunc<A>) => Maybe<string>;
+/**
+ * pickValue selects the value of the first property in a Record that passes the
+ * provided test.
+ */
+export declare const pickValue: <A>(rec: Record<A>, test: PickFunc<A>) => Maybe<A>;
