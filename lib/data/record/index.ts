@@ -374,21 +374,50 @@ export const isBadKey = (key: string): boolean =>
 /**
  * compact a Record by removing any properties that == null.
  */
-export const compact = <A>(rec:Record<A>) : Record<A> => {
+export const compact = <A>(rec: Record<A>): Record<A> => {
 
-  let result: Record<A> = {};
+    let result: Record<A> = {};
 
-  for(let key in rec)
-    if(rec.hasOwnProperty(key))
-      if(rec[key] != null)
-      result = set(result, key, rec[key]);
+    for (let key in rec)
+        if (rec.hasOwnProperty(key))
+            if (rec[key] != null)
+                result = set(result, key, rec[key]);
 
-  return result;
+    return result;
 
 }
 
 /**
  * rcompact recursively compacts a Record.
  */
-export const rcompact = <A> (rec: Record<A>) : Record<A> => 
-  compact(<Record<A>>map(rec, val => isRecord(val) ? rcompact(val) : val));
+export const rcompact = <A>(rec: Record<A>): Record<A> =>
+    compact(<Record<A>>map(rec, val => isRecord(val) ? rcompact(val) : val));
+
+/**
+ * make creates a new instance of a Record optionally using the provided
+ * value as an initializer.
+ *
+ * This function is intended to assist with curbing prototype pollution by
+ * configuring a setter for __proto__ that ignores changes.
+ */
+export const make = <T>(init: Record<T> = {}): Record<T> => {
+
+    let rec: any = {};
+
+    Object.defineProperty(rec, '__proto__', {
+
+        configurable: false,
+
+        enumerable: false,
+
+        set() { }
+
+    });
+
+    for (let key in init)
+        if (init.hasOwnProperty(key))
+            rec[key] = init[key];
+
+    return <Record<T>>rec;
+
+}

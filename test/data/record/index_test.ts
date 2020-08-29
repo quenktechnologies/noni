@@ -27,8 +27,9 @@ import {
     some,
     every,
     set,
-  compact,
-  rcompact
+    compact,
+    rcompact,
+    make
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -828,61 +829,83 @@ describe('record', () => {
 
         it('should compact records', () => {
 
-          let obj = {name: 'Me', age: undefined, dob: null};
+            let obj = { name: 'Me', age: undefined, dob: null };
 
-          assert(compact(obj)).equate({name: 'Me'});
-          
+            assert(compact(obj)).equate({ name: 'Me' });
+
         });
-      
+
     });
 
     describe('rcompact', () => {
 
         it('should compact nested records', () => {
 
-          let obj = {
+            let obj = {
 
-            name: {
+                name: {
 
-              first: 'Me',
+                    first: 'Me',
 
-              last: undefined,
+                    last: undefined,
 
-              other: {
+                    other: {
 
-                maiden: null,
+                        maiden: null,
 
-                nick: 'Me Me'
+                        nick: 'Me Me'
 
-              }
+                    }
 
-            },
+                },
 
-            age: undefined, 
+                age: undefined,
 
-            dob: null
+                dob: null
 
-          };
+            };
 
-          assert(rcompact(obj)).equate({
+            assert(rcompact(obj)).equate({
 
-            name: {
+                name: {
 
-              first: 'Me',
+                    first: 'Me',
 
-              other: {
+                    other: {
 
-                nick: 'Me Me'
+                        nick: 'Me Me'
 
-              }
+                    }
 
-            }
+                }
 
-          });
-          
+            });
+
         });
-      
+
     });
 
+    describe('make', () => {
+
+        it('should use the initializer', () => {
+
+            assert(make({ on: true })).equate({ on: true });
+
+        });
+
+        it('should not pollute prototypes', () => {
+
+            let obj = JSON.parse('{ "__proto__": { "admin": true } }');
+            let rec: any = make(obj);
+
+            for (let key in obj)
+                if (obj.hasOwnProperty(key))
+                    rec[key] = obj[key];
+
+            assert(rec.admin).undefined();
+
+        });
+
+    });
 
 });

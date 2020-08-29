@@ -196,3 +196,11 @@ export declare const compact: <A>(rec: Record<A>) => Record<A>;
  * rcompact recursively compacts a Record.
  */
 export declare const rcompact: <A>(rec: Record<A>) => Record<A>;
+/**
+ * make creates a new instance of a Record optionally using the provided
+ * value as an initializer.
+ *
+ * This function is intended to assist with curbing prototype pollution by
+ * configuring a setter for __proto__ that ignores changes.
+ */
+export declare const make: <T>(init?: Record<T>) => Record<T>;
