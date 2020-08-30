@@ -181,5 +181,5 @@ export const combine = <A>(list: A[][]): A[] =>
 /**
  * compact removes any occurences of null or undefined in the list.
  */
-export const compact = <A>(list: A[]): A[] =>
-    list.filter(v => (v != null));
+export const compact = <A>(list: (A | null | undefined)[]): A[] =>
+    <A[]>list.filter(v => (v != null));

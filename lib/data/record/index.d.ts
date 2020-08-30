@@ -196,7 +196,7 @@ export declare const isBadKey: (key: string) => boolean;
 /**
  * compact a Record by removing any properties that == null.
  */
-export declare const compact: <A>(rec: Record<A>) => Record<A>;
+export declare const compact: <A>(rec: Record<A | null | undefined>) => Record<A>;
 /**
  * rcompact recursively compacts a Record.
  */

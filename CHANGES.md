@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.40.5] - 2020-08-30
+
+### Changed
+- `compact` in `data/record` and `data/array` now accept types that may have
+null or undefined members.
+
 ## [1.40.4] - 2020-08-29
 
 ### Added

@@ -90,4 +90,4 @@ export declare const combine: <A>(list: A[][]) => A[];
 /**
  * compact removes any occurences of null or undefined in the list.
  */
-export declare const compact: <A>(list: A[]) => A[];
+export declare const compact: <A>(list: (A | null | undefined)[]) => A[];

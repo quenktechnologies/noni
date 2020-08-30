@@ -380,7 +380,7 @@ export const isBadKey = (key: string): boolean =>
 /**
  * compact a Record by removing any properties that == null.
  */
-export const compact = <A>(rec: Record<A>): Record<A> => {
+export const compact = <A>(rec: Record<A|null|undefined>): Record<A> => {
 
     let result: Record<A> = {};
 
