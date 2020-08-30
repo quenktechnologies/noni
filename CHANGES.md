@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.40.6] - 2020-08-30
+
+### Added
+
+- `forEach`, a side-effect full alternative to map.
+
 ## [1.40.5] - 2020-08-30
 
 ### Changed

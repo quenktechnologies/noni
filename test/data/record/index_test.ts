@@ -31,7 +31,8 @@ import {
     rcompact,
     make,
     pickKey,
-    pickValue
+    pickValue,
+    forEach
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -925,6 +926,20 @@ describe('record', () => {
         it('should pick the correct value', () => {
 
             assert(pickValue({ a: 1, b: 2, c: 3 }, p => p == 2).get()).equal(2);
+
+        });
+
+    });
+
+    describe('forEach', () => {
+
+        it('should visit each property', () => {
+
+            let results = <string[]>[];
+
+            forEach({ a: 1, b: 2, c: 3 }, p => results.push(String(p)));
+
+            assert(results).equate(['1', '2', '3']);
 
         });
 
