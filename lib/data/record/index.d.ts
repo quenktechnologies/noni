@@ -17,6 +17,10 @@ export declare type Key = string;
  */
 export declare type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
 /**
+ * ForEachFunction used by forEach.
+ */
+export declare type ForEachFunction<A, B> = (value: A, key: string, rec: Record<A>) => B;
+/**
  * FilterFunc used by filter.
  */
 export declare type FilterFunc<A> = (value: A, key: string, rec: Record<A>) => boolean;
@@ -76,10 +80,16 @@ export declare const map: <A, B>(rec: Record<A>, f: MapFunc<A, B>) => Record<B>;
  */
 export declare const mapTo: <A, B>(rec: Record<A>, f: MapFunc<A, B>) => B[];
 /**
+ * forEach is similar to map only the result of each function call is not kept.
+ *
+ * The order of keys processed is not guaranteed.
+ */
+export declare const forEach: <A, B>(rec: Record<A>, f: ForEachFunction<A, B>) => void;
+/**
  * reduce a Record's keys to a single value.
  *
  * The initial value (accum) must be supplied to avoid errors when
- * there are no properites on the Record. The order of keys processed is
+ * there are no properties on the Record. The order of keys processed is
  * not guaranteed.
  */
 export declare const reduce: <A, B>(rec: Record<A>, accum: B, f: ReduceFunc<A, B>) => B;

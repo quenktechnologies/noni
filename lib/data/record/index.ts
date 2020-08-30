@@ -29,6 +29,11 @@ export type Key = string;
 export type MapFunc<A, B> = (value: A, key: string, rec: Record<A>) => B;
 
 /**
+ * ForEachFunction used by forEach.
+ */
+export type ForEachFunction<A, B> = (value: A, key: string, rec: Record<A>) => B;
+
+/**
  * FilterFunc used by filter.
  */
 export type FilterFunc<A> = (value: A, key: string, rec: Record<A>) => boolean;
@@ -128,10 +133,18 @@ export const mapTo = <A, B>(rec: Record<A>, f: MapFunc<A, B>): B[] =>
     keys(rec).map(k => f(rec[k], k, rec));
 
 /**
+ * forEach is similar to map only the result of each function call is not kept.
+ *
+ * The order of keys processed is not guaranteed.
+ */
+export const forEach = <A, B>(rec: Record<A>, f: ForEachFunction<A, B>): void =>
+    keys(rec).forEach(k => f(rec[k], k, rec));
+
+/**
  * reduce a Record's keys to a single value.
  *
  * The initial value (accum) must be supplied to avoid errors when
- * there are no properites on the Record. The order of keys processed is
+ * there are no properties on the Record. The order of keys processed is
  * not guaranteed.
  */
 export const reduce = <A, B>(rec: Record<A>, accum: B, f: ReduceFunc<A, B>): B =>
@@ -380,7 +393,7 @@ export const isBadKey = (key: string): boolean =>
 /**
  * compact a Record by removing any properties that == null.
  */
-export const compact = <A>(rec: Record<A|null|undefined>): Record<A> => {
+export const compact = <A>(rec: Record<A | null | undefined>): Record<A> => {
 
     let result: Record<A> = {};
 
