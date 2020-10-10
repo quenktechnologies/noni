@@ -140,6 +140,8 @@ describe('future', () => {
                 (new Promise((res: any, rej: any) => err(msg).fork(rej, res)))
                     .catch((e: Error) => assert(e.message).equal(msg)))
 
+              it('should have default parameters', () => inc(0).fork())
+
         })
 
         describe('map', () => {

@@ -57,7 +57,7 @@ export declare abstract class Future<A> implements Monad<A> {
     chain<B>(f: (a: A) => Future<B>): Future<B>;
     catch(f: (e: Error) => Future<A>): Future<A>;
     finally(f: () => Future<A>): Future<A>;
-    fork(onError: OnError, onSuccess: OnSuccess<A>): Compute<A>;
+    fork(onError?: OnError, onSuccess?: OnSuccess<A>): Compute<A>;
     /**
      * __exec
      * @private

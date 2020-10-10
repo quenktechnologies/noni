@@ -1,8 +1,8 @@
+import { noop } from '../../data/function';
 import { Milliseconds } from '../time';
 import { tick } from '../timer';
 import { Err, Except, convert } from '../error';
-import { noop } from '../../data/function';
-import { Monad, DoFn, doN as _doN} from './';
+import { Monad, DoFn, doN as _doN } from './';
 
 /**
  * OnError callback function type.
@@ -102,7 +102,7 @@ export abstract class Future<A> implements Monad<A> {
 
     }
 
-    fork(onError: OnError, onSuccess: OnSuccess<A>): Compute<A> {
+    fork(onError: OnError = noop, onSuccess: OnSuccess<A> = noop): Compute<A> {
 
         return (new Compute(<any>undefined, onError, onSuccess, [this])).run();
 
@@ -736,4 +736,4 @@ export const liftP = <A>(f: () => Promise<A>): Future<A> => new Run(s => {
  *
  * Use this function to avoid explicit type assertions with control/monad#doN.
  */
-export const doFuture = <A>(f: DoFn<A, Future<A>>): Future<A>  => _doN(f);
+export const doFuture = <A>(f: DoFn<A, Future<A>>): Future<A> => _doN(f);
