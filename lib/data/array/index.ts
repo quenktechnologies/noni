@@ -21,6 +21,16 @@ export type GroupFunc<A> = (a: A, i: number, r: A[]) => string;
 export type MapFunc<A, B> = (elm: A, idx: number, all: A[]) => B[]
 
 /**
+ * NDimensionArrayElement is an element that may be found in an un-flattened
+ * array.
+ */
+export type NDimensionArrayElement<A>
+    = A
+    | A[]
+    | NDimensionArrayElement<A>[]
+    ;
+
+/**
  * head returns the item at index 0 of an array
  */
 export const head = <A>(list: A[]) => list[0];
@@ -177,6 +187,17 @@ export const make = <A>(size: number, f: (n: number) => A) => {
  */
 export const combine = <A>(list: A[][]): A[] =>
     list.reduce((p, c) => p.concat(c), []);
+
+
+
+/**
+ * flatten a list of items that may be multi-dimensional.
+ *
+ * This function may not be stack safe.
+ */
+export const flatten = <A>(list: NDimensionArrayElement<A>[]): A[] =>
+    list.reduce((p: A[], c) =>
+        p.concat(Array.isArray(c) ? flatten(<A[]>c) : c), <A[]>[]);
 
 /**
  * compact removes any occurences of null or undefined in the list.

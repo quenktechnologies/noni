@@ -14,7 +14,8 @@ import {
     removeAt,
     make,
     combine,
-    compact
+    compact,
+  flatten
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -238,6 +239,34 @@ describe('array', () => {
 
         });
 
+    });
+
+    describe('flatten', () => {
+
+        it('should work on flat arrays', () => {
+
+          assert(flatten([1,2,3])).equate([1,2,3]);
+          
+        });
+
+        it('should work on 2 level arrays', () => {
+
+          assert(flatten([[1],[2],[3]])).equate([1,2,3]);
+          
+        });
+
+        it('should work on 3 level arrays', () => {
+
+          assert(flatten([[[1]],[[2]], [[3]]])).equate([1,2,3])
+          
+        });
+
+        it('should work on a diverse array', () => {
+
+          assert(flatten([1,[[2]], [3]])).equate([1,2,3]);
+          
+        });
+      
     });
 
 })

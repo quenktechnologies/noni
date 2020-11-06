@@ -16,6 +16,11 @@ export declare type GroupFunc<A> = (a: A, i: number, r: A[]) => string;
  */
 export declare type MapFunc<A, B> = (elm: A, idx: number, all: A[]) => B[];
 /**
+ * NDimensionArrayElement is an element that may be found in an un-flattened
+ * array.
+ */
+export declare type NDimensionArrayElement<A> = A | A[] | NDimensionArrayElement<A>[];
+/**
  * head returns the item at index 0 of an array
  */
 export declare const head: <A>(list: A[]) => A;
@@ -87,6 +92,12 @@ export declare const make: <A>(size: number, f: (n: number) => A) => any[];
  * combine a list of of lists into one list.
  */
 export declare const combine: <A>(list: A[][]) => A[];
+/**
+ * flatten a list of items that may be multi-dimensional.
+ *
+ * This function may not be stack safe.
+ */
+export declare const flatten: <A>(list: NDimensionArrayElement<A>[]) => A[];
 /**
  * compact removes any occurences of null or undefined in the list.
  */
