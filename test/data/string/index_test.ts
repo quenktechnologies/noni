@@ -18,6 +18,18 @@ describe('string', () => {
 
         });
 
+        it('should not throw on empty strings', () => {
+
+            assert(camelCase('')).equal('');
+
+        });
+
+        it('should not throw on one character', () => {
+
+          assert(camelCase('a')).equal('A');
+          
+        });
+
     });
 
     describe('capitalize', () => {
@@ -29,6 +41,12 @@ describe('string', () => {
 
         });
 
+        it('should not throw on empty strings', () => {
+
+            assert(capitalize('')).equal('');
+
+        });
+
     });
 
     describe('uncapitalize', () => {
@@ -37,6 +55,12 @@ describe('string', () => {
 
             assert(uncapitalize('This is uncapitalized'))
                 .equal('this is uncapitalized');
+        });
+
+        it('should not throw on empty strings', () => {
+
+            assert(uncapitalize('')).equal('');
+
         });
 
     });
