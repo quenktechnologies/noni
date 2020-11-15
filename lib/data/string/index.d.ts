@@ -52,3 +52,16 @@ export declare const interpolate: (str: string, data: Record<any>, opts?: Interp
  * propercase converts a string into Proper Case.
  */
 export declare const propercase: (str: string) => string;
+/**
+ * alpha omits characters in a string not found in the english alphabet.
+ */
+export declare const alpha: (str: string) => string;
+/**
+ * numeric omits characters in a string that are decimal digits.
+ */
+export declare const numeric: (str: string) => string;
+/**
+ * alhpanumeric omits characters not found in the english alhpabet and not
+ * decimal digits.
+ */
+export declare const alphanumeric: (str: string) => string;

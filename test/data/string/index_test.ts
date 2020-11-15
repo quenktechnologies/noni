@@ -5,7 +5,10 @@ import {
     capitalize,
     uncapitalize,
     interpolate,
-    propercase
+    propercase,
+    alpha,
+    numeric,
+    alphanumeric
 } from '../../../src/data/string';
 
 describe('string', () => {
@@ -171,5 +174,36 @@ describe('string', () => {
         })
 
     })
+
+    describe('alhpa', () => {
+
+        it('should omit non alphabetic characters', () => {
+
+            assert(alpha('omega22 fiber_glass')).equate('omegafiberglass');
+
+        });
+
+    });
+
+    describe('numeric', () => {
+
+        it('should omit non numeric characters', () => {
+
+            assert(numeric('omega22 fiber_glass')).equate('22');
+
+        });
+
+    });
+
+    describe('alhpanumeric', () => {
+
+        it('should omit non alpha-numeric characters', () => {
+
+            assert(alphanumeric('omega22 fiber_glass'))
+            .equate('omega22fiberglass');
+
+        });
+
+    });
 
 })

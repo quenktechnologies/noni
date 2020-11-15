@@ -153,3 +153,22 @@ export const propercase = (str: string): string =>
         .map(tok => (tok.length > 0) ?
             `${tok[0].toUpperCase()}${tok.slice(1)}` : tok)
         .join(' ');
+
+/**
+ * alpha omits characters in a string not found in the english alphabet.
+ */
+export const alpha = (str: string): string =>
+    str.replace(/[^a-zA-Z]/g, '');
+
+/**
+ * numeric omits characters in a string that are decimal digits.
+ */
+export const numeric = (str: string): string =>
+    str.replace(/[^0-9]/g, '');
+
+/**
+ * alhpanumeric omits characters not found in the english alhpabet and not
+ * decimal digits.
+ */
+export const alphanumeric = (str: string): string =>
+    str.replace(/[\W]|[_]/g, '');
