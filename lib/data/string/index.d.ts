@@ -23,9 +23,14 @@ export declare const endsWith: (str: string, search: string, this_len?: number) 
  */
 export declare const contains: (str: string, match: string) => boolean;
 /**
- * camelCase transforms a string into CamelCase.
+ * camelCase transforms a string into camelCase.
  */
 export declare const camelCase: (str: string) => string;
+/**
+ * classCase is like camelCase except the first letter of the string is
+ * upper case.
+ */
+export declare const classCase: (str: string) => string;
 /**
  * capitalize a string.
  *

@@ -1,6 +1,7 @@
 import { assert } from '@quenk/test/lib/assert';
 import {
     camelCase,
+    classCase,
     capitalize,
     uncapitalize,
     interpolate,
@@ -14,7 +15,7 @@ describe('string', () => {
         it('should turn remove underscores and dashes', () => {
 
             assert(camelCase('this_is_our-camel'))
-                .equal('ThisIsOurCamel')
+                .equal('thisIsOurCamel')
 
         });
 
@@ -26,8 +27,51 @@ describe('string', () => {
 
         it('should not throw on one character', () => {
 
-          assert(camelCase('a')).equal('A');
-          
+            assert(camelCase('a')).equal('a');
+
+        });
+
+        it('should recognize dashes,underscores,dots,spaces', () => {
+
+            assert(
+                camelCase(
+                    'This_haS-Dashes_and__underscores sPaces  even.dots... !'
+                ))
+                .equal('thisHasDashesAndUnderscoresSpacesEvenDots!');
+
+        });
+
+    });
+
+    describe('classCase', () => {
+
+        it('should turn remove underscores and dashes', () => {
+
+            assert(classCase('this_is_our-camel'))
+                .equal('ThisIsOurCamel')
+
+        });
+
+        it('should not throw on empty strings', () => {
+
+            assert(classCase('')).equal('');
+
+        });
+
+        it('should not throw on one character', () => {
+
+            assert(classCase('a')).equal('A');
+
+        });
+
+        it('should recognize dashes,underscores,dots,spaces', () => {
+
+            assert(
+                classCase(
+                    'This_haS-Dashes_and__underscores sPaces  even.dots... !'
+                ))
+                .equal('ThisHasDashesAndUnderscoresSpacesEvenDots!');
+
         });
 
     });

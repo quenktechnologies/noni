@@ -36,19 +36,51 @@ export const endsWith =
 export const contains = (str: string, match: string) =>
     (str.indexOf(match) > - 1);
 
+const camelCaseSeperator = /([\\\/._-]|\s)+/g
+
 /**
- * camelCase transforms a string into CamelCase.
+ * camelCase transforms a string into camelCase.
  */
-export const camelCase = (str: string): string =>
-    (str === '') ? '' :
-        [str[0].toUpperCase()]
-            .concat(str
-                .split(str[0])
-                .slice(1)
-                .join(str[0]))
-            .join('')
-            .replace(/(\-|_|\s)+(.)?/g, (_, __, c) =>
-                (c ? c.toUpperCase() : ''));
+export const camelCase = (str: string): string => {
+
+    let i = 0;
+    let curr = '';
+    let prev = '';
+    let buf = '';
+
+    while (true) {
+
+        if (i === str.length) return buf;
+
+        curr = (i === 0) ? str[i].toLowerCase() : str[i];
+
+        if (curr.match(camelCaseSeperator)) {
+
+            prev = '-';
+
+        } else {
+
+            buf = buf.concat((prev === '-') ?
+                curr.toUpperCase() :
+                curr.toLowerCase()
+            );
+
+            prev = '';
+
+        }
+
+        i++;
+
+    }
+
+}
+
+/**
+ * classCase is like camelCase except the first letter of the string is 
+ * upper case.
+ */
+export const classCase = (str: string): string =>
+    (str === '') ? '' : str[0].toUpperCase().concat(camelCase(str).slice(1));
 
 /**
  * capitalize a string.
@@ -64,7 +96,7 @@ export const capitalize = (str: string): string =>
  * Note: spaces are treated as part of the string.
  */
 export const uncapitalize = (str: string): string =>
-  (str === '') ? '' :     `${str[0].toLowerCase()}${str.slice(1)}`;
+    (str === '') ? '' : `${str[0].toLowerCase()}${str.slice(1)}`;
 
 const interpolateDefaults: InterpolateOptions = {
 
