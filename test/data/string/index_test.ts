@@ -1,79 +1,141 @@
 import { assert } from '@quenk/test/lib/assert';
 import {
-    camelCase,
-    classCase,
+    camelcase,
+    classcase,
+    modulecase,
     capitalize,
     uncapitalize,
     interpolate,
     propercase,
     alpha,
     numeric,
-    alphaNumeric
+    alphanumeric
 } from '../../../src/data/string';
 
 describe('string', () => {
 
-    describe('camelCase', () => {
+    describe('camelcase', () => {
 
-        it('should turn remove underscores and dashes', () => {
+        it('should remove underscores and dashes', () => {
 
-            assert(camelCase('this_is_our-camel'))
+            assert(camelcase('this_is_our-camel'))
                 .equal('thisIsOurCamel')
 
         });
 
         it('should not throw on empty strings', () => {
 
-            assert(camelCase('')).equal('');
+            assert(camelcase('')).equal('');
 
         });
 
         it('should not throw on one character', () => {
 
-            assert(camelCase('a')).equal('a');
+            assert(camelcase('a')).equal('a');
 
         });
 
         it('should recognize dashes,underscores,dots,spaces', () => {
 
             assert(
-                camelCase(
+                camelcase(
                     'This_haS-Dashes_and__underscores sPaces  even.dots... !'
                 ))
                 .equal('thisHasDashesAndUnderscoresSpacesEvenDots!');
 
         });
 
+        it('should return an empty string when only seperators', () => {
+
+            assert(modulecase(' -___-  -'))
+                .equate('');
+
+        });
+
     });
 
-    describe('classCase', () => {
+    describe('classcase', () => {
 
-        it('should turn remove underscores and dashes', () => {
+        it('should remove underscores and dashes', () => {
 
-            assert(classCase('this_is_our-camel'))
+            assert(classcase('this_is_our-camel'))
                 .equal('ThisIsOurCamel')
 
         });
 
         it('should not throw on empty strings', () => {
 
-            assert(classCase('')).equal('');
+            assert(classcase('')).equal('');
 
         });
 
         it('should not throw on one character', () => {
 
-            assert(classCase('a')).equal('A');
+            assert(classcase('a')).equal('A');
 
         });
 
         it('should recognize dashes,underscores,dots,spaces', () => {
 
             assert(
-                classCase(
+                classcase(
                     'This_haS-Dashes_and__underscores sPaces  even.dots... !'
                 ))
                 .equal('ThisHasDashesAndUnderscoresSpacesEvenDots!');
+
+        });
+
+        it('should return an empty string when only seperators', () => {
+
+            assert(modulecase(' -___-  -'))
+                .equate('');
+
+        });
+
+    });
+
+    describe('modulecase', () => {
+
+        it('should remove underscores and dashes', () => {
+
+            assert(modulecase('this_is_our-camel'))
+                .equal('this-is-our-camel')
+
+        });
+
+        it('should not throw on empty strings', () => {
+
+            assert(modulecase('')).equal('');
+
+        });
+
+        it('should not throw on one character', () => {
+
+            assert(modulecase('a')).equal('a');
+
+        });
+
+        it('should recognize dashes,underscores,dots,spaces', () => {
+
+            assert(
+                modulecase(
+                    'This_haS-Dashes_and__underscores sPaces  even.dots... !'
+                ))
+                .equal('this-ha-s-dashes-and-underscores-s-paces-even-dots-!');
+
+        });
+
+        it('should recognize capital letters', () => {
+
+            assert(modulecase('WorkingCapitalClass'))
+                .equate('working-capital-class');
+
+        });
+
+        it('should return an empty string when only seperators', () => {
+
+            assert(modulecase(' -___-  -'))
+                .equate('');
 
         });
 
@@ -199,8 +261,8 @@ describe('string', () => {
 
         it('should omit non alpha-numeric characters', () => {
 
-            assert(alphaNumeric('omega22 fiber_glass'))
-            .equate('omega22fiberglass');
+            assert(alphanumeric('omega22 fiber_glass'))
+                .equate('omega22fiberglass');
 
         });
 

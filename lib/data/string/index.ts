@@ -36,12 +36,12 @@ export const endsWith =
 export const contains = (str: string, match: string) =>
     (str.indexOf(match) > - 1);
 
-const camelCaseSeperator = /([\\\/._-]|\s)+/g
+const seperator = /([\\\/._-]|\s)+/g
 
 /**
- * camelCase transforms a string into camelCase.
+ * camelcase transforms a string into camelCase.
  */
-export const camelCase = (str: string): string => {
+export const camelcase = (str: string): string => {
 
     let i = 0;
     let curr = '';
@@ -54,7 +54,7 @@ export const camelCase = (str: string): string => {
 
         curr = (i === 0) ? str[i].toLowerCase() : str[i];
 
-        if (curr.match(camelCaseSeperator)) {
+        if (curr.match(seperator)) {
 
             prev = '-';
 
@@ -76,11 +76,69 @@ export const camelCase = (str: string): string => {
 }
 
 /**
- * classCase is like camelCase except the first letter of the string is 
+ * classcase is like camelCase except the first letter of the string is 
  * upper case.
  */
-export const classCase = (str: string): string =>
-    (str === '') ? '' : str[0].toUpperCase().concat(camelCase(str).slice(1));
+export const classcase = (str: string): string =>
+    (str === '') ? '' : str[0].toUpperCase().concat(camelcase(str).slice(1));
+
+/**
+ * modulecase transforms a string into module-case.
+ */
+export const modulecase = (str: string): string => {
+
+    let i = 0;
+    let prev = '';
+    let curr = '';
+    let next = '';
+    let buf = '';
+
+    while (true) {
+
+        if (i === str.length) return buf;
+
+        curr = str[i];
+        next = str[i + 1];
+
+        if (curr.match(/[A-Z]/) && (i > 0)) {
+
+            if (prev !== '-')
+                buf = buf.concat('-');
+
+            prev = curr.toLowerCase();
+            buf = buf.concat(prev);
+
+        } else if (curr.match(seperator)) {
+
+            if ((prev !== '-') && next && !seperator.test(next)) {
+                prev = '-';
+                buf = buf.concat(prev);
+            }
+
+        } else {
+
+            prev = curr.toLowerCase();
+            buf = buf.concat(prev);
+
+        }
+
+        i++;
+
+    }
+
+}
+
+/**
+ * propercase converts a string into Proper Case.
+ */
+export const propercase = (str: string): string =>
+    str
+        .trim()
+        .toLowerCase()
+        .split(' ')
+        .map(tok => (tok.length > 0) ?
+            `${tok[0].toUpperCase()}${tok.slice(1)}` : tok)
+        .join(' ');
 
 /**
  * capitalize a string.
@@ -143,19 +201,7 @@ export const interpolate = (
 }
 
 /**
- * propercase converts a string into Proper Case.
- */
-export const propercase = (str: string): string =>
-    str
-        .trim()
-        .toLowerCase()
-        .split(' ')
-        .map(tok => (tok.length > 0) ?
-            `${tok[0].toUpperCase()}${tok.slice(1)}` : tok)
-        .join(' ');
-
-/**
- * alpha omits characters in a string not found in the english alphabet.
+ * alpha omits characters in a string not found in the English alphabet.
  */
 export const alpha = (str: string): string =>
     str.replace(/[^a-zA-Z]/g, '');
@@ -167,8 +213,8 @@ export const numeric = (str: string): string =>
     str.replace(/[^0-9]/g, '');
 
 /**
- * alhpaNumeric omits characters not found in the english alhpabet and not
+ * alhpanumeric omits characters not found in the English alphabet and not
  * decimal digits.
  */
-export const alphaNumeric = (str: string): string =>
+export const alphanumeric = (str: string): string =>
     str.replace(/[\W]|[_]/g, '');
