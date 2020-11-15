@@ -61,7 +61,7 @@ export declare const alpha: (str: string) => string;
  */
 export declare const numeric: (str: string) => string;
 /**
- * alhpanumeric omits characters not found in the english alhpabet and not
+ * alhpaNumeric omits characters not found in the english alhpabet and not
  * decimal digits.
  */
-export declare const alphanumeric: (str: string) => string;
+export declare const alphaNumeric: (str: string) => string;

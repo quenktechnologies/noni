@@ -8,7 +8,7 @@ import {
     propercase,
     alpha,
     numeric,
-    alphanumeric
+    alphaNumeric
 } from '../../../src/data/string';
 
 describe('string', () => {
@@ -199,7 +199,7 @@ describe('string', () => {
 
         it('should omit non alpha-numeric characters', () => {
 
-            assert(alphanumeric('omega22 fiber_glass'))
+            assert(alphaNumeric('omega22 fiber_glass'))
             .equate('omega22fiberglass');
 
         });

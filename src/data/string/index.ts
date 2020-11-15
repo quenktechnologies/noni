@@ -167,8 +167,8 @@ export const numeric = (str: string): string =>
     str.replace(/[^0-9]/g, '');
 
 /**
- * alhpanumeric omits characters not found in the english alhpabet and not
+ * alhpaNumeric omits characters not found in the english alhpabet and not
  * decimal digits.
  */
-export const alphanumeric = (str: string): string =>
+export const alphaNumeric = (str: string): string =>
     str.replace(/[\W]|[_]/g, '');
