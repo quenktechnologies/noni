@@ -22,7 +22,7 @@ export declare const isObject: (value: Type) => value is object;
 /**
  * isArray test.
  */
-export declare const isArray: <T>(arg: {} | T) => arg is T extends readonly any[] ? unknown extends T ? never : readonly any[] : any[];
+export declare const isArray: (arg: any) => arg is any[];
 /**
  * isString test.
  */

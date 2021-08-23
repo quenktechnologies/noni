@@ -41,10 +41,12 @@ export declare const map: <A, B>(list: A[]) => (f: (a: A) => B) => B[];
  */
 export declare const flatMap: <A, B>(list: A[], f: MapFunc<A, B>) => B[];
 /**
- * concat concatenates an element to an array without destructuring
- * the element if itself is an array.
+ * concat concatenates elements to the end of an array without flattening
+ * if any of the elements are an array.
+ *
+ * This function also ignores null and undefined.
  */
-export declare const concat: <A>(list: A[], a: A) => A[];
+export declare const concat: <A>(list: A[], ...items: A[]) => A[];
 /**
  * partition an array into two using a partitioning function.
  *

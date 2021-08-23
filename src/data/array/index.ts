@@ -53,10 +53,13 @@ export const flatMap = <A, B>(list: A[], f: MapFunc<A, B>): B[] =>
     list.reduce((p, c, i) => p.concat(f(c, i, list)), <B[]>[]);
 
 /**
- * concat concatenates an element to an array without destructuring
- * the element if itself is an array.
+ * concat concatenates elements to the end of an array without flattening
+ * if any of the elements are an array.
+ *
+ * This function also ignores null and undefined.
  */
-export const concat = <A>(list: A[], a: A): A[] => [...list, a];
+export const concat = <A>(list: A[], ...items: A[]): A[] =>
+[...list, ...items.filter(item => item != null)];
 
 /**
  * partition an array into two using a partitioning function.

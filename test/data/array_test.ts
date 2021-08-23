@@ -15,7 +15,8 @@ import {
     make,
     combine,
     compact,
-  flatten
+    flatten,
+    concat
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -245,28 +246,44 @@ describe('array', () => {
 
         it('should work on flat arrays', () => {
 
-          assert(flatten([1,2,3])).equate([1,2,3]);
-          
+            assert(flatten([1, 2, 3])).equate([1, 2, 3]);
+
         });
 
         it('should work on 2 level arrays', () => {
 
-          assert(flatten([[1],[2],[3]])).equate([1,2,3]);
-          
+            assert(flatten([[1], [2], [3]])).equate([1, 2, 3]);
+
         });
 
         it('should work on 3 level arrays', () => {
 
-          assert(flatten([[[1]],[[2]], [[3]]])).equate([1,2,3])
-          
+            assert(flatten([[[1]], [[2]], [[3]]])).equate([1, 2, 3])
+
         });
 
         it('should work on a diverse array', () => {
 
-          assert(flatten([1,[[2]], [3]])).equate([1,2,3]);
-          
+            assert(flatten([1, [[2]], [3]])).equate([1, 2, 3]);
+
         });
-      
+
+    });
+
+    describe('concat', () => {
+
+        it('should work with multiple args', () => {
+
+            assert(concat([1, 2], 3, 4, 5)).equate([1, 2, 3, 4, 5]);
+
+        });
+
+        it('should ignore null and undefined', () => {
+
+            assert(concat([1, 2], 3, null, 5)).equate([1, 2, 3, 5]);
+
+        });
+
     });
 
 })
