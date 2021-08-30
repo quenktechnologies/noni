@@ -45,7 +45,7 @@ export declare type CallbackReceiver<A> = (cb: Callback<A>) => void;
 /**
  * Reducer function type.
  */
-export declare type Reducer<A, B> = (p: B, c: A, i: number) => B;
+export declare type Reducer<A, B> = (p: B, c: A, i: number) => Future<B>;
 /**
  * FutureFunc function type.
  */
@@ -258,12 +258,10 @@ export declare const parallel: <A>(list: Future<A>[]) => Future<A[]>;
  */
 export declare const sequential: <A>(list: Future<A>[]) => Future<A[]>;
 /**
- * reduce a list of futures into a single value.
- *
- * Starts with an initial value passing the result of
- * each future to the next.
+ * reduce a list of values into a single value using a reducer function that
+ * produces a Future.
  */
-export declare const reduce: <A, B>(list: Future<A>[], init: B, f: Reducer<A, B>) => Future<B>;
+export declare const reduce: <A, B>(list: A[], initValue: B, f: Reducer<A, B>) => Future<B>;
 /**
  * race given a list of Futures, will return a Future that is settled by
  * the first error or success to occur.

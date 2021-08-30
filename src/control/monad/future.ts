@@ -57,7 +57,7 @@ export type CallbackReceiver<A> = (cb: Callback<A>) => void;
 /**
  * Reducer function type.
  */
-export type Reducer<A, B> = (p: B, c: A, i: number) => B;
+export type Reducer<A, B> = (p: B, c: A, i: number) => Future<B>;
 
 /**
  * FutureFunc function type.
@@ -620,42 +620,21 @@ export const sequential = <A>(list: Future<A>[]): Future<A[]> => new Run(s => {
 });
 
 /**
- * reduce a list of futures into a single value.
- *
- * Starts with an initial value passing the result of
- * each future to the next.
+ * reduce a list of values into a single value using a reducer function that
+ * produces a Future.
  */
-export const reduce = <A, B>(list: Future<A>[], init: B, f: Reducer<A, B>)
-    : Future<B> => new Run((s: Supervisor<B>) => {
+export const reduce =
+    <A, B>(list: A[], initValue: B, f: Reducer<A, B>)
+        : Future<B> => doFuture<B>(function*() {
 
-        let i = 0;
+            let accumValue = initValue;
 
-        let onErr = (e: Error) => s.onError(e);
+            for (let i = 0; i < list.length; i++)
+                accumValue = yield f(accumValue, list[i], i);
 
-        let onSuccess = (a: A) => {
+            return pure(accumValue);
 
-            init = f(init, a, i);
-            next(init);
-
-        };
-
-        let abort: Compute<A>;
-
-        let next = (value: B) => {
-
-            if (i < list.length)
-                abort = list[i].fork(onErr, onSuccess);
-            else
-                s.onSuccess(value);
-            i++;
-
-        }
-
-        next(init);
-
-        return () => { if (abort) abort.abort(); }
-
-    });
+        });
 
 /**
  * race given a list of Futures, will return a Future that is settled by
@@ -709,8 +688,8 @@ export const race = <A>(list: Future<A>[])
  * This function depends on the global promise constructor and 
  * will fail if the enviornment does not provide one.
  */
-export const toPromise = <A>(ft: Future<A>): Promise<A> => new Promise((yes, no) =>
-    ft.fork(no, yes));
+export const toPromise = <A>(ft: Future<A>): Promise<A> =>
+    new Promise((yes, no) =>        ft.fork(no, yes));
 
 /**
  * fromExcept converts an Except to a Future.
