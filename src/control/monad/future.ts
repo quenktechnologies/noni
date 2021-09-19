@@ -1,3 +1,4 @@
+import { Type } from '../../data/type';
 import { noop } from '../../data/function';
 import { Milliseconds } from '../time';
 import { tick } from '../timer';
@@ -432,7 +433,7 @@ export class Compute<A> implements Supervisor<A> {
 
                 } catch (e) {
 
-                    this.onError(e);
+                    this.onError(<Type>e);
                     return this;
 
                 }
@@ -467,12 +468,16 @@ export const raise = <A>(e: Err): Future<A> => new Raise(e);
 /**
  * attempt a synchronous task, trapping any thrown errors in the Future.
  */
-export const attempt = <A>(f: () => A): Future<A> => new Run((s: Supervisor<A>) => {
+export const attempt = <A>(f: () => A): Future<A> =>
+    new Run((s: Supervisor<A>) => {
 
-    tick(() => { try { s.onSuccess(f()); } catch (e) { s.onError(e); } });
-    return noop;
+        tick(() => {
+            try { s.onSuccess(f()); } catch (e) { s.onError(<Type>e); }
+        });
 
-});
+        return noop;
+
+    });
 
 /**
  * delay execution of a function f after n milliseconds have passed.
@@ -483,7 +488,7 @@ export const delay = <A>(f: () => A, n: Milliseconds = 0): Future<A> =>
     new Run((s: Supervisor<A>) => {
 
         setTimeout(() => {
-            try { s.onSuccess(f()); } catch (e) { s.onError(e); }
+            try { s.onSuccess(f()); } catch (e) { s.onError(<Type>e); }
         }, n);
 
         return noop;
@@ -689,7 +694,7 @@ export const race = <A>(list: Future<A>[])
  * will fail if the enviornment does not provide one.
  */
 export const toPromise = <A>(ft: Future<A>): Promise<A> =>
-    new Promise((yes, no) =>        ft.fork(no, yes));
+    new Promise((yes, no) => ft.fork(no, yes));
 
 /**
  * fromExcept converts an Except to a Future.

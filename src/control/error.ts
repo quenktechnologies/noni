@@ -36,8 +36,8 @@ export interface Err {
 /** 
  * convert an Err to an Error.
  */
-export const convert = (e: Err) : Error =>
-  (e instanceof Error) ? e : new Error(e.message);
+export const convert = (e: Err): Error =>
+    (e instanceof Error) ? e : new Error(e.message);
 
 /**
  * raise the supplied Error.
@@ -64,6 +64,14 @@ export const raise = (e: Err) => {
  */
 export const attempt = <A>(f: () => A): Except<A> => {
 
-    try { return right(f()); } catch (e) { return left(e); }
+    try { 
+
+      return right(f()); 
+
+    } catch (e) { 
+
+      return <Except<A>>left(e); 
+
+    }
 
 }

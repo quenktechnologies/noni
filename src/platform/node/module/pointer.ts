@@ -218,7 +218,7 @@ export const interp = (ptr: Pointer, loader = require): Either<Error, Type> => {
 
     } catch (e) {
 
-        return left(e);
+        return <Either<Error,Type>>left(e);
 
     }
 
