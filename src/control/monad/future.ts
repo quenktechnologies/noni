@@ -65,7 +65,32 @@ export type Reducer<A, B> = (p: B, c: A, i: number) => Future<B>;
  */
 export type FutureFunc<A, B> = (a: A) => Future<B>
 
-export abstract class Future<A> implements Monad<A> {
+/**
+ * ResolveFunc for promises.
+ */
+export type ResolveFunc<A, TResult1 = A>
+    = ((value: A) => TResult1 | PromiseLike<TResult1>) | undefined | null
+    ;
+
+/**
+ * RejectFunc for promises. 
+ */
+export type RejectFunc<TResult2 = never>
+    = ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
+    ;
+
+/**
+ * CatchFunc
+ */
+export type CatchFunc<A>
+    = (reason: any) => A | PromiseLike<A>
+    ;
+
+export abstract class Future<A> implements Monad<A>, Promise<A> {
+
+    get [Symbol.toStringTag]() {
+        return 'Future';
+    }
 
     of(a: A): Future<A> {
 
@@ -91,15 +116,65 @@ export abstract class Future<A> implements Monad<A> {
 
     }
 
-    catch(f: (e: Error) => Future<A>): Future<A> {
+    catch<B = never>(f: CatchFunc<B> | undefined | null): Future<B> {
 
-        return new Catch(this, f);
+        // XXX: any used here because catch() previously expected the resulting
+        // Future to be of the same type. This is not the case with promises.
+        return new Catch<B>(this, (e: Error) => new Run(s => {
+
+            if (f) {
+
+                let result = f(e);
+
+                switch (Object.prototype.toString.call(result)) {
+
+                    case '[object Future]':
+                        let asFuture = <Future<B>>result;
+                        asFuture.fork(e => s.onError(e), v => s.onSuccess(v));
+                        break;
+
+                    case '[object Promise]':
+                        let asPromise = <Promise<B>>result;
+                        asPromise.then(v => s.onSuccess(v), e => s.onError(e));
+                        break;
+
+                    default:
+                        s.onSuccess(<B>result);
+                        break;
+
+                }
+
+            } else {
+
+                //XXX: This should be an error but not much we can do with the
+                // type signature for a Promise. We do not want to throw at 
+                // runtime.
+                s.onSuccess(<any>undefined);
+
+            }
+
+            return noop;
+
+        }));
 
     }
 
-    finally(f: () => Future<A>): Future<A> {
+    finally<B>(f: () => Future<B>): Future<B> {
 
-        return new Finally(this, f);
+        return new Finally(<any>this, f);
+
+    }
+
+    then<TResult1 = A, TResult2 = never>(
+        onResolve?: ResolveFunc<A, TResult1>,
+        onReject?: RejectFunc<TResult2>
+    ): Promise<TResult1 | TResult2> {
+
+        return new Promise<A>((resolve, reject) => {
+
+            this.fork(reject, resolve);
+
+        }).then(onResolve, onReject);
 
     }
 
@@ -170,7 +245,7 @@ export class Bind<A, B> extends Future<B> {
     __exec(c: Compute<B>): boolean {
 
         //XXX: find a way to do this without any someday.
-        c.stack.push(new Step(<any>this.func));
+        c.stack.push(new Call(<any>this.func));
         c.stack.push(<any>this.future);
         return true;
 
@@ -179,10 +254,10 @@ export class Bind<A, B> extends Future<B> {
 }
 
 /**
- * Step constructor.
+ * Call constructor.
  * @private
  */
-export class Step<A> extends Future<A> {
+export class Call<A> extends Future<A> {
 
     constructor(public value: (a: A) => Future<A>) { super(); }
 
@@ -228,7 +303,7 @@ export class Finally<A> extends Future<A> {
     __exec(c: Compute<A>): boolean {
 
         c.stack.push(new Trap(this.func));
-        c.stack.push(new Step(this.func));
+        c.stack.push(new Call(this.func));
         c.stack.push(this.future);
         return true;
 

@@ -50,13 +50,27 @@ export declare type Reducer<A, B> = (p: B, c: A, i: number) => Future<B>;
  * FutureFunc function type.
  */
 export declare type FutureFunc<A, B> = (a: A) => Future<B>;
-export declare abstract class Future<A> implements Monad<A> {
+/**
+ * ResolveFunc for promises.
+ */
+export declare type ResolveFunc<A, TResult1 = A> = ((value: A) => TResult1 | PromiseLike<TResult1>) | undefined | null;
+/**
+ * RejectFunc for promises.
+ */
+export declare type RejectFunc<TResult2 = never> = ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null;
+/**
+ * CatchFunc
+ */
+export declare type CatchFunc<A> = (reason: any) => A | PromiseLike<A>;
+export declare abstract class Future<A> implements Monad<A>, Promise<A> {
+    get [Symbol.toStringTag](): string;
     of(a: A): Future<A>;
     map<B>(f: (a: A) => B): Future<B>;
     ap<B>(ft: Future<(a: A) => B>): Future<B>;
     chain<B>(f: (a: A) => Future<B>): Future<B>;
-    catch(f: (e: Error) => Future<A>): Future<A>;
-    finally(f: () => Future<A>): Future<A>;
+    catch<B = never>(f: CatchFunc<B> | undefined | null): Future<B>;
+    finally<B>(f: () => Future<B>): Future<B>;
+    then<TResult1 = A, TResult2 = never>(onResolve?: ResolveFunc<A, TResult1>, onReject?: RejectFunc<TResult2>): Promise<TResult1 | TResult2>;
     fork(onError?: OnError, onSuccess?: OnSuccess<A>): Compute<A>;
     /**
      * __exec
@@ -90,10 +104,10 @@ export declare class Bind<A, B> extends Future<B> {
     __exec(c: Compute<B>): boolean;
 }
 /**
- * Step constructor.
+ * Call constructor.
  * @private
  */
-export declare class Step<A> extends Future<A> {
+export declare class Call<A> extends Future<A> {
     value: (a: A) => Future<A>;
     constructor(value: (a: A) => Future<A>);
     __exec(c: Compute<A>): boolean;

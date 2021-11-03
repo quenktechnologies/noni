@@ -246,6 +246,14 @@ describe('future', () => {
 
         })
 
+        it('should pretend to be a promise', async () => {
+
+            let p: Promise<number> = pure(12);
+
+            assert(await p).equal(12);
+
+        });
+
     })
 
     describe('Compute', () => {
