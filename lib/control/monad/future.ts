@@ -223,12 +223,16 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
         let failure = (e: Error) => {
 
             if (pending) {
+
                 stack.push(new Raise(e));
                 pending = false;
                 this._fork(value, stack, onError, onSuccess);
+
             } else {
+
                 console.warn(`${this.tag}: onError called after task completed`);
                 console.trace();
+
             }
 
         }
@@ -469,6 +473,12 @@ export class Run<A> extends Future<A> {
 export const pure = <A>(a: A): Future<A> => new Pure(a);
 
 /**
+ * voidPure is a Future that provides the absence of a value for your 
+ * convenience.
+ */
+export const voidPure: Future<void> = new Pure(undefined);
+
+/**
  * run sets up an async task to be executed at a later point.
  */
 export const run = <A>(task: Task<A>): Future<A> => new Run(task);
@@ -677,11 +687,11 @@ export const race = <A>(list: Future<A>[]): Future<A> =>
 
         let onErr = (e: Error) => {
 
-          if(!finished) {
-            finished = true;
-            abortAll();
-            onError(e);
-          }
+            if (!finished) {
+                finished = true;
+                abortAll();
+                onError(e);
+            }
 
         };
 

@@ -176,6 +176,11 @@ export declare class Run<A> extends Future<A> {
  */
 export declare const pure: <A>(a: A) => Future<A>;
 /**
+ * voidPure is a Future that provides the absence of a value for your
+ * convenience.
+ */
+export declare const voidPure: Future<void>;
+/**
  * run sets up an async task to be executed at a later point.
  */
 export declare const run: <A>(task: Task<A>) => Future<A>;
