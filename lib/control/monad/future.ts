@@ -1,9 +1,21 @@
+/**
+ * A Future is a primitive for managing asynchronous side-effects in an 
+ * organized manner.
+ *
+ * It works by queuing up the async tasks in a monad like chain, only executing
+ * them when the instruction to do so is given. This is in contrast to the
+ * Promise which executes these side-effects as soon as it is created. A Future
+ * is easier to reason about than a Promise and allows async code to be more 
+ * composable. To allow Futures to benefit from the JS engine's built in Promise 
+ * support however, Futures also implement the Promise api.
+ */
 import { Type } from '../../data/type';
 import { noop } from '../../data/function';
 import { Milliseconds } from '../time';
 import { tick } from '../timer';
 import { Err, Except, convert } from '../error';
 import { Monad, DoFn, doN as _doN } from './';
+import { empty, tail } from '../../data/array';
 
 /**
  * OnError callback function type.
@@ -40,9 +52,9 @@ export type Finalizer<A> = () => Future<A>;
 export type NodeFunction = <A>(f: (cb: Callback<A>) => void) => void
 
 /**
- * Job function type.
+ * Task is the type of functions that actually execute the async work.
  */
-export type Job<A> = (c: Supervisor<A>) => Aborter;
+export type Task<A> = (onError: OnError, onSuccess: OnSuccess<A>) => Aborter;
 
 /**
  * Callback in node platform style for asynchronous effects.
@@ -86,11 +98,27 @@ export type CatchFunc<A>
     = (reason: any) => A | PromiseLike<A>
     ;
 
+/**
+ * Future represents an asynchronous task or sequence of asynchronous tasks that
+ * have not yet happened.
+ *
+ * Use the fork() or then() methods to trigger computation or via the await
+ * keyword.
+ *
+ * Note: Multiple chains of Futures should not be executed via await, instead
+ * use the doFuture() function or chain them together manually to retain
+ * control over execution.
+ */
 export abstract class Future<A> implements Monad<A>, Promise<A> {
 
     get [Symbol.toStringTag]() {
         return 'Future';
     }
+
+    /**
+     * tag identifies each Future subclass.
+     */
+    tag = 'Future';
 
     of(a: A): Future<A> {
 
@@ -116,52 +144,59 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 
     }
 
+    trap<B>(f: (e: Error) => Future<B>): Future<B> {
+
+        return new Catch(this, f);
+
+    }
+
     catch<B = never>(f: CatchFunc<B> | undefined | null): Future<B> {
 
         // XXX: any used here because catch() previously expected the resulting
         // Future to be of the same type. This is not the case with promises.
-        return new Catch<B>(this, (e: Error) => new Run(s => {
+        return new Catch(this, (e: Error) =>
+            run((onError, onSuccess) => {
 
-            if (f) {
+                if (f) {
 
-                let result = f(e);
+                    let result = f(e);
 
-                switch (Object.prototype.toString.call(result)) {
+                    switch (Object.prototype.toString.call(result)) {
 
-                    case '[object Future]':
-                        let asFuture = <Future<B>>result;
-                        asFuture.fork(e => s.onError(e), v => s.onSuccess(v));
-                        break;
+                        case '[object Future]':
+                            let asFuture = <Future<B>>result;
+                            asFuture.fork(e => onError(e), v => onSuccess(v));
+                            break;
 
-                    case '[object Promise]':
-                        let asPromise = <Promise<B>>result;
-                        asPromise.then(v => s.onSuccess(v), e => s.onError(e));
-                        break;
+                        case '[object Promise]':
+                            let asPromise = <Promise<B>>result;
+                            asPromise.then(v => onSuccess(v), e => onError(e));
+                            break;
 
-                    default:
-                        s.onSuccess(<B>result);
-                        break;
+                        default:
+                            onSuccess(<B>result);
+                            break;
+
+                    }
+
+                } else {
+
+                    //XXX: This should be an error but not much we can do with the
+                    // type signature for a Promise. We do not want to throw at 
+                    // runtime.
+                    onSuccess(<any>undefined);
 
                 }
 
-            } else {
+                return noop;
 
-                //XXX: This should be an error but not much we can do with the
-                // type signature for a Promise. We do not want to throw at 
-                // runtime.
-                s.onSuccess(<any>undefined);
-
-            }
-
-            return noop;
-
-        }));
+            }));
 
     }
 
     finally<B>(f: () => Future<B>): Future<B> {
 
-        return new Finally(<any>this, f);
+        return new Finally(this, f);
 
     }
 
@@ -178,25 +213,121 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 
     }
 
-    fork(onError: OnError = noop, onSuccess: OnSuccess<A> = noop): Compute<A> {
+    _fork(value: A,
+        stack: Future<A>[],
+        onError: OnError,
+        onSuccess: OnSuccess<A>): Aborter {
 
-        return (new Compute(<any>undefined, onError, onSuccess, [this])).run();
+        let pending = true;
 
+        let failure = (e: Error) => {
+
+            if (pending) {
+                stack.push(new Raise(e));
+                pending = false;
+                this._fork(value, stack, onError, onSuccess);
+            } else {
+                console.warn(`${this.tag}: onError called after task completed`);
+                console.trace();
+            }
+
+        }
+
+        let success = (val: A) => {
+
+            if (pending) {
+
+                pending = false;
+
+                if (empty(stack))
+                    onSuccess(val);
+                else
+                    this._fork(val, stack, onError, onSuccess);
+
+            } else {
+
+                console.warn(`${this.tag}: onSuccess called after task completed`);
+                console.trace();
+
+            }
+        }
+
+        while (!empty(stack)) {
+
+            let next = <Future<A>>stack.pop();
+            if (next.tag === 'Pure') {
+
+                tick(() => success((<Pure<A>>next).value));
+                return noop;
+
+            } else if (next.tag === 'Bind') {
+
+                let future = <Bind<A, A>>next;
+                stack.push(new Call(future.func));
+                stack.push(future.target);
+
+            } else if (next.tag === 'Call') {
+
+                let future = <Call<A>>next;
+                stack.push(future.target(value));
+
+            } else if (next.tag === 'Catch') {
+
+                let future = <Catch<A, A>>next;
+                stack.push(new Trap(future.func));
+                stack.push(future.target);
+
+            } else if (next.tag === 'Finally') {
+
+                let future = <Finally<A, A>>next;
+                stack.push(new Trap(future.func));
+                stack.push(new Call(future.func));
+                stack.push(future.target);
+
+            } else if (next.tag === 'Trap') {
+
+                // Avoid hanging when catch().catch().catch() etc. is done.
+                if (empty(stack)) onSuccess(value);
+
+            } else if (next.tag === 'Raise') {
+
+                let future = <Raise<A>>next;
+                let err = convert(future.value);
+
+                // Clear the stack until we encounter a Trap instance.
+                while (!empty(stack) && tail(stack).tag !== 'Trap')
+                    stack.pop();
+
+                if (empty(stack)) {
+
+                    // No handlers detected, finish with an error.
+                    onError(err);
+                    return noop;
+
+                } else {
+
+                    stack.push((<Trap<A>>stack.pop()).func(err));
+
+                }
+
+            } else if (next.tag === 'Run') {
+
+                return (<Run<A>>next).task(failure, success);
+
+            }
+
+        }
+
+        return noop;
     }
 
     /**
-     * __exec
-     * @private
+     * fork this Future causing its side-effects to take place.
      */
-    abstract __exec(c: Compute<A>): boolean;
+    fork(onError: OnError = noop, onSuccess: OnSuccess<A> = noop): Aborter {
 
-    /**
-     * __trap
-     * @private
-     */
-    __trap(_: Error, __: Compute<A>): boolean {
-
-        return false;
+        // XXX: There is no value until async computation begins.
+        return this._fork(<Type>undefined, [this], onError, onSuccess);
 
     }
 
@@ -208,6 +339,8 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 export class Pure<A> extends Future<A> {
 
     constructor(public value: A) { super(); }
+
+    tag = 'Pure';
 
     map<B>(f: (a: A) => B): Future<B> {
 
@@ -221,14 +354,6 @@ export class Pure<A> extends Future<A> {
 
     }
 
-    __exec(c: Compute<A>): boolean {
-
-        c.value = this.value;
-        tick(() => c.run());
-        return false;
-
-    }
-
 }
 
 /**
@@ -238,18 +363,10 @@ export class Pure<A> extends Future<A> {
 export class Bind<A, B> extends Future<B> {
 
     constructor(
-        public future: Future<A>,
+        public target: Future<A>,
         public func: (a: A) => Future<B>) { super(); }
 
-
-    __exec(c: Compute<B>): boolean {
-
-        //XXX: find a way to do this without any someday.
-        c.stack.push(new Call(<any>this.func));
-        c.stack.push(<any>this.future);
-        return true;
-
-    }
+    tag = 'Bind';
 
 }
 
@@ -259,14 +376,9 @@ export class Bind<A, B> extends Future<B> {
  */
 export class Call<A> extends Future<A> {
 
-    constructor(public value: (a: A) => Future<A>) { super(); }
+    constructor(public target: (a: A) => Future<A>) { super(); }
 
-    __exec(c: Compute<A>): boolean {
-
-        c.stack.push(this.value(c.value));
-        return true;
-
-    }
+    tag = 'Call';
 
 }
 
@@ -274,19 +386,13 @@ export class Call<A> extends Future<A> {
  * Catch constructor.
  * @private
  */
-export class Catch<A> extends Future<A> {
+export class Catch<A, B> extends Future<B> {
 
     constructor(
-        public future: Future<A>,
-        public func: (e: Error) => Future<A>) { super(); }
+        public target: Future<A>,
+        public func: (e: Error) => Future<B>) { super(); }
 
-    __exec(c: Compute<A>): boolean {
-
-        c.stack.push(new Trap(this.func));
-        c.stack.push(this.future);
-        return true;
-
-    }
+    tag = 'Catch';
 
 }
 
@@ -294,20 +400,13 @@ export class Catch<A> extends Future<A> {
  * Finally constructor.
  * @private
  */
-export class Finally<A> extends Future<A> {
+export class Finally<A, B> extends Future<B> {
 
     constructor(
-        public future: Future<A>,
-        public func: () => Future<A>) { super(); }
+        public target: Future<A>,
+        public func: () => Future<B>) { super(); }
 
-    __exec(c: Compute<A>): boolean {
-
-        c.stack.push(new Trap(this.func));
-        c.stack.push(new Call(this.func));
-        c.stack.push(this.future);
-        return true;
-
-    }
+    tag = 'Finally';
 
 }
 
@@ -317,21 +416,9 @@ export class Finally<A> extends Future<A> {
  */
 export class Trap<A> extends Future<A> {
 
-    constructor(
-        public func: (e: Error) => Future<A>) { super(); }
+    constructor(public func: (e: Error) => Future<A>) { super(); }
 
-    __exec(_: Compute<A>): boolean {
-
-        return true;
-
-    }
-
-    __trap(e: Error, c: Compute<A>): boolean {
-
-        c.stack.push(this.func(e));
-        return true;
-
-    }
+    tag = 'Trap';
 
 }
 
@@ -341,6 +428,8 @@ export class Trap<A> extends Future<A> {
 export class Raise<A> extends Future<A> {
 
     constructor(public value: Err) { super(); }
+
+    tag = 'Raise';
 
     map<B>(_: (a: A) => B): Future<B> {
 
@@ -360,30 +449,6 @@ export class Raise<A> extends Future<A> {
 
     }
 
-    __exec(c: Compute<A>): boolean {
-
-        let finished = false;
-        let e = convert(this.value);
-
-        while (!finished) {
-
-            if (c.stack.length === 0) {
-
-                c.exitError(e);
-                return false;
-
-            } else {
-
-                finished = (<Future<A>>c.stack.pop()).__trap(e, c);
-
-            }
-
-        }
-
-        return finished;
-
-    }
-
 }
 
 /**
@@ -392,139 +457,9 @@ export class Raise<A> extends Future<A> {
  */
 export class Run<A> extends Future<A> {
 
-    constructor(public value: Job<A>) { super(); }
+    constructor(public task: Task<A>) { super(); }
 
-    __exec(c: Compute<A>): boolean {
-
-        c.running = true;
-        c.canceller = this.value(c);
-        return false;
-
-    }
-
-}
-
-/**
- * Supervisor for Computations.
- *
- * A Supervisor provides the callbacks needed to indicate
- * an end of a Job.
- */
-export interface Supervisor<A> {
-
-    /**
-     * onError indicates the Job has failed.
-     *
-     * Must be called no more than once.
-     */
-    onError(e: Error): void;
-
-    /**
-     * onSuccess indicates the Job has succeeded.
-     *
-     * Must be called no more than once.
-     */
-    onSuccess(value: A): void;
-
-}
-
-/**
- * Compute represents the workload of a forked Future.
- *
- * Results are computed sequentially and ends with either a value,
- * error or prematurely via the abort method.
- */
-export class Compute<A> implements Supervisor<A> {
-
-    canceller: Aborter = noop;
-
-    running = false;
-
-    constructor(
-        public value: A,
-        public exitError: OnError,
-        public exitSuccess: OnSuccess<A>,
-        public stack: Future<A>[]) { }
-
-    /**
-     * onError handler.
-     *
-     * This method will a 'Raise' instruction at the top of the stack
-     * and continue execution.
-     */
-    onError(e: Error) {
-
-        if (this.running === false) return;
-
-        this.stack.push(new Raise(e));
-        this.running = false;
-        this.run();
-
-    }
-
-    /**
-     * onSuccess handler.
-     *
-     * Stores the resulting value and continues the execution.
-     */
-    onSuccess(value: A) {
-
-        if (this.running === false) return;
-
-        this.value = value;
-        this.running = false;
-        this.run();
-
-    }
-
-    /**
-     * abort this Compute.
-     *
-     * Aborting a Compute will immediately clear its stack
-     * and invoke the canceller for the currently executing Future.
-     */
-    abort(): void {
-
-        this.stack = [];
-        this.exitError = noop;
-        this.exitSuccess = noop;
-        this.running = false;
-        this.canceller();
-        this.canceller = noop;
-
-    }
-
-    run(): Compute<A> {
-
-        while (this.stack.length > 0) {
-
-            let next = <Future<A>>this.stack.pop();
-
-            if ((next == null) || (typeof next.__exec !== 'function')) {
-
-                try {
-
-                    throw new Error(`Invalid Compute stack member: "${next}"!`);
-
-                } catch (e) {
-
-                    this.onError(<Type>e);
-                    return this;
-
-                }
-
-            }
-
-            if (!next.__exec(this)) return this; // short-circuit
-
-        }
-
-        this.running = false;
-        this.exitSuccess(this.value);
-
-        return this;
-
-    }
+    tag = 'Run';
 
 }
 
@@ -532,6 +467,11 @@ export class Compute<A> implements Supervisor<A> {
  * pure wraps a synchronous value in a Future.
  */
 export const pure = <A>(a: A): Future<A> => new Pure(a);
+
+/**
+ * run sets up an async task to be executed at a later point.
+ */
+export const run = <A>(task: Task<A>): Future<A> => new Run(task);
 
 /**
  * raise wraps an Error in a Future.
@@ -544,10 +484,10 @@ export const raise = <A>(e: Err): Future<A> => new Raise(e);
  * attempt a synchronous task, trapping any thrown errors in the Future.
  */
 export const attempt = <A>(f: () => A): Future<A> =>
-    new Run((s: Supervisor<A>) => {
+    run((onError, onSuccess) => {
 
         tick(() => {
-            try { s.onSuccess(f()); } catch (e) { s.onError(<Type>e); }
+            try { onSuccess(f()); } catch (e) { onError(<Type>e); }
         });
 
         return noop;
@@ -560,10 +500,10 @@ export const attempt = <A>(f: () => A): Future<A> =>
  * Any errors thrown are caught and processed in the Future chain.
  */
 export const delay = <A>(f: () => A, n: Milliseconds = 0): Future<A> =>
-    new Run((s: Supervisor<A>) => {
+    run((onError, onSuccess) => {
 
         setTimeout(() => {
-            try { s.onSuccess(f()); } catch (e) { s.onError(<Type>e); }
+            try { onSuccess(f()); } catch (e) { onError(<Type>e); }
         }, n);
 
         return noop;
@@ -574,9 +514,9 @@ export const delay = <A>(f: () => A, n: Milliseconds = 0): Future<A> =>
  * wait n milliseconds before continuing the Future chain.
  */
 export const wait = (n: Milliseconds): Future<void> =>
-    new Run((s: Supervisor<void>) => {
+    run((_, onSuccess) => {
 
-        setTimeout(() => { s.onSuccess(undefined); }, n);
+        setTimeout(() => { onSuccess(undefined); }, n);
 
         return noop;
 
@@ -589,10 +529,10 @@ export const wait = (n: Milliseconds): Future<void> =>
  * Note: The function used here is not called in the "next tick".
  */
 export const fromAbortable = <A>(abort: Aborter) => (f: CallbackReceiver<A>)
-    : Future<A> => new Run((s: Supervisor<A>) => {
+    : Future<A> => run((onError, onSuccess) => {
 
         f((err: Error | null | undefined, a?: A) =>
-            (err != null) ? s.onError(err) : s.onSuccess(<A>a));
+            (err != null) ? onError(err) : onSuccess(<A>a));
         return abort;
 
     });
@@ -622,48 +562,49 @@ export const batch = <A>(list: Future<A>[][]) =>
  * fail and succeeding with a list of successful values.
  */
 export const parallel = <A>(list: Future<A>[])
-    : Future<A[]> => new Run((s: Supervisor<A[]>) => {
+    : Future<A[]> => run((onError, onSuccess) => {
 
-        let done: Tag<A>[] = [];
-        let failed = false;
-        let comps: Compute<Tag<A>>[] = [];
-
-        let reconcile = () => done.sort(indexCmp).map(t => t.value);
+        let completed: Tag<A>[] = [];
+        let finished = false;
+        let aborters: Aborter[] = [];
 
         let indexCmp = <A>(a: Tag<A>, b: Tag<A>) => a.index - b.index;
 
-        let onErr = (e: Error) => {
+        let abortAll = () => {
 
-            abortAll();
-            s.onError(e);
+            finished = true;
+            aborters.map(f => f());
 
         };
 
+        let onErr = (e: Error) => {
+
+            if (!finished) {
+                abortAll();
+                onError(e);
+            }
+
+        };
+
+        let reconcile = () => completed.sort(indexCmp).map(t => t.value);
+
         let onSucc = (t: Tag<A>) => {
 
-            if (!failed) {
+            if (!finished) {
 
-                done.push(t);
+                completed.push(t);
 
-                if (done.length === list.length)
-                    s.onSuccess(reconcile());
+                if (completed.length === list.length)
+                    onSuccess(reconcile());
 
             }
 
         };
 
-        let abortAll = () => {
-
-            comps.map(c => c.abort());
-            failed = true;
-
-        };
-
-        comps.push.apply(comps, list.map((f, i) =>
+        aborters.push.apply(aborters, list.map((f, i) =>
             f.map((value: A) => new Tag(i, value)).fork(onErr, onSucc)));
 
-        if (comps.length === 0)
-            s.onSuccess([]);
+        if (empty(aborters)) onSuccess([]);
 
         return () => abortAll();
 
@@ -675,29 +616,30 @@ export const parallel = <A>(list: Future<A>[])
  * This function succeeds with a list of all results or fails on the first
  * error.
  */
-export const sequential = <A>(list: Future<A>[]): Future<A[]> => new Run(s => {
+export const sequential = <A>(list: Future<A>[]): Future<A[]> =>
+    run((onError, onSuccess) => {
 
-    let i = 0;
-    let r: A[] = [];
-    let onErr = (e: Error) => s.onError(e);
-    let onSuccess = (a: A) => { r.push(a); next(); };
-    let abort: Compute<A>;
+        let i = 0;
+        let r: A[] = [];
+        let onErr = (e: Error) => onError(e);
+        let success = (a: A) => { r.push(a); next(); };
+        let abort: Aborter;
 
-    let next = () => {
+        let next = () => {
 
-        if (i < list.length)
-            abort = list[i].fork(onErr, onSuccess);
-        else
-            s.onSuccess(r);
-        i++;
+            if (i < list.length)
+                abort = list[i].fork(onErr, success);
+            else
+                onSuccess(r);
+            i++;
 
-    }
+        }
 
-    next();
+        next();
 
-    return () => { if (abort) abort.abort(); }
+        return () => { if (abort) abort(); }
 
-});
+    });
 
 /**
  * reduce a list of values into a single value using a reducer function that
@@ -720,43 +662,44 @@ export const reduce =
  * race given a list of Futures, will return a Future that is settled by
  * the first error or success to occur.
  */
-export const race = <A>(list: Future<A>[])
-    : Future<A> => new Run((s: Supervisor<A>) => {
+export const race = <A>(list: Future<A>[]): Future<A> =>
+    run((onError, onSuccess) => {
 
-        let comps: Compute<Tag<A>>[] = [];
+        let aborters: Aborter[] = [];
         let finished = false;
 
         let abortAll = () => {
 
             finished = true;
-            comps.map(c => c.abort());
+            aborters.map(f => f());
 
         };
 
         let onErr = (e: Error) => {
 
+          if(!finished) {
+            finished = true;
             abortAll();
-            s.onError(e);
+            onError(e);
+          }
 
         };
 
         let onSucc = (t: Tag<A>) => {
 
             if (!finished) {
-
                 finished = true;
-                comps.map((c, i) => (i !== t.index) ? c.abort() : undefined);
-                s.onSuccess(t.value);
-
+                aborters.map((f, i) => (i !== t.index) ? f() : undefined);
+                onSuccess(t.value);
             }
 
         };
 
-        comps.push.apply(comps, list.map((f, i) =>
+        aborters.push.apply(aborters, list.map((f, i) =>
             f.map((value: A) => new Tag(i, value)).fork(onErr, onSucc)));
 
-        if (comps.length === 0)
-            s.onError(new Error(`race(): Cannot race an empty list!`));
+        if (aborters.length === 0)
+            onError(new Error(`race(): Cannot race an empty list!`));
 
         return () => abortAll();
 
@@ -766,7 +709,9 @@ export const race = <A>(list: Future<A>[])
  * toPromise transforms a Future into a Promise.
  *
  * This function depends on the global promise constructor and 
- * will fail if the enviornment does not provide one.
+ * will fail if the environment does not provide one.
+ *
+ * @deprecated
  */
 export const toPromise = <A>(ft: Future<A>): Promise<A> =>
     new Promise((yes, no) => ft.fork(no, yes));
@@ -780,15 +725,16 @@ export const fromExcept = <A>(e: Except<A>): Future<A> =>
 /**
  * liftP turns a function that produces a Promise into a Future.
  */
-export const liftP = <A>(f: () => Promise<A>): Future<A> => new Run(s => {
+export const liftP = <A>(f: () => Promise<A>): Future<A> =>
+    run((onError, onSuccess) => {
 
-    f()
-        .then(a => s.onSuccess(a))
-        .catch(e => s.onError(e));
+        f()
+            .then(a => onSuccess(a))
+            .catch(e => onError(e));
 
-    return noop;
+        return noop;
 
-});
+    });
 
 /**
  * doFuture provides a do notation function specialized to Futures.

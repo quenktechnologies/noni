@@ -30,9 +30,9 @@ export declare type Finalizer<A> = () => Future<A>;
  */
 export declare type NodeFunction = <A>(f: (cb: Callback<A>) => void) => void;
 /**
- * Job function type.
+ * Task is the type of functions that actually execute the async work.
  */
-export declare type Job<A> = (c: Supervisor<A>) => Aborter;
+export declare type Task<A> = (onError: OnError, onSuccess: OnSuccess<A>) => Aborter;
 /**
  * Callback in node platform style for asynchronous effects.
  */
@@ -62,26 +62,36 @@ export declare type RejectFunc<TResult2 = never> = ((reason: any) => TResult2 | 
  * CatchFunc
  */
 export declare type CatchFunc<A> = (reason: any) => A | PromiseLike<A>;
+/**
+ * Future represents an asynchronous task or sequence of asynchronous tasks that
+ * have not yet happened.
+ *
+ * Use the fork() or then() methods to trigger computation or via the await
+ * keyword.
+ *
+ * Note: Multiple chains of Futures should not be executed via await, instead
+ * use the doFuture() function or chain them together manually to retain
+ * control over execution.
+ */
 export declare abstract class Future<A> implements Monad<A>, Promise<A> {
     get [Symbol.toStringTag](): string;
+    /**
+     * tag identifies each Future subclass.
+     */
+    tag: string;
     of(a: A): Future<A>;
     map<B>(f: (a: A) => B): Future<B>;
     ap<B>(ft: Future<(a: A) => B>): Future<B>;
     chain<B>(f: (a: A) => Future<B>): Future<B>;
+    trap<B>(f: (e: Error) => Future<B>): Future<B>;
     catch<B = never>(f: CatchFunc<B> | undefined | null): Future<B>;
     finally<B>(f: () => Future<B>): Future<B>;
     then<TResult1 = A, TResult2 = never>(onResolve?: ResolveFunc<A, TResult1>, onReject?: RejectFunc<TResult2>): Promise<TResult1 | TResult2>;
-    fork(onError?: OnError, onSuccess?: OnSuccess<A>): Compute<A>;
+    _fork(value: A, stack: Future<A>[], onError: OnError, onSuccess: OnSuccess<A>): Aborter;
     /**
-     * __exec
-     * @private
+     * fork this Future causing its side-effects to take place.
      */
-    abstract __exec(c: Compute<A>): boolean;
-    /**
-     * __trap
-     * @private
-     */
-    __trap(_: Error, __: Compute<A>): boolean;
+    fork(onError?: OnError, onSuccess?: OnSuccess<A>): Aborter;
 }
 /**
  * Pure constructor.
@@ -89,48 +99,48 @@ export declare abstract class Future<A> implements Monad<A>, Promise<A> {
 export declare class Pure<A> extends Future<A> {
     value: A;
     constructor(value: A);
+    tag: string;
     map<B>(f: (a: A) => B): Future<B>;
     ap<B>(ft: Future<(a: A) => B>): Future<B>;
-    __exec(c: Compute<A>): boolean;
 }
 /**
  * Bind constructor.
  * @private
  */
 export declare class Bind<A, B> extends Future<B> {
-    future: Future<A>;
+    target: Future<A>;
     func: (a: A) => Future<B>;
-    constructor(future: Future<A>, func: (a: A) => Future<B>);
-    __exec(c: Compute<B>): boolean;
+    constructor(target: Future<A>, func: (a: A) => Future<B>);
+    tag: string;
 }
 /**
  * Call constructor.
  * @private
  */
 export declare class Call<A> extends Future<A> {
-    value: (a: A) => Future<A>;
-    constructor(value: (a: A) => Future<A>);
-    __exec(c: Compute<A>): boolean;
+    target: (a: A) => Future<A>;
+    constructor(target: (a: A) => Future<A>);
+    tag: string;
 }
 /**
  * Catch constructor.
  * @private
  */
-export declare class Catch<A> extends Future<A> {
-    future: Future<A>;
-    func: (e: Error) => Future<A>;
-    constructor(future: Future<A>, func: (e: Error) => Future<A>);
-    __exec(c: Compute<A>): boolean;
+export declare class Catch<A, B> extends Future<B> {
+    target: Future<A>;
+    func: (e: Error) => Future<B>;
+    constructor(target: Future<A>, func: (e: Error) => Future<B>);
+    tag: string;
 }
 /**
  * Finally constructor.
  * @private
  */
-export declare class Finally<A> extends Future<A> {
-    future: Future<A>;
-    func: () => Future<A>;
-    constructor(future: Future<A>, func: () => Future<A>);
-    __exec(c: Compute<A>): boolean;
+export declare class Finally<A, B> extends Future<B> {
+    target: Future<A>;
+    func: () => Future<B>;
+    constructor(target: Future<A>, func: () => Future<B>);
+    tag: string;
 }
 /**
  * Trap constructor.
@@ -139,8 +149,7 @@ export declare class Finally<A> extends Future<A> {
 export declare class Trap<A> extends Future<A> {
     func: (e: Error) => Future<A>;
     constructor(func: (e: Error) => Future<A>);
-    __exec(_: Compute<A>): boolean;
-    __trap(e: Error, c: Compute<A>): boolean;
+    tag: string;
 }
 /**
  * Raise constructor.
@@ -148,80 +157,28 @@ export declare class Trap<A> extends Future<A> {
 export declare class Raise<A> extends Future<A> {
     value: Err;
     constructor(value: Err);
+    tag: string;
     map<B>(_: (a: A) => B): Future<B>;
     ap<B>(_: Future<(a: A) => B>): Future<B>;
     chain<B>(_: (a: A) => Future<B>): Future<B>;
-    __exec(c: Compute<A>): boolean;
 }
 /**
  * Run constructor.
  * @private
  */
 export declare class Run<A> extends Future<A> {
-    value: Job<A>;
-    constructor(value: Job<A>);
-    __exec(c: Compute<A>): boolean;
-}
-/**
- * Supervisor for Computations.
- *
- * A Supervisor provides the callbacks needed to indicate
- * an end of a Job.
- */
-export interface Supervisor<A> {
-    /**
-     * onError indicates the Job has failed.
-     *
-     * Must be called no more than once.
-     */
-    onError(e: Error): void;
-    /**
-     * onSuccess indicates the Job has succeeded.
-     *
-     * Must be called no more than once.
-     */
-    onSuccess(value: A): void;
-}
-/**
- * Compute represents the workload of a forked Future.
- *
- * Results are computed sequentially and ends with either a value,
- * error or prematurely via the abort method.
- */
-export declare class Compute<A> implements Supervisor<A> {
-    value: A;
-    exitError: OnError;
-    exitSuccess: OnSuccess<A>;
-    stack: Future<A>[];
-    canceller: Aborter;
-    running: boolean;
-    constructor(value: A, exitError: OnError, exitSuccess: OnSuccess<A>, stack: Future<A>[]);
-    /**
-     * onError handler.
-     *
-     * This method will a 'Raise' instruction at the top of the stack
-     * and continue execution.
-     */
-    onError(e: Error): void;
-    /**
-     * onSuccess handler.
-     *
-     * Stores the resulting value and continues the execution.
-     */
-    onSuccess(value: A): void;
-    /**
-     * abort this Compute.
-     *
-     * Aborting a Compute will immediately clear its stack
-     * and invoke the canceller for the currently executing Future.
-     */
-    abort(): void;
-    run(): Compute<A>;
+    task: Task<A>;
+    constructor(task: Task<A>);
+    tag: string;
 }
 /**
  * pure wraps a synchronous value in a Future.
  */
 export declare const pure: <A>(a: A) => Future<A>;
+/**
+ * run sets up an async task to be executed at a later point.
+ */
+export declare const run: <A>(task: Task<A>) => Future<A>;
 /**
  * raise wraps an Error in a Future.
  *
@@ -285,7 +242,9 @@ export declare const race: <A>(list: Future<A>[]) => Future<A>;
  * toPromise transforms a Future into a Promise.
  *
  * This function depends on the global promise constructor and
- * will fail if the enviornment does not provide one.
+ * will fail if the environment does not provide one.
+ *
+ * @deprecated
  */
 export declare const toPromise: <A>(ft: Future<A>) => Promise<A>;
 /**

@@ -9,8 +9,6 @@ import { noop } from '../../../src/data/function';
 import {
     Future,
     Run,
-    Supervisor,
-    Compute,
     pure,
     attempt,
     delay,
@@ -40,25 +38,25 @@ const map = (n: number) => n * 2;
 
 const bind = (n: number) => pure(n * 1);
 
-const inc = (n: number) => new Run((s: Supervisor<any>) => {
+const inc = (n: number) => new Run<number>((_, onSuccess) => {
 
-    tick(() => s.onSuccess(n + 1));
+    tick(() => onSuccess(n + 1));
     return noop;
 
 });
 
-const err = (msg: string) => new Run((s: Supervisor<any>) => {
+const err = <T>(msg: string) => new Run<T>(onError => {
 
-    tick(() => s.onError(new Error(msg)));
+    tick(() => onError(new Error(msg)));
     return noop;
 
 });
 
 const errorTask = (m: string, delay: number, tags: string[]) =>
-    new Run((s: Supervisor<any>) => {
+    new Run(onError => {
 
         setTimeout(() => {
-            s.onError(new Error(m));
+            onError(new Error(m));
             tags.push(m)
         }, delay);
 
@@ -67,10 +65,10 @@ const errorTask = (m: string, delay: number, tags: string[]) =>
     });
 
 const tagTask = (tag: string, n: number, tags: string[]) =>
-    new Run((s: Supervisor<any>) => {
+    new Run<number>((_, onSuccess) => {
 
         setTimeout(() => {
-            s.onSuccess(n);
+            onSuccess(n);
             tags.push(tag);
         }, n);
         return noop;
@@ -149,7 +147,7 @@ describe('future', () => {
             it('should never result in error and success', () =>
                 toPromise(inc(0)
                     .map(map)
-                    .chain((n: number) => err(`error: ${n}`))
+                    .chain((n: number) => err<number>(`error: ${n}`))
                     .map(map))
                     .then(() => Promise.reject('Map did not reject!'))
                     .catch((e: Error) => assert(e.message).equal('error: 2')));
@@ -163,7 +161,7 @@ describe('future', () => {
             it('should never result in error and success', () =>
                 toPromise(inc(0)
                     .ap(ap)
-                    .chain((n: number) => err(`error: ${n}`))
+                    .chain((n: number) => err<number>(`error: ${n}`))
                     .ap(ap))
                     .then(() => Promise.reject('Ap did not reject!'))
                     .catch((e: Error) => assert(e.message).equal('error: 2')));
@@ -174,7 +172,7 @@ describe('future', () => {
 
             it('should never result in error and success', () =>
                 toPromise(inc(0)
-                    .chain((n: number) => err(`error: ${n}`))
+                    .chain((n: number) => err<number>(`error: ${n}`))
                     .chain(inc))
                     .then(() => Promise.reject('Chain did not reject!'))
                     .catch((e: Error) => assert(e.message).equal('error: 1')));
@@ -256,30 +254,24 @@ describe('future', () => {
 
     })
 
-    describe('Compute', () => {
+    describe('Aborter', () => {
 
-        describe('abort', () => {
+        it('should work', cb => {
 
-            it('should work', cb => {
+            let error = (_: Error) => { throw _; }
 
-                let error = (_: Error) => { throw _; }
+            let success = (_: any) => { throw new Error(_); }
 
-                let success = (_: any) => { throw new Error(_); }
+            let job = new Run((_, onSuccess) => {
 
-                let task = new Run((s: Supervisor<any>) => {
-
-                    setTimeout(() => s.onSuccess(true), 100000);
-                    return noop;
-
-                });
-
-                let c = new Compute(undefined, error, success, [task]);
-
-                setTimeout(() => { c.abort(); cb(); }, 100)
-
-                c.run();
+                setTimeout(() => onSuccess(true), 100000);
+                return noop;
 
             });
+
+            let aborter = job.fork(error, success);
+
+            setTimeout(() => { aborter(); cb(); }, 100);
 
         });
 
@@ -299,18 +291,17 @@ describe('future', () => {
 
                 }
 
-                let task = (id: number) => new Run((s: Supervisor<any>) => {
+                let task = (id: number) => new Run((_, onSuccess) => {
 
-                    setTimeout(() => { seq.push(id); s.onSuccess(id); }, 10);
+                    setTimeout(() => { seq.push(id); onSuccess(id); }, 10);
                     return noop;
 
                 });
 
-                let tasks = [task(2), task(3), task(11), task(5), task(4), task(1)];
+                let tasks = [task(2), task(3), task(11), task(5),
+                task(4), task(1)];
 
-                let c = new Compute(undefined, error, success, tasks);
-
-                c.run();
+                pure(0)._fork(0, <Future<number>[]>tasks, error, success);
 
             });
 
@@ -373,7 +364,7 @@ describe('future', () => {
 
             let f = fromAbortable(cb)(node => setTimeout(node, 500000));
 
-            f.fork(noop, noop).abort();
+            f.fork(noop, noop)();
 
         });
 
@@ -434,7 +425,9 @@ describe('future', () => {
                 tagTask('b', 200, tags),
                 tagTask('c', 500, tags),
                 tagTask('d', 600, tags)]))
-                .then((list: number[]) => assert(list).equate([300, 200, 500, 600]))
+                .then((list: number[]) => {
+                    assert(list).equate([300, 200, 500, 600])
+                })
                 .then(() => assert(tags).equate(['a', 'b', 'c', 'd']));
 
         });
@@ -821,7 +814,7 @@ describe('future', () => {
                     done();
                     return pure({});
 
-                }).fork(console.error, console.log);
+                }).fork();
 
         });
 
