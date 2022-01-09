@@ -181,6 +181,10 @@ export declare const pure: <A>(a: A) => Future<A>;
  */
 export declare const voidPure: Future<void>;
 /**
+ * wrap a value in a Future returning the value if the value is itself a Future.
+ */
+export declare const wrap: <A>(a: A | Future<A>) => Future<A>;
+/**
  * run sets up an async task to be executed at a later point.
  */
 export declare const run: <A>(task: Task<A>) => Future<A>;
