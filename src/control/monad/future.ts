@@ -231,7 +231,7 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
             } else {
 
                 console.warn(`${this.tag}: onError called after task completed`);
-                console.trace();
+                console.warn(e);
 
             }
 
