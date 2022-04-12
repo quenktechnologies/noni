@@ -8,6 +8,7 @@ export interface InterpolateOptions {
     regex?: string;
     leaveMissing?: boolean;
     applyFunctions?: boolean;
+    transform?: Function;
 }
 /**
  * startsWith polyfill.

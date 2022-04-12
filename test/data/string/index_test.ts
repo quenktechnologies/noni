@@ -212,6 +212,21 @@ describe('string', () => {
 
         });
 
+        it('does not apply functions when not asked to', function() {
+
+            assert(interpolate(`1 + 1 is {result}.`, { result: () => 1 + 1 },
+                { applyFunctions: false, leaveMissing:true }))
+                .equal(`1 + 1 is result.`);
+
+        });
+
+        it('applies the transform', () => {
+
+            assert(interpolate('1 + {foo}', {}, { transform: () => '1' }))
+                .equal('1 + 1');
+
+        });
+
     })
 
     describe('propercase', () => {

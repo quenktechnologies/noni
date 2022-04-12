@@ -5,13 +5,15 @@
 /** imports */
 import { get } from '../record/path';
 import { Record, assign } from '../record';
+import { identity } from '../function';
 
 export interface InterpolateOptions {
     start?: string,
     end?: string,
     regex?: string,
     leaveMissing?: boolean,
-    applyFunctions?: boolean
+    applyFunctions?: boolean,
+    transform?: Function
 };
 
 /**
@@ -162,7 +164,8 @@ const interpolateDefaults: InterpolateOptions = {
     end: '\}',
     regex: '([\\w\$\.\-]+)',
     leaveMissing: true,
-    applyFunctions: false
+    applyFunctions: false,
+    transform: identity
 
 };
 
@@ -177,13 +180,15 @@ export const interpolate = (
 
     let options = assign({}, interpolateDefaults, opts);
     let reg = new RegExp(`${options.start}${options.regex}${options.end}`, 'g');
+    let transform = options.transform;
 
     return str.replace(reg, (_, k) =>
-        get(k, data)
+        transform(get(k, data)
             .map(v => {
 
-                if (typeof v === 'function')
-                    return v(k);
+                if (typeof v === 'function') 
+                    return options.applyFunctions ? v(k) : 
+                  opts.leaveMissing ? k : '';
                 else
                     return '' + v;
 
@@ -196,7 +201,7 @@ export const interpolate = (
                     return '';
 
             })
-            .get());
+            .get()));
 
 }
 
