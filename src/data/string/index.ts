@@ -3,9 +3,10 @@
  */
 
 /** imports */
-import { get } from '../record/path';
+import { unsafeGet } from '../record/path';
 import { Record, assign } from '../record';
 import { identity } from '../function';
+import { Type } from '../type';
 
 export interface InterpolateOptions {
     start?: string,
@@ -13,7 +14,8 @@ export interface InterpolateOptions {
     regex?: string,
     leaveMissing?: boolean,
     applyFunctions?: boolean,
-    transform?: Function
+    transform?: (value: Type) => string,
+    getter?: (data: object, path: string) => string
 };
 
 /**
@@ -165,7 +167,8 @@ const interpolateDefaults: InterpolateOptions = {
     regex: '([\\w\$\.\-]+)',
     leaveMissing: true,
     applyFunctions: false,
-    transform: identity
+    transform: identity,
+    getter: (data, path) => unsafeGet(path, <{ [key: string]: string }>data)
 
 };
 
@@ -175,35 +178,37 @@ const interpolateDefaults: InterpolateOptions = {
  */
 export const interpolate = (
     str: string,
-    data: Record<any>,
+    data: Record<Type>,
     opts: InterpolateOptions = {}): string => {
 
     let options = assign({}, interpolateDefaults, opts);
-    let reg = new RegExp(`${options.start}${options.regex}${options.end}`, 'g');
-    let transform = options.transform;
+    let { getter, transform, start, regex, end } = options;
+    let reg = new RegExp(`${start}${regex}${end}`, 'g');
 
-    return str.replace(reg, (_, k) =>
-        transform(get(k, data)
-            .map(v => {
+    return str.replace(reg, (_, k) => {
 
-                if (typeof v === 'function') 
-                    return options.applyFunctions ? v(k) : 
-                  opts.leaveMissing ? k : '';
-                else
-                    return '' + v;
+        let value = getter(data, k);
 
-            })
-            .orJust(() => {
+        if (value != null) {
 
-                if (opts.leaveMissing)
-                    return k;
-                else
-                    return '';
+            if (typeof value === 'function')
+                value = options.applyFunctions ? value(k) :
+                    opts.leaveMissing ? k : '';
+            else
+                value = value + '';
 
-            })
-            .get()));
+        } else {
 
+            value = opts.leaveMissing ? k : '';
+
+        }
+
+        return transform(value);
+
+    });
 }
+
+export {interpolate as interp}
 
 /**
  * alpha omits characters in a string not found in the English alphabet.

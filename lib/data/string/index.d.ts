@@ -2,13 +2,15 @@
  *  Common functions used to manipulate strings.
  */
 import { Record } from '../record';
+import { Type } from '../type';
 export interface InterpolateOptions {
     start?: string;
     end?: string;
     regex?: string;
     leaveMissing?: boolean;
     applyFunctions?: boolean;
-    transform?: Function;
+    transform?: (value: Type) => string;
+    getter?: (data: object, path: string) => string;
 }
 /**
  * startsWith polyfill.
@@ -56,7 +58,8 @@ export declare const uncapitalize: (str: string) => string;
  * interpolate a template string replacing variable paths with values
  * in the data object.
  */
-export declare const interpolate: (str: string, data: Record<any>, opts?: InterpolateOptions) => string;
+export declare const interpolate: (str: string, data: Record<Type>, opts?: InterpolateOptions) => string;
+export { interpolate as interp };
 /**
  * alpha omits characters in a string not found in the English alphabet.
  */

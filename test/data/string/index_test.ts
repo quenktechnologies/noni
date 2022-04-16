@@ -227,6 +227,13 @@ describe('string', () => {
 
         });
 
+        it('allows the getter to be overridden', () => {
+
+            assert(interpolate('1 + {foo}', {}, { getter: () => '1' }))
+                .equal('1 + 1');
+
+        });
+
     })
 
     describe('propercase', () => {
