@@ -127,7 +127,9 @@ export type CatchFunc<A>
 export abstract class Future<A> implements Monad<A>, Promise<A> {
 
     get [Symbol.toStringTag]() {
+
         return 'Future';
+
     }
 
     /**
@@ -497,7 +499,7 @@ export const voidPure: Future<void> = new Pure(undefined);
  * wrap a value in a Future returning the value if the value is itself a Future.
  */
 export const wrap = <A>(a: A | Future<A>): Future<A> =>
-    a instanceof Future ? a : pure(a);
+    (String(a) === '[object Future]') ? <Future<A>>a : <Future<A>>pure(a);
 
 /**
  * run sets up an async task to be executed at a later point.
