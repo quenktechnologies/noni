@@ -2,6 +2,17 @@ import { Milliseconds } from '../time';
 import { Err, Except } from '../error';
 import { Monad, DoFn } from './';
 /**
+ * Yield is a value that may be itself or may be wrapped in a [[Future]].
+ *
+ * This is type is used to represent return values of functions that may be
+ * async or not for situations where it may be desirable to have the. Care
+ * should be used when handling these values as it is easy to forget to fork()
+ * the Future resulting in incorrect values being passed around.
+ *
+ * Use the [[wrap]] before attempting to process a Yield to be on the safe side.
+ */
+export declare type Yield<T> = T | Future<T>;
+/**
  * OnError callback function type.
  */
 export declare type OnError = (e: Error) => void;

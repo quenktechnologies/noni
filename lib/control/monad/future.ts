@@ -18,6 +18,21 @@ import { Monad, DoFn, doN as _doN } from './';
 import { empty, tail } from '../../data/array';
 
 /**
+ * Yield is a value that may be itself or may be wrapped in a [[Future]].
+ *
+ * This is type is used to represent return values of functions that may be
+ * async or not for situations where it may be desirable to have the. Care 
+ * should be used when handling these values as it is easy to forget to fork()
+ * the Future resulting in incorrect values being passed around.
+ *
+ * Use the [[wrap]] before attempting to process a Yield to be on the safe side.
+ */
+export type Yield<T>
+    = T
+    | Future<T>
+    ;
+
+/**
  * OnError callback function type.
  */
 export type OnError = (e: Error) => void;
@@ -481,8 +496,8 @@ export const voidPure: Future<void> = new Pure(undefined);
 /**
  * wrap a value in a Future returning the value if the value is itself a Future.
  */
-export const wrap = <A>(a:A|Future<A>) : Future<A> => 
-  a instanceof Future ?  a : pure(a);
+export const wrap = <A>(a: A | Future<A>): Future<A> =>
+    a instanceof Future ? a : pure(a);
 
 /**
  * run sets up an async task to be executed at a later point.
