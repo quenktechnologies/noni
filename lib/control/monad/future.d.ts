@@ -259,6 +259,13 @@ export declare const reduce: <A, B>(list: A[], initValue: B, f: Reducer<A, B>) =
  */
 export declare const race: <A>(list: Future<A>[]) => Future<A>;
 /**
+ * some executes a list of Futures sequentially until one resolves with a
+ * successful value.
+ *
+ * If none resolve successfully, the final error is raised.
+ */
+export declare const some: <A>(list: Future<A>[]) => Future<A>;
+/**
  * toPromise transforms a Future into a Promise.
  *
  * This function depends on the global promise constructor and

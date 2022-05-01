@@ -23,6 +23,7 @@ import {
     toPromise,
     liftP,
     race,
+    some,
     doFuture
 } from '../../../src/control/monad/future';
 
@@ -839,5 +840,47 @@ describe('future', () => {
             }))
                 .then(v => { assert(v).equal(4); });
         });
+    });
+
+    describe('some', () => {
+
+        it('should work with a list of successes', async () => {
+
+            let result = await some([pure(1), pure(2), pure(3)]);
+
+            assert(result).equal(1);
+
+        });
+
+        it('should work with a mix for success', async () => {
+
+            let result = await some([raise(new Error()), pure(2), raise(new Error())]);
+
+            assert(result).equal(2);
+
+        });
+
+        it('should give the last failure', async () => {
+
+          let threw = false;
+
+            try {
+
+               await some([raise(new Error('1')),
+              
+                  raise(new Error('2')), raise(new Error('3'))]);
+
+            } catch (e) {
+
+               threw = true;
+
+              assert((<Error>e).message).equal('3');
+
+            }
+
+          assert(threw).true();
+
+        });
+
     });
 });

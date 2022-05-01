@@ -739,6 +739,44 @@ export const race = <A>(list: Future<A>[]): Future<A> =>
     });
 
 /**
+ * some executes a list of Futures sequentially until one resolves with a 
+ * successful value.
+ *
+ * If none resolve successfully, the final error is raised.
+ */
+export const some = <A>(list: Future<A>[]): Future<A> => doFuture(function*() {
+
+    let result: A = <Type>undefined;
+
+    for (let [index, future] of list.entries()) {
+
+        let keepGoing = false;
+
+        result = yield (future.catch(e => {
+
+            if (index === (list.length - 1)) {
+
+                return raise(e);
+
+            } else {
+
+                keepGoing = true;
+
+                return voidPure;
+
+            }
+
+        }));
+
+        if (!keepGoing) break;
+
+    }
+
+    return pure(result);
+
+});
+
+/**
  * toPromise transforms a Future into a Promise.
  *
  * This function depends on the global promise constructor and 
