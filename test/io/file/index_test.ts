@@ -1,6 +1,13 @@
 import { assert } from '@quenk/test/lib/assert';
 import { isAbsolute } from 'path';
-import { Future, toPromise, pure, raise } from '../../../src/control/monad/future';
+import {
+    Future,
+    toPromise,
+    pure,
+    raise,
+    attempt,
+    doFuture
+} from '../../../src/control/monad/future';
 import { reduce } from '../../../src/data/record';
 import {
     readTextFile,
@@ -21,7 +28,8 @@ import {
     isFile,
     isDirectory,
     makeDir,
-    unlink
+    unlink,
+    copy
 } from '../../../src/io/file';
 
 const ABOUT = 'This is a flag🇹.\n';
@@ -261,6 +269,106 @@ describe('file', () => {
                 .chain(() => exists(dest))
                 .map(yes => assert(yes).be.false()));
         });
+
+    });
+
+    describe('copy', () => {
+
+        let head = `${__dirname}/fixtures`;
+
+        afterEach(() => doFuture(function*() {
+
+            yield unlink(`${head}/copy`);
+
+            yield unlink(`${head}/dira/filex`);
+
+            yield unlink(`${head}/dira/dirab/filey`);
+
+            return unlink(`${head}/dirx`);
+
+        }))
+
+        it('should copy files', () => doFuture(function*() {
+
+            let src = `${head}/about`;
+
+            let srcContents = yield readTextFile(src);
+
+            let dest = `${head}/copy`;
+
+            yield unlink(dest);
+
+            let result = yield copy(src, dest);
+
+            yield attempt(() => assert(result).equal(1));
+
+            let destContents = yield readTextFile(dest);
+
+            yield attempt(() => assert(destContents).equal(srcContents));
+
+            return unlink(dest);
+
+        }))
+
+        it('should copy dirs', () => doFuture(function*() {
+
+            let src = `${head}/dirc`;
+
+            let srcContents = yield readTextFile(`${src}/filea`);
+
+            let dest = `${head}/dirx`;
+
+            yield unlink(dest);
+
+            let result = yield copy(src, dest);
+
+            yield attempt(() => assert(result).equal(1));
+
+            let destContents = yield readTextFile(`${dest}/filea`);
+
+            yield attempt(() => assert(destContents).equal(srcContents));
+
+            return unlink(dest);
+
+        }))
+
+        it('should copy dirs recursively', () => doFuture(function*() {
+
+            let src = `${head}/dira`;
+
+            let srcContents = yield readTextFile(`${src}/dirab/dirabc/filea`);
+
+            let xcontents = 'contents for x';
+
+            let ycontents = 'contents for y';
+
+            yield writeTextFile(`${src}/dirab/filey`, ycontents);
+
+            yield writeTextFile(`${src}/filex`, xcontents);
+
+            let dest = `${head}/dirx`;
+
+            yield unlink(dest);
+
+            let result = yield copy(src, dest);
+
+            yield attempt(() => assert(result).equal(3));
+
+            let destContents = yield readTextFile(`${dest}/dirab/dirabc/filea`);
+
+            yield attempt(() => assert(destContents).equal(srcContents));
+
+            let ydestContents = yield readTextFile(`${dest}/dirab/filey`);
+
+            yield attempt(() => assert(ydestContents).equal(ycontents));
+
+            let xdestContents = yield readTextFile(`${dest}/filex`);
+
+            yield attempt(() => assert(xdestContents).equal(xcontents));
+
+            return unlink(dest);
+
+        }))
 
     });
 

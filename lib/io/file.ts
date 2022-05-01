@@ -3,8 +3,15 @@ import * as fs from 'fs';
 import { Stats } from 'fs';
 import { join } from 'path';
 
-import { Future, pure, parallel, fromCallback } from '../control/monad/future';
-import { reduce, merge } from '../data/record';
+import {
+    Future,
+    pure,
+    parallel,
+    fromCallback,
+    raise,
+    doFuture
+} from '../control/monad/future';
+import { reduce, merge, empty } from '../data/record';
 
 export { Stats };
 
@@ -126,11 +133,18 @@ export const isFile = (path: Path): Future<boolean> =>
 export const readdir = (path: Path): Future<string[]> =>
     fromCallback(cb => fs.readdir(path, cb));
 
+export interface ReadFileOptions {
+    encoding?: string | null | undefined,
+    flag?: string | undefined,
+    signal?: AbortSignal | undefined
+}
+
 /**
  * readFile (safe) wrapper
  */
-export const readFile = (path: Path, options: object): Future<Contents> =>
-    fromCallback(cb => fs.readFile(path, options, cb));
+export const readFile = (path: Path, options?: ReadFileOptions)
+    : Future<Contents> => fromCallback(cb => fs.readFile(path,
+        <object>options, cb));
 
 /**
  * readTextFile reads the contents of a file as a utf8 encoded text file.
@@ -216,8 +230,8 @@ const expand = (path: Path) => (name: string): Path =>
 /**
  * writeFile (safe) wrapper.
  */
-export const writeFile = (path: Path, contents: Contents, options: object)
-    : Future<void> =>
+export const writeFile = (path: Path, contents: Contents,
+    options: fs.WriteFileOptions = null): Future<void> =>
     fromCallback(cb => fs.writeFile(path, contents, options, cb));
 
 /**
@@ -254,6 +268,8 @@ export const unlink = (path: Path): Future<void> =>
             removeDir(path) :
             removeFile(path));
 
+export { unlink as remove }
+
 /**
  * removeFile removes a file and only a file.
  *
@@ -277,3 +293,69 @@ export const removeDir = (path: Path): Future<void> =>
                 .chain(l => parallel(l.map(unlink)))
                 .chain(() => fromCallback(cb => fs.rmdir(path, cb))) :
             pure((() => { })()));
+
+/**
+ * copy the contents of the src file or directory to a new destination.
+ *
+ * If dest already exists, this operation will fail.
+ */
+export const copy = (src: Path, dest: Path): Future<number> =>
+    doFuture(function*() {
+
+        if (yield exists(dest))
+            return raise(new Error(
+                `io/file#copy: Path "${dest}" already exists!`));
+
+        if (yield isFile(src)) {
+
+            let contents = yield readFile(src);
+
+            yield writeFile(dest, contents);
+
+            return pure(1);
+
+        } else {
+
+            let dirs = [src];
+
+            let counter = 0;
+
+            while (!empty(dirs)) {
+
+                let dir = <string>dirs.shift();
+
+                let paths = yield listAbs(dir);
+
+                let destDir = dir.replace(src, dest);
+
+                yield makeDir(destDir);
+
+                for (let path of paths) {
+
+                    let destPath = path.replace(src, dest);
+
+                    if (yield isDirectory(path)) {
+
+                        yield makeDir(destPath);
+
+                        dirs.push(path);
+
+                    } else {
+
+                        let contents = yield readFile(path);
+
+                        yield writeFile(destPath, contents);
+
+                        counter++;
+
+                    }
+
+                }
+
+            }
+
+            return pure(counter);
+
+        }
+
+    })

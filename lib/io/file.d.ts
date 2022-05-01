@@ -55,10 +55,15 @@ export declare const isFile: (path: Path) => Future<boolean>;
  * readdir (safe) wrapper
  */
 export declare const readdir: (path: Path) => Future<string[]>;
+export interface ReadFileOptions {
+    encoding?: string | null | undefined;
+    flag?: string | undefined;
+    signal?: AbortSignal | undefined;
+}
 /**
  * readFile (safe) wrapper
  */
-export declare const readFile: (path: Path, options: object) => Future<Contents>;
+export declare const readFile: (path: Path, options?: ReadFileOptions | undefined) => Future<Contents>;
 /**
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
@@ -105,7 +110,7 @@ export declare const listFilesRec: (path: Path) => Future<Path[]>;
 /**
  * writeFile (safe) wrapper.
  */
-export declare const writeFile: (path: Path, contents: Contents, options: object) => Future<void>;
+export declare const writeFile: (path: Path, contents: Contents, options?: fs.WriteFileOptions) => Future<void>;
 /**
  * writeTextFile writes the passed contents to a a file location.
  */
@@ -127,6 +132,7 @@ export declare const makeDir: (path: Path, options?: object) => Future<void>;
  * Use with caution!
  */
 export declare const unlink: (path: Path) => Future<void>;
+export { unlink as remove };
 /**
  * removeFile removes a file and only a file.
  *
@@ -139,3 +145,9 @@ export declare const removeFile: (path: Path) => Future<void>;
  * Will fail if the path is not a directory.
  */
 export declare const removeDir: (path: Path) => Future<void>;
+/**
+ * copy the contents of the src file or directory to a new destination.
+ *
+ * If dest already exists, this operation will fail.
+ */
+export declare const copy: (src: Path, dest: Path) => Future<number>;
