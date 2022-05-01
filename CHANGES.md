@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.43.0] - 2022-05-01
+
+### Added
+- `some` to `control/monad/future`.
+
+### Changed
+- The noni package is now built to ES6 (ES2015)
+
 ## [1.40.6] - 2020-08-30
 
 ### Added
