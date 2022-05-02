@@ -12,7 +12,8 @@ import {
     doFuture,
     attempt
 } from '../control/monad/future';
-import {Object} from '../data/json';
+import { JSONXObject } from '../data/jsonx/types';
+import { Object } from '../data/json';
 import { reduce, merge, empty } from '../data/record';
 
 export { Stats };
@@ -167,6 +168,14 @@ export const readJSONFile = (path: Path): Future<Object> =>
         return pure(<Object>json);
 
     });
+
+/**
+ * readJSONXFile provides the result of readJSONFile as a jsonx object.
+ *
+ * A future version of this may recognize dates etc.
+ */
+export const readJSONXFile = (path: Path): Future<JSONXObject> =>
+    readJSONFile(path).map(obj => <JSONXObject><object>obj);
 
 /**
  * list the files/directories found at a path.

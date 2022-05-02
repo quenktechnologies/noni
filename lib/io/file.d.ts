@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import { Stats } from 'fs';
 import { Future } from '../control/monad/future';
+import { JSONXObject } from '../data/jsonx/types';
 import { Object } from '../data/json';
 export { Stats };
 /**
@@ -73,6 +74,12 @@ export declare const readTextFile: (path: Path) => Future<string>;
  * readJSONFile reads the contents of a file as a JSON [[Object]].
  */
 export declare const readJSONFile: (path: Path) => Future<Object>;
+/**
+ * readJSONXFile provides the result of readJSONFile as a jsonx object.
+ *
+ * A future version of this may recognize dates etc.
+ */
+export declare const readJSONXFile: (path: Path) => Future<JSONXObject>;
 /**
  * list the files/directories found at a path.
  */
