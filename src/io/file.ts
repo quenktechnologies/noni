@@ -9,8 +9,10 @@ import {
     parallel,
     fromCallback,
     raise,
-    doFuture
+    doFuture,
+    attempt
 } from '../control/monad/future';
+import {Object} from '../data/json';
 import { reduce, merge, empty } from '../data/record';
 
 export { Stats };
@@ -151,6 +153,20 @@ export const readFile = (path: Path, options?: ReadFileOptions)
  */
 export const readTextFile = (path: Path): Future<string> =>
     <Future<string>>readFile(path, { encoding: 'utf8' });
+
+/**
+ * readJSONFile reads the contents of a file as a JSON [[Object]].
+ */
+export const readJSONFile = (path: Path): Future<Object> =>
+    doFuture(function*() {
+
+        let txt = yield readTextFile(path);
+
+        let json = yield attempt(() => JSON.parse(txt));
+
+        return pure(<Object>json);
+
+    });
 
 /**
  * list the files/directories found at a path.

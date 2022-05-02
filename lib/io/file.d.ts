@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import { Stats } from 'fs';
 import { Future } from '../control/monad/future';
+import { Object } from '../data/json';
 export { Stats };
 /**
  * Path to a file.
@@ -68,6 +69,10 @@ export declare const readFile: (path: Path, options?: ReadFileOptions | undefine
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
 export declare const readTextFile: (path: Path) => Future<string>;
+/**
+ * readJSONFile reads the contents of a file as a JSON [[Object]].
+ */
+export declare const readJSONFile: (path: Path) => Future<Object>;
 /**
  * list the files/directories found at a path.
  */

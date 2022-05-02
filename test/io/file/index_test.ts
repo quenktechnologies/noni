@@ -6,11 +6,13 @@ import {
     pure,
     raise,
     attempt,
-    doFuture
+    doFuture,
+    voidPure
 } from '../../../src/control/monad/future';
 import { reduce } from '../../../src/data/record';
 import {
     readTextFile,
+    readJSONFile,
     writeTextFile,
     statDir,
     statDirAbs,
@@ -85,6 +87,35 @@ describe('file', () => {
         it('should read a file\'s contents as utf8', () =>
             toPromise(readTextFile(ABOUT_FILE)
                 .map(contents => assert(contents).equal(ABOUT))));
+
+    });
+
+    describe('readJSONFile', () => {
+
+        it('should read a JSON file', () => doFuture(function*() {
+
+            let obj = yield readJSONFile(`${__dirname}/../../../package.json`);
+
+            return attempt(() => assert(obj.name).equal('@quenk/noni'));
+
+        }))
+
+        it('should fail on invalid JSON file', () => doFuture(function*() {
+
+          let failed = false;
+
+            yield readJSONFile(`${__dirname}/fixtures/about`)
+          .catch(()=> {
+
+            failed = true;
+
+            return voidPure;
+
+          });
+
+            return attempt(() => assert(failed).true());
+
+        }))
 
     });
 
