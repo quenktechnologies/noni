@@ -3,6 +3,7 @@
  * for working with JS arrays.
  */
 import { Record } from '../record';
+import { Maybe } from '../maybe';
 /**
  * PartitionFunc type.
  */
@@ -15,6 +16,11 @@ export declare type GroupFunc<A> = (a: A, i: number, r: A[]) => string;
  * MapFunc type.
  */
 export declare type MapFunc<A, B> = (elm: A, idx: number, all: A[]) => B[];
+/**
+ * FindFunc is a function that returns true when the element provided
+ * passes the test.
+ */
+export declare type FindFunc<A> = (elm: A) => boolean;
 /**
  * head returns the item at index 0 of an array
  */
@@ -99,3 +105,8 @@ export declare const flatten: <A>(list: A[]) => A[];
  * compact removes any occurences of null or undefined in the list.
  */
 export declare const compact: <A>(list: (A | null | undefined)[]) => A[];
+/**
+ * find searches an array for the first element that passes the test implemented
+ * in the provided [[FindFund]].
+ */
+export declare const find: <A>(list: A[], cb: FindFunc<A>) => Maybe<A>;

@@ -16,7 +16,8 @@ import {
     combine,
     compact,
     flatten,
-    concat
+    concat,
+    find
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -281,6 +282,30 @@ describe('array', () => {
         it('should ignore null and undefined', () => {
 
             assert(concat([1, 2], 3, null, 5)).equate([1, 2, 3, 5]);
+
+        });
+
+    });
+
+    describe('find', () => {
+
+        it('should find an element', () => {
+
+            assert(find([1, 2, 3], val => val === 2).get()).equal(2);
+
+        });
+
+        it('should find the first element', () => {
+
+            assert(find([{ id: 1, val: 1 }, { id: 2, val: 2 },
+            { id: 3, val: 2 }], val => val.val === 2).get().id).equal(2);
+
+        });
+
+        it('should return Nothing if not found', () => {
+
+            assert(find([1, 2, 3, 4, 5],
+                val => val === 6).isNothing()).true();
 
         });
 

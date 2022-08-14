@@ -4,6 +4,7 @@
  */
 import { Record, merge } from '../record';
 import { isMultipleOf } from '../../math';
+import { just, Maybe, nothing } from '../maybe';
 
 /**
  * PartitionFunc type.
@@ -19,6 +20,12 @@ export type GroupFunc<A> = (a: A, i: number, r: A[]) => string;
  * MapFunc type.
  */
 export type MapFunc<A, B> = (elm: A, idx: number, all: A[]) => B[]
+
+/**
+ * FindFunc is a function that returns true when the element provided
+ * passes the test.
+ */
+export type FindFunc<A> = (elm:A) => boolean; 
 
 /**
  * head returns the item at index 0 of an array
@@ -59,7 +66,7 @@ export const flatMap = <A, B>(list: A[], f: MapFunc<A, B>): B[] =>
  * This function also ignores null and undefined.
  */
 export const concat = <A>(list: A[], ...items: A[]): A[] =>
-[...list, ...items.filter(item => item != null)];
+    [...list, ...items.filter(item => item != null)];
 
 /**
  * partition an array into two using a partitioning function.
@@ -181,8 +188,6 @@ export const make = <A>(size: number, f: (n: number) => A) => {
 export const combine = <A>(list: A[][]): A[] =>
     list.reduce((p, c) => p.concat(c), []);
 
-
-
 /**
  * flatten a list of items that may be multi-dimensional.
  *
@@ -197,3 +202,16 @@ export const flatten = <A>(list: A[]): A[] =>
  */
 export const compact = <A>(list: (A | null | undefined)[]): A[] =>
     <A[]>list.filter(v => (v != null));
+
+/**
+ * find searches an array for the first element that passes the test implemented
+ * in the provided [[FindFund]].
+ */
+export const find = <A>(list: A[], cb:FindFunc<A>) : Maybe<A> => {
+
+  for(let i=0; i<list.length; i++) 
+    if(cb(list[i])) return just(list[i]);
+
+    return nothing();
+
+}
