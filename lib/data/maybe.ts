@@ -36,15 +36,15 @@ export interface Maybe<A> extends
      */
     orElse<B>(f: () => Maybe<B>): Maybe<A | B>;
 
-      /**
-       * isNothing tests whether the Maybe is a Nothing.
-       */
-      isNothing(): boolean
+    /**
+     * isNothing tests whether the Maybe is a Nothing.
+     */
+    isNothing(): boolean
 
-      /**
-       * isJust tests whether the Maybe is a Just.
-       */
-      isJust(): boolean
+    /**
+     * isJust tests whether the Maybe is a Just.
+     */
+    isJust(): boolean
 
     /**
      * get the value from a Maybe.
@@ -152,17 +152,17 @@ export class Nothing<A> implements Maybe<A> {
 
     }
 
-  isNothing() : boolean {
+    isNothing(): boolean {
 
-    return true;
+        return true;
 
-  }
+    }
 
-  isJust(): boolean {
+    isJust(): boolean {
 
-    return false;
+        return false;
 
-  }
+    }
 
     /**
      * get throws an error because there
@@ -275,17 +275,17 @@ export class Just<A> implements Maybe<A> {
 
     }
 
-    isNothing() :boolean {
+    isNothing(): boolean {
 
-      return false;
+        return false;
 
     }
 
-  isJust() : boolean {
+    isJust(): boolean {
 
-return true;
+        return true;
 
-  }
+    }
 
     /**
      * get the value of this Just.
@@ -301,22 +301,22 @@ return true;
 /**
  * of
  */
-export const of = <A>(a: A) : Maybe<A> => new Just(a);
+export const of = <A>(a: A): Maybe<A> => new Just(a);
 
 /**
  * nothing convenience constructor
  */
-export const nothing = <A>() : Maybe<A> => new Nothing<A>();
+export const nothing = <A>(): Maybe<A> => new Nothing<A>();
 
 /**
  * just convenience constructor
  */
-export const just = <A>(a: A) : Maybe<A> => new Just(a);
+export const just = <A>(a: A): Maybe<A> => new Just(a);
 
 /**
  * fromNullable constructs a Maybe from a value that may be null.
  */
-export const fromNullable = <A>(a: A|undefined|null): Maybe<A> => a == null ?
+export const fromNullable = <A>(a: A | undefined | null): Maybe<A> => a == null ?
     new Nothing<A>() : new Just(a);
 
 /**
@@ -331,7 +331,7 @@ export const fromArray = <A>(a: A[]): Maybe<A[]> =>
  * fromObject uses Object.keys to turn see if an object 
  * has any own properties.
  */
-export const fromObject = <A>(o: A): Maybe<A> =>
+export const fromObject = <A extends Object>(o: A): Maybe<A> =>
     Object.keys(o).length === 0 ? new Nothing<A>() : new Just(o);
 
 /**

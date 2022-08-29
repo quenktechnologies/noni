@@ -175,7 +175,7 @@ export declare const fromArray: <A>(a: A[]) => Maybe<A[]>;
  * fromObject uses Object.keys to turn see if an object
  * has any own properties.
  */
-export declare const fromObject: <A>(o: A) => Maybe<A>;
+export declare const fromObject: <A extends Object>(o: A) => Maybe<A>;
 /**
  * fromString constructs Nothing<A> if the string is empty or Just<A> otherwise.
  */

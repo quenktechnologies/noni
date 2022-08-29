@@ -65,7 +65,7 @@ export interface ReadFileOptions {
 /**
  * readFile (safe) wrapper
  */
-export declare const readFile: (path: Path, options?: ReadFileOptions | undefined) => Future<Contents>;
+export declare const readFile: (path: Path, options?: ReadFileOptions) => Future<Contents>;
 /**
  * readTextFile reads the contents of a file as a utf8 encoded text file.
  */
