@@ -211,9 +211,21 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 
     }
 
-    finally<B>(f: () => Future<B>): Future<B> {
+    finialize<B>(f: () => Future<B>): Future<B> {
 
         return new Finally(this, f);
+
+    }
+
+    finally(f: () => (void | undefined | null)): Future<A> {
+
+        return this.finialize(() => {
+
+            f();
+
+            return this;
+
+        })
 
     }
 

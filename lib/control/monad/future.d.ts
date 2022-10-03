@@ -96,7 +96,8 @@ export declare abstract class Future<A> implements Monad<A>, Promise<A> {
     chain<B>(f: (a: A) => Future<B>): Future<B>;
     trap<B>(f: (e: Error) => Future<B>): Future<B>;
     catch<B = never>(f: CatchFunc<B> | undefined | null): Future<B>;
-    finally<B>(f: () => Future<B>): Future<B>;
+    finialize<B>(f: () => Future<B>): Future<B>;
+    finally(f: () => (void | undefined | null)): Future<A>;
     then<TResult1 = A, TResult2 = never>(onResolve?: ResolveFunc<A, TResult1>, onReject?: RejectFunc<TResult2>): Promise<TResult1 | TResult2>;
     _fork(value: A, stack: Future<A>[], onError: OnError, onSuccess: OnSuccess<A>): Aborter;
     /**

@@ -214,12 +214,12 @@ describe('future', () => {
 
         });
 
-        describe('finally', () => {
+        describe('finalize', () => {
 
             it('should run after success', () =>
                 toPromise(inc(0)
                     .chain(inc)
-                    .finally(() => pure(12)))
+                    .finialize(() => pure(12)))
                     .then((n: number) => assert(n).equal(12)));
 
             it('should run after failure', () =>
@@ -227,10 +227,36 @@ describe('future', () => {
                     .chain(inc)
                     .chain(() => err('foo'))
                     .catch((e: Error) => pure(assert(e.message).equal('foo')))
-                    .finally(() => pure(12)))
+                    .finialize(() => pure(12)))
                     .then((n: number) => assert(n).equal(12)));
 
         })
+
+        describe('finally', () => {
+
+            it('should run after success', () => {
+                let called = false;
+                return inc(0)
+                    .chain(inc)
+                    .finally(() => { called = true })
+                    .map((n: number) => assert(n).equal(2))
+                    .then(() => assert(called).true());
+            });
+
+            it('should run after failure', () => {
+                let called = false;
+                inc(0)
+                    .chain(inc)
+                    .chain(() => err('foo'))
+                    .catch((e: Error) => {
+                        pure(assert(e.message).equal('foo'))
+                    })
+                    .finally(() => { called = true })
+                    .then(() => assert(called).true());
+
+            });
+
+        });
 
         it('should not duplicate operations', () => {
 
@@ -862,23 +888,23 @@ describe('future', () => {
 
         it('should give the last failure', async () => {
 
-          let threw = false;
+            let threw = false;
 
             try {
 
-               await some([raise(new Error('1')),
-              
-                  raise(new Error('2')), raise(new Error('3'))]);
+                await some([raise(new Error('1')),
+
+                raise(new Error('2')), raise(new Error('3'))]);
 
             } catch (e) {
 
-               threw = true;
+                threw = true;
 
-              assert((<Error>e).message).equal('3');
+                assert((<Error>e).message).equal('3');
 
             }
 
-          assert(threw).true();
+            assert(threw).true();
 
         });
 
