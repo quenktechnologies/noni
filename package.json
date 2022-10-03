@@ -1,6 +1,6 @@
 {
     "name": "@quenk/noni",
-    "version": "1.43.5",
+    "version": "1.43.6",
     "description": "Commons library used by Quenk Technologies everywhere.",
     "scripts": {
         "test": "./node_modules/.bin/mocha $(find -name *_test.ts)"
