@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.44.1] - 2022-12-09
+
+### Added
+- `exec` and `execFile` wrappers
+
 ## [1.43.0] - 2022-05-01
 
 ### Added
