@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.44.2] - 2022-12-31
+
+### Added
+- `isEqual` function for lists and records.
+
 ## [1.44.1] - 2022-12-09
 
 ### Added

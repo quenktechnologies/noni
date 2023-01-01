@@ -110,3 +110,7 @@ export declare const compact: <A>(list: (A | null | undefined)[]) => A[];
  * in the provided [[FindFund]].
  */
 export declare const find: <A>(list: A[], cb: FindFunc<A>) => Maybe<A>;
+/**
+ * isEqual shallow compares two arrays to determine if they are equivalent.
+ */
+export declare const isEqual: <A>(list1: A[], list2: A[]) => boolean;

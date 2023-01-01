@@ -32,7 +32,8 @@ import {
     make,
     pickKey,
     pickValue,
-    forEach
+    forEach,
+    isEqual
 } from '../../../src/data/record';
 
 type A = { a: number };
@@ -940,6 +941,21 @@ describe('record', () => {
             forEach({ a: 1, b: 2, c: 3 }, p => results.push(String(p)));
 
             assert(results).equate(['1', '2', '3']);
+
+        });
+
+    });
+
+    describe('isEqual', () => {
+
+        it('should work', () => {
+
+            assert(isEqual({one: 1, two: 2, three:3}, 
+              {two:2, one:1, three: 3})).true();
+
+            assert(isEqual({one: 3, two:2}, {one:1, two:3})).false();
+
+            assert(isEqual({}, {})).true();
 
         });
 

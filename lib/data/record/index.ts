@@ -5,7 +5,7 @@
  * runtime errors if not used carefully.
  */
 import { concat } from '../array';
-import { isArray } from '../type';
+import { isArray, Type } from '../type';
 import { nothing, just, Maybe } from '../maybe';
 
 /**
@@ -456,3 +456,10 @@ export const pickKey = <A>(rec: Record<A>, test: PickFunc<A>): Maybe<string> =>
 export const pickValue = <A>(rec: Record<A>, test: PickFunc<A>): Maybe<A> =>
     reduce(rec, nothing(), (p, c, k) =>
         p.isJust() ? p : test(c, k, rec) ? just(c) : p);
+
+/**
+ * isEqual shallow compares two records to determine if they are equivalent.
+ */
+export const isEqual = (rec1: object, rec2: object): boolean =>
+    keys(rec1).every(key => (<Record<Type>>rec2)[key] === 
+      (<Record<Type>>rec1)[key]);

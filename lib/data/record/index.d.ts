@@ -229,3 +229,7 @@ export declare const pickKey: <A>(rec: Record<A>, test: PickFunc<A>) => Maybe<st
  * provided test.
  */
 export declare const pickValue: <A>(rec: Record<A>, test: PickFunc<A>) => Maybe<A>;
+/**
+ * isEqual shallow compares two records to determine if they are equivalent.
+ */
+export declare const isEqual: (rec1: object, rec2: object) => boolean;

@@ -17,7 +17,8 @@ import {
     compact,
     flatten,
     concat,
-    find
+    find,
+    isEqual
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -310,5 +311,26 @@ describe('array', () => {
         });
 
     });
+
+    describe('isEqual', () => {
+
+        it('should work', () => {
+
+            assert(isEqual([1, 2, 3], [1, 2, 3])).true();
+
+            assert(isEqual([1, 3], [1, 23])).false();
+
+            assert(isEqual([], [])).true();
+
+        });
+
+        it('should respect order', () => {
+
+            assert(isEqual([1, 2, 3], [1, 3, 2])).false();
+
+        });
+
+    });
+
 
 })

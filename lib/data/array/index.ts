@@ -25,7 +25,7 @@ export type MapFunc<A, B> = (elm: A, idx: number, all: A[]) => B[]
  * FindFunc is a function that returns true when the element provided
  * passes the test.
  */
-export type FindFunc<A> = (elm:A) => boolean; 
+export type FindFunc<A> = (elm: A) => boolean;
 
 /**
  * head returns the item at index 0 of an array
@@ -207,11 +207,17 @@ export const compact = <A>(list: (A | null | undefined)[]): A[] =>
  * find searches an array for the first element that passes the test implemented
  * in the provided [[FindFund]].
  */
-export const find = <A>(list: A[], cb:FindFunc<A>) : Maybe<A> => {
+export const find = <A>(list: A[], cb: FindFunc<A>): Maybe<A> => {
 
-  for(let i=0; i<list.length; i++) 
-    if(cb(list[i])) return just(list[i]);
+    for (let i = 0; i < list.length; i++)
+        if (cb(list[i])) return just(list[i]);
 
     return nothing();
 
 }
+
+/**
+ * isEqual shallow compares two arrays to determine if they are equivalent.
+ */
+export const isEqual = <A>(list1: A[], list2: A[]): boolean =>
+    list1.every((val, idx) => list2[idx] === val);
