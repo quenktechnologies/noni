@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.45.0] - 2023-01-14
+
+### Added
+- `isBrowser`   function to platform for browser/node detection.
+- `crypto/uuid` to support generating v4 uuids.
+
+### Changed
+- We now have a build script for browser based tests via mocha.
+
 ## [1.44.2] - 2022-12-31
 
 ### Added
