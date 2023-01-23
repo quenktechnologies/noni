@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.46.0] - 2023-01-23
+
+### Added
+- Two Stack data structures one uses Maybe, the other does not.
+
+### Changed
+- doFuture() no longer creates chains and can work with try/catch.
+- Raise now invokes an error handling machinery.
+
 ## [1.45.0] - 2023-01-14
 
 ### Added
