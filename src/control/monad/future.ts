@@ -246,7 +246,8 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
     /**
      * fork this Future causing its side-effects to take place.
      */
-    fork(onError: OnError = noop, onSuccess: OnSuccess<A> = noop): Aborter {
+    fork(onError: OnError = console.error,
+         onSuccess: OnSuccess<A> = noop): Aborter {
 
         let comp = new Compute(new UnsafeStack([this]));
 

@@ -316,6 +316,7 @@ export declare const fromExcept: <A>(e: Except<A>) => Future<A>;
 export declare const liftP: <A>(f: () => Promise<A>) => Future<A>;
 /**
  * @internal
+ * TODO: Remove Type usage.
  */
 export declare type DoFutureGenerator<A> = () => Generator<Future<Type>, Future<A>, Type>;
 /**
