@@ -161,11 +161,11 @@ export const readTextFile = (path: Path): Future<string> =>
 export const readJSONFile = (path: Path): Future<Object> =>
     doFuture(function*() {
 
-        let txt = yield readTextFile(path);
+        let txt: string = yield readTextFile(path);
 
-        let json = yield attempt(() => JSON.parse(txt));
+        let json: Object = yield attempt(() => JSON.parse(txt));
 
-        return pure(<Object>json);
+        return pure(json);
 
     });
 

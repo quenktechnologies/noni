@@ -1,19 +1,6 @@
-/**
- * A Future is a primitive for managing asynchronous side-effects in an
- * organized manner.
- *
- * It works by queuing up the async tasks in a monad like chain, only executing
- * them when the instruction to do so is given. This is in contrast to the
- * Promise which executes these side-effects as soon as it is created. A Future
- * is easier to reason about than a Promise and allows async code to be more
- * composable. To allow Futures to benefit from the JS engine's built in Promise
- * support however, Futures also implement the Promise api.
- */
-import { Type } from '../../data/type';
 import { Milliseconds } from '../time';
 import { Err, Except } from '../error';
-import { UnsafeStack } from '../../data/stack';
-import { Monad } from './';
+import { Monad, DoFn } from './';
 /**
  * Yield is a value that may be itself or may be wrapped in a [[Future]].
  *
@@ -112,19 +99,11 @@ export declare abstract class Future<A> implements Monad<A>, Promise<A> {
     finialize<B>(f: () => Future<B>): Future<B>;
     finally(f: () => (void | undefined | null)): Future<A>;
     then<TResult1 = A, TResult2 = never>(onResolve?: ResolveFunc<A, TResult1>, onReject?: RejectFunc<TResult2>): Promise<TResult1 | TResult2>;
+    _fork(value: A, stack: Future<A>[], onError: OnError, onSuccess: OnSuccess<A>): Aborter;
     /**
      * fork this Future causing its side-effects to take place.
      */
     fork(onError?: OnError, onSuccess?: OnSuccess<A>): Aborter;
-}
-/**
- * @internal
- */
-export declare class Compute<A> {
-    stack: UnsafeStack<Future<A>>;
-    constructor(stack?: UnsafeStack<Future<A>>);
-    abort(): void;
-    run(onError: OnError, onSuccess: OnSuccess<A>): Promise<void>;
 }
 /**
  * Pure constructor.
@@ -202,16 +181,6 @@ export declare class Raise<A> extends Future<A> {
 export declare class Run<A> extends Future<A> {
     task: Task<A>;
     constructor(task: Task<A>);
-    tag: string;
-}
-/**
- * Generation constructor.
- *
- * @internal
- */
-export declare class Generation<A> extends Future<A> {
-    src: Generator<Future<Type>, Future<A>, Type>;
-    constructor(src: Generator<Future<Type>, Future<A>, Type>);
     tag: string;
 }
 /**
@@ -315,22 +284,8 @@ export declare const fromExcept: <A>(e: Except<A>) => Future<A>;
  */
 export declare const liftP: <A>(f: () => Promise<A>) => Future<A>;
 /**
- * @internal
- */
-export declare type DoFutureGenerator<A> = () => Generator<Future<Type>, Future<A>, Type>;
-/**
- * doFuture allows for multiple Futures to be chained together in an almost
- * monadic fashion via a generator function.
+ * doFuture provides a do notation function specialized to Futures.
  *
- * Each Future yielded from the generator is executed sequentially with results
- * made available via the Generator#next() method. Raise values trigger an
- * internal error handling mechanism and can be caught via try/catch clauses
- * in the generator.
- *
- * Note: due to the lazy nature of how Futures are evaluated, try/catch will not
- * intercept a Raise used with a return statement. At that point the generator
- * is already complete and that Raise must be handled by the calling code if
- * desired. Alternatively, you can yield the final Future instead of returning
- * it. That way it can be intercepted by the try/catch.
+ * Use this function to avoid explicit type assertions with control/monad#doN.
  */
-export declare const doFuture: <A>(f: DoFutureGenerator<A>) => Future<A>;
+export declare const doFuture: <A>(f: DoFn<A, Future<A>>) => Future<A>;
