@@ -14,8 +14,9 @@ import { noop } from '../../data/function';
 import { Milliseconds } from '../time';
 import { tick } from '../timer';
 import { Err, Except, convert } from '../error';
-import { Monad, DoFn, doN as _doN } from './';
-import { empty, tail } from '../../data/array';
+import { contains, empty } from '../../data/array';
+import { UnsafeStack } from '../../data/stack';
+import { Monad } from './';
 
 /**
  * Yield is a value that may be itself or may be wrapped in a [[Future]].
@@ -242,126 +243,174 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 
     }
 
-    _fork(value: A,
-        stack: Future<A>[],
-        onError: OnError,
-        onSuccess: OnSuccess<A>): Aborter {
-
-        let pending = true;
-
-        let failure = (e: Error) => {
-
-            if (pending) {
-
-                stack.push(new Raise(e));
-                pending = false;
-                this._fork(value, stack, onError, onSuccess);
-
-            } else {
-
-                console.warn(`${this.tag}: onError called after task completed`);
-                console.warn(e);
-
-            }
-
-        }
-
-        let success = (val: A) => {
-
-            if (pending) {
-
-                pending = false;
-
-                if (empty(stack))
-                    onSuccess(val);
-                else
-                    this._fork(val, stack, onError, onSuccess);
-
-            } else {
-
-                console.warn(`${this.tag}: onSuccess called after task completed`);
-                console.trace();
-
-            }
-        }
-
-        while (!empty(stack)) {
-
-            let next = <Future<A>>stack.pop();
-            if (next.tag === 'Pure') {
-
-                tick(() => success((<Pure<A>>next).value));
-                return noop;
-
-            } else if (next.tag === 'Bind') {
-
-                let future = <Bind<A, A>>next;
-                stack.push(new Call(future.func));
-                stack.push(future.target);
-
-            } else if (next.tag === 'Call') {
-
-                let future = <Call<A>>next;
-                stack.push(future.target(value));
-
-            } else if (next.tag === 'Catch') {
-
-                let future = <Catch<A, A>>next;
-                stack.push(new Trap(future.func));
-                stack.push(future.target);
-
-            } else if (next.tag === 'Finally') {
-
-                let future = <Finally<A, A>>next;
-                stack.push(new Trap(future.func));
-                stack.push(new Call(future.func));
-                stack.push(future.target);
-
-            } else if (next.tag === 'Trap') {
-
-                // Avoid hanging when catch().catch().catch() etc. is done.
-                if (empty(stack)) onSuccess(value);
-
-            } else if (next.tag === 'Raise') {
-
-                let future = <Raise<A>>next;
-                let err = convert(future.value);
-
-                // Clear the stack until we encounter a Trap instance.
-                while (!empty(stack) && tail(stack).tag !== 'Trap')
-                    stack.pop();
-
-                if (empty(stack)) {
-
-                    // No handlers detected, finish with an error.
-                    onError(err);
-                    return noop;
-
-                } else {
-
-                    stack.push((<Trap<A>>stack.pop()).func(err));
-
-                }
-
-            } else if (next.tag === 'Run') {
-
-                return (<Run<A>>next).task(failure, success);
-
-            }
-
-        }
-
-        return noop;
-    }
-
     /**
      * fork this Future causing its side-effects to take place.
      */
     fork(onError: OnError = noop, onSuccess: OnSuccess<A> = noop): Aborter {
 
-        // XXX: There is no value until async computation begins.
-        return this._fork(<Type>undefined, [this], onError, onSuccess);
+        let comp = new Compute(new UnsafeStack([this]));
 
+        comp.run(onError, onSuccess);
+
+        return () => comp.abort();
+
+    }
+
+}
+
+const trapTags = ['Trap', 'Generation'];
+
+/**
+ * @internal
+ */
+export class Compute<A> {
+
+    constructor(public stack = new UnsafeStack<Future<A>>()) { }
+
+    abort() { }
+
+    async run(onError: OnError, onSuccess: OnSuccess<A>) {
+
+        let { stack } = this;
+
+        let value: A = <Type>undefined;
+
+        while (!stack.isEmpty()) {
+
+            let next = <Future<A>>stack.pop();
+
+            switch (next.tag) {
+
+                case 'Pure': {
+                    value = await ((<Pure<A>>next).value);
+                    break;
+                }
+
+                case 'Bind': {
+                    let future = <Bind<A, A>>next;
+                    stack.push(new Call(future.func));
+                    stack.push(future.target);
+                    break;
+                }
+
+                case 'Call': {
+                    let future = <Call<A>>next;
+                    stack.push(future.target(value));
+                    break;
+                }
+
+                case 'Catch': {
+                    let future = <Catch<A, A>>next;
+                    stack.push(new Trap(future.func));
+                    stack.push(future.target);
+                    break;
+                }
+
+                case 'Finally': {
+                    let future = <Finally<A, A>>next;
+                    stack.push(new Trap(future.func));
+                    stack.push(new Call(future.func));
+                    stack.push(future.target);
+                    break;
+                }
+
+                case 'Raise': {
+
+                    let future = <Raise<A>>next;
+                    let err = convert(future.value);
+
+                    // Clear the stack until we encounter a Trap or Generation.
+                    while (
+                        !stack.isEmpty() &&
+                        !contains(trapTags, (<Future<A>>stack.peek()).tag))
+                        stack.pop();
+
+                    // If no handlers detected, we should proceed no further and
+                    // finish up with an error.
+                    if (stack.isEmpty())
+                        return onError(err);
+
+                    let top = (<Future<A>>stack.peek());
+
+                    if (top.tag === 'Generation') {
+
+                        // Hook into the engine's generator error 
+                        // handling machinery. We need to capture any errors
+                        // thrown out to give prior traps a chance to handle 
+                        // them.
+                        try {
+
+                            let { done, value: future } =
+                                (<Generation<A>>top).src.throw(err);
+
+                            // Pop the Generation if the generator finished. 
+                            if (done) stack.pop();
+
+                            stack.push(future);
+
+                        } catch (e) {
+
+                            // The generator did not handle the error or threw
+                            // one of its own. Get rid of it and escalate.
+                            stack.pop();
+                            stack.push(e === err ? next : new Raise(<Error>e));
+
+                        }
+
+                    } else if (top.tag === 'Trap') {
+
+                        stack.push((<Trap<A>>top).func(err));
+
+                    }
+
+                    break;
+                }
+
+                case 'Trap':
+                    break;
+
+                case 'Run': {
+
+                    value = await new Promise((resolve) => {
+
+                        (<Run<A>>next).task((e: Error) => {
+
+                            stack.push(new Raise(e));
+
+                            resolve(<Type>undefined);
+
+                        }, resolve);
+                    });
+
+                    break;
+                }
+
+                case 'Generation': {
+
+                    let { done, value: future } =
+                        (<Generation<A>>next).src.next(value);
+
+                    if (future != null) {
+
+                        // Put the Generation back on the stack if it still has
+                        // items.
+                        if (!done) stack.push(next);
+
+                        stack.push(future);
+
+                    }
+
+                    break;
+                }
+
+                default:
+                    let tag = next ? next.constructor.name : next;
+                    return onError(new Error(`Unknown Future: ${tag}`));
+            }
+
+        }
+
+        return onSuccess(value);
     }
 
 }
@@ -497,6 +546,21 @@ export class Run<A> extends Future<A> {
 }
 
 /**
+ * Generation constructor.
+ *
+ * @internal
+ */
+export class Generation<A> extends Future<A> {
+
+    constructor(public src: Generator<Future<Type>, Future<A>, Type>) {
+        super();
+    }
+
+    tag = 'Generation';
+
+}
+
+/**
  * pure wraps a synchronous value in a Future.
  */
 export const pure = <A>(a: A): Future<A> => new Pure(a);
@@ -578,6 +642,7 @@ export const fromAbortable = <A>(abort: Aborter) => (f: CallbackReceiver<A>)
 
         f((err: Error | null | undefined, a?: A) =>
             (err != null) ? onError(err) : onSuccess(<A>a));
+
         return abort;
 
     });
@@ -756,37 +821,27 @@ export const race = <A>(list: Future<A>[]): Future<A> =>
  *
  * If none resolve successfully, the final error is raised.
  */
-export const some = <A>(list: Future<A>[]): Future<A> => doFuture(function*() {
+export const some = <A>(list: Future<A>[]): Future<A> =>
+    doFuture<A>(function*() {
 
-    let result: A = <Type>undefined;
+        for (let i = 0; i < list.length; i++) {
 
-    for (let [index, future] of list.entries()) {
+            try {
 
-        let keepGoing = false;
+                let result = yield list[i];
+                return pure(result);
 
-        result = yield (future.catch(e => {
+            } catch (e) {
 
-            if (index === (list.length - 1)) {
-
-                return raise(e);
-
-            } else {
-
-                keepGoing = true;
-
-                return voidPure;
+                if (i === (list.length - 1)) return raise(<Error>e);
 
             }
 
-        }));
+        }
 
-        if (!keepGoing) break;
+        return raise(new Error('some: empty list'));
 
-    }
-
-    return pure(result);
-
-});
+    });
 
 /**
  * toPromise transforms a Future into a Promise.
@@ -820,8 +875,26 @@ export const liftP = <A>(f: () => Promise<A>): Future<A> =>
     });
 
 /**
- * doFuture provides a do notation function specialized to Futures.
- *
- * Use this function to avoid explicit type assertions with control/monad#doN.
+ * @internal
+ * TODO: Remove Type usage.
  */
-export const doFuture = <A>(f: DoFn<A, Future<A>>): Future<A> => _doN(f);
+export type DoFutureGenerator<A>
+    = () => Generator<Future<Type>, Future<A>, Type>;
+
+/**
+ * doFuture allows for multiple Futures to be chained together in an almost
+ * monadic fashion via a generator function.
+ *
+ * Each Future yielded from the generator is executed sequentially with results
+ * made available via the Generator#next() method. Raise values trigger an
+ * internal error handling mechanism and can be caught via try/catch clauses
+ * in the generator. 
+ *
+ * Note: due to the lazy nature of how Futures are evaluated, try/catch will not
+ * intercept a Raise used with a return statement. At that point the generator
+ * is already complete and that Raise must be handled by the calling code if 
+ * desired. Alternatively, you can yield the final Future instead of returning
+ * it. That way it can be intercepted by the try/catch.
+ */
+export const doFuture = <A>(f: DoFutureGenerator<A>): Future<A> =>
+    new Generation(f()); 

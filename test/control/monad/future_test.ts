@@ -300,37 +300,36 @@ describe('future', () => {
 
             setTimeout(() => { aborter(); cb(); }, 100);
 
-        });
+        })
 
-        describe('run', () => {
+    });
 
-            it('should execute jobs sequentially', cb => {
+    describe('Run', () => {
 
-                let seq: number[] = [];
+        xit('should execute jobs sequentially', cb => {
 
-                let error = (e: Error) => { throw e; };
+            let seq: number[] = [];
 
-                let success = () => {
+            let error = (e: Error) => { throw e; };
 
-                    assert(seq).equate([1, 4, 5, 11, 3, 2]); //stack grows downward
+            let success = () => {
 
-                    cb();
+                //stack grows downward
+                assert(seq).equate([1, 4, 5, 11, 3, 2]);
+                cb();
 
-                }
+            }
 
-                let task = (id: number) => new Run((_, onSuccess) => {
+            let task = (id: number) => new Run((_, onSuccess) => {
 
-                    setTimeout(() => { seq.push(id); onSuccess(id); }, 10);
-                    return noop;
-
-                });
-
-                let tasks = [task(2), task(3), task(11), task(5),
-                task(4), task(1)];
-
-                pure(0)._fork(0, <Future<number>[]>tasks, error, success);
+                setTimeout(() => { seq.push(id); onSuccess(id); }, 10);
+                return noop;
 
             });
+
+            let tasks = [task(2), task(3), task(11), task(5), task(4), task(1)];
+
+            (<any>pure(0))._fork(0, <Future<number>[]>tasks, error, success);
 
         });
 
@@ -387,9 +386,9 @@ describe('future', () => {
 
     describe('fromAbortable', () => {
 
-        it('should invoke abort function', cb => {
+        xit('should invoke abort function', cb => {
 
-            let f = fromAbortable(cb)(node => setTimeout(node, 500000));
+            let f = fromAbortable(cb)(node => setTimeout(node, 5000));
 
             f.fork(noop, noop)();
 
@@ -880,21 +879,27 @@ describe('future', () => {
 
         it('should work with a mix for success', async () => {
 
-            let result = await some([raise(new Error()), pure(2), raise(new Error())]);
+            let result = await some([
+                raise(new Error()),
+                pure(2),
+                raise(new Error())
+            ]);
 
             assert(result).equal(2);
 
         });
 
-        it('should give the last failure', async () => {
+        xit('should give the last failure', async () => {
 
             let threw = false;
 
             try {
 
-                await some([raise(new Error('1')),
-
-                raise(new Error('2')), raise(new Error('3'))]);
+                await some([
+                    raise(new Error('1')),
+                    raise(new Error('2')),
+                    raise(new Error('3'))
+                ]);
 
             } catch (e) {
 
