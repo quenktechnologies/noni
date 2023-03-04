@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.47.0] - 2023-03-03
+
+### Changed
+
+ - Changed Future to no longer use internal callbacks to avoid #78. It's all
+   Promises now and support for abort() is more or less gone (for now).
+  
 ## [1.46.0] - 2023-01-23
 
 ### Added
