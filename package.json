@@ -14,11 +14,9 @@
     "main": "lib",
     "types": "lib/index.d.ts",
     "devDependencies": {
-        "@quenk/must": "^1.0.5",
         "@quenk/test": "^2.2.4",
         "@types/mocha": "^9.1.1",
         "@types/node": "^18.8.0",
-        "browserify": "^17.0.0",
         "mocha": "^10.0.0",
         "ts-node": "^10.7.0",
         "typescript": "^4.8.4"
