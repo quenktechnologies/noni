@@ -13,4 +13,6 @@ updates:
       prefix: "build"
     automerge:
       enabled: false
-    create-merge-commit: true
+    reviewers:
+      - "metasansana"
+    target-branch: "master"
