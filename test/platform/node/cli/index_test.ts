@@ -36,7 +36,7 @@ describe('cli', () => {
 
                 let called = false;
 
-                yield exec(`${__dirname}/err.sh`).catch(e => {
+                yield exec(`${__dirname}/err.sh`).trap(e => {
 
                     called = true;
 
@@ -57,7 +57,7 @@ describe('cli', () => {
 
                 let called = false;
 
-                yield exec(`${__dirname}/nobody.sh`).catch(e => {
+                yield exec(`${__dirname}/nobody.sh`).trap(e => {
 
                     called = true;
 
@@ -106,7 +106,7 @@ describe('cli', () => {
 
                 let called = false;
 
-                yield execFile(`${__dirname}/err.sh`).catch(e => {
+                yield execFile(`${__dirname}/err.sh`).trap(e => {
 
                     called = true;
 
@@ -127,7 +127,7 @@ describe('cli', () => {
 
                 let called = false;
 
-                yield execFile(`${__dirname}/nobody.sh`).catch(e => {
+                yield execFile(`${__dirname}/nobody.sh`).trap(e => {
 
                     called = true;
 

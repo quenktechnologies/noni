@@ -102,16 +102,16 @@ describe('file', () => {
 
         it('should fail on invalid JSON file', () => doFuture(function*() {
 
-          let failed = false;
+            let failed = false;
 
             yield readJSONFile(`${__dirname}/fixtures/about`)
-          .catch(()=> {
+                .trap(() => {
 
-            failed = true;
+                    failed = true;
 
-            return voidPure;
+                    return voidPure;
 
-          });
+                });
 
             return attempt(() => assert(failed).true());
 
@@ -268,7 +268,7 @@ describe('file', () => {
             return toPromise(writeTextFile(dest, 'will delete')
                 .chain(() => readTextFile(dest))
                 .map(txt => assert(txt).equal('will delete'))
-                .catch(() => pure(assert(true).be.false()))
+                .trap(() => pure(assert(true).be.false()))
                 .chain(() => unlink(dest))
                 .chain(() => exists(dest))
                 .map(yes => assert(yes).be.false()));

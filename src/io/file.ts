@@ -110,7 +110,7 @@ export const statDirRec = (path: Path): Future<StatsM> =>
 export const exists = (path: Path): Future<boolean> =>
     stat(path)
         .chain(() => pure(<boolean>true))
-        .catch(() => pure(<boolean>false));
+        .trap(() => pure(<boolean>false));
 
 /**
  * isDirectory (safe) wrapper.

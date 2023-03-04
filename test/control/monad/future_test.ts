@@ -4,7 +4,6 @@ import * as applicative from '../../checks//applicative';
 import * as chain from '../../checks/chain';
 import * as monad from '../../checks/monad';
 import { assert } from '@quenk/test/lib/assert';
-import { tick } from '../../../src/control/timer';
 import { noop } from '../../../src/data/function';
 import {
     Future,
@@ -13,7 +12,6 @@ import {
     attempt,
     delay,
     wait,
-    fromAbortable,
     fromCallback,
     raise,
     sequential,
@@ -39,44 +37,38 @@ const map = (n: number) => n * 2;
 
 const bind = (n: number) => pure(n * 1);
 
-const inc = (n: number) => new Run<number>((_, onSuccess) => {
+const inc = (n: number) => new Run<number>(async () => n + 1);
 
-    tick(() => onSuccess(n + 1));
-    return noop;
+const err = <T>(msg: string) => new Run<T>(async () => {
 
-});
-
-const err = <T>(msg: string) => new Run<T>(onError => {
-
-    tick(() => onError(new Error(msg)));
-    return noop;
+    throw new Error(msg);
 
 });
 
 const errorTask = (m: string, delay: number, tags: string[]) =>
-    new Run(onError => {
+    new Run(() => new Promise((_, reject) => {
 
         setTimeout(() => {
-            onError(new Error(m));
+            reject(new Error(m));
             tags.push(m)
         }, delay);
 
         return noop;
 
-    });
+    }));
 
 const tagTask = (tag: string, n: number, tags: string[]) =>
-    new Run<number>((_, onSuccess) => {
+    new Run<number>(() => new Promise(resolve => {
 
         setTimeout(() => {
-            onSuccess(n);
+            resolve(n);
             tags.push(tag);
         }, n);
         return noop;
 
-    });
+    }));
 
-const promiseTask = () => new Promise((y, _) => {
+const promiseTask = () => new Promise(y => {
 
     setTimeout(() => y(12), 1000);
 
@@ -180,33 +172,33 @@ describe('future', () => {
 
         })
 
-        describe('catch', () => {
+        describe('trap', () => {
 
             it('should allow errors to be caught', () =>
-                toPromise(inc(0)
+                inc(0)
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(assert(e.message).equal('foo')))))
+                    .trap((e: Error) => pure(assert(e.message).equal('foo'))))
 
             it('should not duplicate errors', () =>
-                toPromise(inc(0)
+                inc(0)
                     .chain(inc)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => pure(assert(e.message).equal('foo')))
-                    .catch((e: Error) => pure(assert(e).equal('foo')))));
+                    .trap((e: Error) => pure(assert(e.message).equal('foo')))
+                    .trap((e: Error) => pure(assert(e).equal('foo'))));
 
             it('should not swallow further errors', cb => {
-
-                toPromise(inc(0)
+                inc(0)
                     .chain(inc)
                     .chain(() => err('first'))
-                    .catch((_: Error) => inc(0))
-                    .chain(() => err('second')))
+                    .trap((_: Error) => inc(0))
+                    .chain(() => err('second'))
                     .catch(e => {
 
                         assert(e.message).be.equal('second');
+
                         cb();
 
                     })
@@ -214,134 +206,55 @@ describe('future', () => {
 
         });
 
-        describe('finalize', () => {
+        describe('finish', () => {
 
             it('should run after success', () =>
-                toPromise(inc(0)
+                inc(0)
                     .chain(inc)
-                    .finialize(() => pure(12)))
+                    .finish(() => pure(12))
                     .then((n: number) => assert(n).equal(12)));
 
             it('should run after failure', () =>
-                toPromise(inc(0)
-                    .chain(inc)
-                    .chain(() => err('foo'))
-                    .catch((e: Error) => pure(assert(e.message).equal('foo')))
-                    .finialize(() => pure(12)))
-                    .then((n: number) => assert(n).equal(12)));
-
-        })
-
-        describe('finally', () => {
-
-            it('should run after success', () => {
-                let called = false;
-                return inc(0)
-                    .chain(inc)
-                    .finally(() => { called = true })
-                    .map((n: number) => assert(n).equal(2))
-                    .then(() => assert(called).true());
-            });
-
-            it('should run after failure', () => {
-                let called = false;
                 inc(0)
                     .chain(inc)
                     .chain(() => err('foo'))
-                    .catch((e: Error) => {
-                        pure(assert(e.message).equal('foo'))
-                    })
-                    .finally(() => { called = true })
-                    .then(() => assert(called).true());
+                    .trap((e: Error) => pure(assert(e.message).equal('foo')))
+                    .finish(() => pure(12))
+                    .then((n: number) => assert(n).equal(12)));
 
-            });
-
-        });
-
-        it('should not duplicate operations', () => {
-
-            let count = 0;
-            let m = () => { count = count + 1; return pure(count); };
-
-            return toPromise(pure(0)
-                .chain(m)
-                .chain(m)
-                .chain(m))
-                .then(() => assert(count).equal(3));
 
         })
 
-        it('should pretend to be a promise', async () => {
+        describe('chain', () => {
 
-            let p: Promise<number> = pure(12);
+            it('should not duplicate operations', async () => {
 
-            assert(await p).equal(12);
+                let count = 0;
+                let m = () => { count = count + 1; return pure(count); };
+
+                let result = await pure(0)
+                    .chain(m)
+                    .chain(m)
+                    .chain(m);
+
+                assert(result).equal(3);
+
+            })
 
         });
 
     })
 
-    describe('Aborter', () => {
-
-        it('should work', cb => {
-
-            let error = (_: Error) => { throw _; }
-
-            let success = (_: any) => { throw new Error(_); }
-
-            let job = new Run((_, onSuccess) => {
-
-                setTimeout(() => onSuccess(true), 100000);
-                return noop;
-
-            });
-
-            let aborter = job.fork(error, success);
-
-            setTimeout(() => { aborter(); cb(); }, 100);
-
-        })
-
-    });
-
-    describe('Run', () => {
-
-        xit('should execute jobs sequentially', cb => {
-
-            let seq: number[] = [];
-
-            let error = (e: Error) => { throw e; };
-
-            let success = () => {
-
-                //stack grows downward
-                assert(seq).equate([1, 4, 5, 11, 3, 2]);
-                cb();
-
-            }
-
-            let task = (id: number) => new Run((_, onSuccess) => {
-
-                setTimeout(() => { seq.push(id); onSuccess(id); }, 10);
-                return noop;
-
-            });
-
-            let tasks = [task(2), task(3), task(11), task(5), task(4), task(1)];
-
-            (<any>pure(0))._fork(0, <Future<number>[]>tasks, error, success);
-
-        });
-
-    });
-
     describe('attempt', () => {
 
-        it('should trap errors', () =>
-            toPromise(attempt(() => { throw new Error('foo'); })
+        it('should trap errors', async () => {
+
+            let str = await attempt(() => { throw new Error('foo'); })
                 .chain(inc)
-                .catch((e: Error) => pure(e.message)))
-                .then((s: string) => assert(s).equal('foo')));
+                .trap((e: Error) => pure(e.message));
+
+            assert(str).equal('foo');
+        });
 
         it('should work otherwise', () =>
             toPromise(attempt(() => 11)
@@ -361,38 +274,25 @@ describe('future', () => {
 
     describe('wait', () => {
 
-        it('should pause chain execution', () => {
+        it('should pause chain execution', async () => {
 
             let then = Date.now();
 
-            return toPromise(
-                wait(1000)
-                    .chain((): Future<void> => {
+            return wait(1000)
+                .chain((): Future<void> => {
 
-                        let x = Date.now() - then;
+                    let x = Date.now() - then;
 
-                        if (x < 1000)
-                            return <Future<void>>raise(
-                                new Error(`waited ${x} milliseconds `
-                                    + `instead of 1000`))!
-                        else
-                            return <Future<void>>pure(undefined);
+                    if (x < 1000)
+                        return <Future<void>>raise(
+                            new Error(`waited ${x} milliseconds `
+                                + `instead of 1000`))!
+                    else
+                        return <Future<void>>pure(undefined);
 
-                    }))
+                })
 
         })
-
-    });
-
-    describe('fromAbortable', () => {
-
-        xit('should invoke abort function', cb => {
-
-            let f = fromAbortable(cb)(node => setTimeout(node, 5000));
-
-            f.fork(noop, noop)();
-
-        });
 
     });
 
@@ -415,30 +315,28 @@ describe('future', () => {
 
     describe('sequential', () => {
 
-        it('should fail if any fail', () => {
+        it('should fail if any fail', async () => {
 
             let tags: string[] = [];
             let failed = false;
 
-            return toPromise(sequential([
+            await sequential([
                 tagTask('a', 1000, tags),
                 errorTask('m', 2000, tags),
                 errorTask('foo', 500, tags),
                 tagTask('d', 200, tags)])
-                .catch((e: Error) => {
+                .trap((e: Error) => {
 
                     if (e.message === 'm')
                         failed = true;
 
                     return pure(tags);
 
-                }))
-                .then(() => {
-
-                    assert(failed).be.true();
-                    assert(tags).equate(['a', 'm']);
-
                 });
+
+            assert(failed).be.true();
+            assert(tags).equate(['a', 'm']);
+
 
         });
 
@@ -446,11 +344,11 @@ describe('future', () => {
 
             let tags: string[] = [];
 
-            return toPromise(sequential([
+            return sequential([
                 tagTask('a', 300, tags),
                 tagTask('b', 200, tags),
                 tagTask('c', 500, tags),
-                tagTask('d', 600, tags)]))
+                tagTask('d', 600, tags)])
                 .then((list: number[]) => {
                     assert(list).equate([300, 200, 500, 600])
                 })
@@ -481,16 +379,16 @@ describe('future', () => {
                 <Future<undefined>>raise(new Error('2'))
             ]);
 
-            return toPromise(
-                seq
-                    .catch((e: Error) => {
+            return
+            seq
+                .trap((e: Error) => {
 
-                        if (e.message === '1')
-                            failed = true;
+                    if (e.message === '1')
+                        failed = true;
 
-                        return pure(<undefined[]>[]);
+                    return pure(<undefined[]>[]);
 
-                    }))
+                })
                 .then(() => assert(failed).be.true())
 
         });
@@ -507,16 +405,16 @@ describe('future', () => {
 
             let failed = false;
 
-            return toPromise(reduce([1, 2, 3, 4], 0, (p, c, k) =>
+            return reduce([1, 2, 3, 4], 0, (p, c, k) =>
                 (k === 2) ? raise(new Error('not allowed')) : pure(p + c))
-                .catch((e: Error) => {
+                .trap((e: Error) => {
 
                     if (e.message === 'not allowed')
                         failed = true;
 
                     return pure(6);
 
-                }))
+                })
                 .then(() => {
 
                     assert(failed).be.true();
@@ -536,30 +434,28 @@ describe('future', () => {
 
     describe('batch', () => {
 
-        it('should fail if any fail', () => {
+        it('should fail if any fail', async () => {
 
             let tags: string[] = [];
             let failed = false;
 
-            return toPromise(batch([
+            await batch([
                 [tagTask('a', 1000, tags), tagTask('a', 2000, tags)],
                 [errorTask('m', 1000, tags)],
                 [errorTask('foo', 500, tags)],
                 [tagTask('d', 200, tags)]])
-                .catch((e: Error) => {
+
+                .trap((e: Error) => {
 
                     if (e.message === 'm')
                         failed = true;
 
                     return pure([tags]);
 
-                }))
-                .then(() => {
-
-                    assert(failed).be.true();
-                    assert(tags).equate(['a', 'a', 'm']);
-
                 });
+
+            assert(failed).be.true();
+            assert(tags).equate(['a', 'a', 'm']);
 
         });
 
@@ -606,19 +502,19 @@ describe('future', () => {
 
             let failed = false;
 
-            return toPromise(batch([
+            return batch([
 
                 [raise(new Error('1')), raise(new Error('2'))]
 
             ])
-                .catch((e: Error) => {
+                .trap((e: Error) => {
 
                     if (e.message === '1')
                         failed = true;
 
                     return pure(<any[]>[]);
 
-                }))
+                })
                 .then(() => {
 
                     assert(failed).be.true();
@@ -631,7 +527,7 @@ describe('future', () => {
 
     describe('parallel', () => {
 
-        it('should fail if any fail', () => {
+        it('should fail if any fail', async () => {
 
             let failed = false;
             let tags: string[] = [];
@@ -642,13 +538,14 @@ describe('future', () => {
                 errorTask('foo', 500, tags),
                 tagTask('bar', 200, tags)];
 
-            return toPromise(parallel(tasks)
-                .catch((e: Error) => {
+            await parallel(tasks)
+                .trap((e: Error) => {
                     if (e.message === 'foo')
                         failed = true;
                     return pure(<{}[]>[])
-                }))
-                .then(() => assert(failed).equal(true));
+                });
+
+            assert(failed).equal(true);
 
         });
 
@@ -692,16 +589,16 @@ describe('future', () => {
                 raise(e),
                 raise(e)]);
 
-            return toPromise(
-                par
-                    .catch((e: Error) => {
+            return
+            par
+                .trap((e: Error) => {
 
-                        if (e.message === 'a')
-                            failed = true;
+                    if (e.message === 'a')
+                        failed = true;
 
-                        return pure(<undefined[]>[]);
+                    return pure(<undefined[]>[]);
 
-                    }))
+                })
                 .then(() => assert(failed).be.true());
 
         });
@@ -710,16 +607,16 @@ describe('future', () => {
 
             let failed = false;
 
-            return toPromise(
-                parallel([raise(new Error('1')), raise(new Error('2'))])
-                    .catch((e: Error) => {
+            return
+            parallel([raise(new Error('1')), raise(new Error('2'))])
+                .trap((e: Error) => {
 
-                        if (e.message === '1')
-                            failed = true;
+                    if (e.message === '1')
+                        failed = true;
 
-                        return pure(<any[]>[]);
+                    return pure(<any[]>[]);
 
-                    }))
+                })
                 .then(() => {
 
                     assert(failed).be.true();
@@ -732,30 +629,29 @@ describe('future', () => {
 
     describe('race', () => {
 
-        it('should fail on the first error', () => {
+        it('should fail on the first error', async () => {
 
             let tags: string[] = [];
+
             let failed = false;
 
-            return toPromise(race([
+            await race([
                 tagTask('a', 1000, tags),
                 tagTask('b', 2000, tags),
                 errorTask('c', 100, tags),
                 tagTask('d', 500, tags),
                 tagTask('e', 800, tags)])
-                .catch((e: Error) => {
+                .trap((e: Error) => {
 
                     if (e.message === 'c')
                         failed = true;
 
                     return pure(tags);
 
-                }))
-                .then(() => {
-
-                    assert(failed).be.true();
-
                 });
+
+            assert(failed).be.true();
+
 
         });
 
@@ -791,18 +687,18 @@ describe('future', () => {
 
             let failed = false;
 
-            return toPromise(race([
+            return race([
                 raise(new Error('1')),
                 raise(new Error('2'))
             ])
-                .catch((e: Error) => {
+                .trap((e: Error) => {
 
                     if (e.message === '1')
                         failed = true;
 
                     return pure(<any>[]);
 
-                }))
+                })
                 .then(() => {
 
                     assert(failed).be.true();
@@ -834,7 +730,7 @@ describe('future', () => {
             });
 
             liftP<{}>(promiseErrTask)
-                .catch(e => {
+                .trap(e => {
 
                     assert(e.message).equal('promise');
                     done();
@@ -889,7 +785,7 @@ describe('future', () => {
 
         });
 
-        xit('should give the last failure', async () => {
+        it('should give the last failure', async () => {
 
             let threw = false;
 
