@@ -3,7 +3,8 @@
     "version": "1.46.1",
     "description": "Commons library used by Quenk Technologies everywhere.",
     "scripts": {
-        "test": "./node_modules/.bin/mocha $(find -name *_test.ts)"
+        "test": "./node_modules/.bin/mocha $(find -name *_test.ts)",
+        "build": "make"
     },
     "author": "Quenk Technologies Limited <info@quenk.com> (http://quenk.com)",
     "license": "Apache-2.0",
