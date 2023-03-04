@@ -1,0 +1,12 @@
+name: build
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  ci:
+    uses: quenktechnologies/.github/.github/workflows/node.yml@master
+    secrets: inherit
+    with:
+      target: build_release
