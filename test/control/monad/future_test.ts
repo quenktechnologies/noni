@@ -204,6 +204,22 @@ describe('future', () => {
                     })
             });
 
+        })
+
+        describe('run', () => {
+
+            it('should not execute before the Future is forked', () => {
+
+                let x = 0;
+
+                let future = Future.do(async () => { await x++ });
+
+                future.run();
+
+                assert(x).equal(0);
+
+            });
+
         });
 
         describe('finish', () => {
@@ -290,12 +306,12 @@ describe('future', () => {
 
                 assert(x).equal(0);
 
-                result.fork(()=>{}, ()=> {
+                result.fork(() => { }, () => {
 
-                assert(x).equal(1);
+                    assert(x).equal(1);
 
-                done();
-               
+                    done();
+
                 });
 
             });

@@ -247,6 +247,10 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
         let stack = new UnsafeStack<Future<A>>([this]);
 
         let value: A = <Type>undefined;
+
+      // Ensure this always finishes asynchronously.
+      await new Promise<void>(resolve => queueMicrotask(resolve));
+
         while (!stack.isEmpty()) {
 
             let next = <Future<A>>stack.pop();
