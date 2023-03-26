@@ -139,6 +139,32 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
      */
     constructor(public tag: string = 'Future') { }
 
+    /**
+     * do notation for Futures using async functions.
+     *
+     * An async function executes its body sequentially, pausing at each 'await'
+     * statement preventing asynchronous tasks from pre-empting each other. This
+     * is in line with how Futures are meant to work and could be seen as the
+     * Promise equivalent of:
+     * 
+     * ```
+     *  pure().chain(task1).chain(task2).chain(task3);
+     * ```
+     * The difference between Futures and promises of course, is that Futures do 
+     * not execute their tasks until fork() is called whereas Promises are 
+     * immediate. Nonetheless, an async function can be treated as a Future 
+     * because it does not execute any code until it is called.
+     *
+     * This static method may therfore be more desirable than doFuture() as it 
+     * allows for the use of arrow functions doing await with the need to set 
+     * `this` to a variable.
+     */
+    static do<A>(fun: Task<A>): Future<A> {
+
+        return new Run(fun);
+
+    }
+
     get [Symbol.toStringTag]() {
 
         return 'Future';
@@ -221,7 +247,6 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
         let stack = new UnsafeStack<Future<A>>([this]);
 
         let value: A = <Type>undefined;
-
         while (!stack.isEmpty()) {
 
             let next = <Future<A>>stack.pop();

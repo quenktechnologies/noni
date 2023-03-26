@@ -243,7 +243,66 @@ describe('future', () => {
 
         });
 
-    })
+        describe('do', () => {
+
+            it('should execute the body', async () => {
+
+                let result = await Future.do(async () => {
+
+                    let x = await pure(0);
+
+                    x = await inc(x);
+
+                    x = await inc(x);
+
+                    return x + 1;
+
+                });
+
+                assert(result).equal(3);
+
+            });
+
+            it('should return a Future', done => {
+
+                let result = Future.do(async () => 12);
+
+                assert(result).be.instance.of(Future);
+
+                result.fork(() => { }, val => {
+
+                    assert(val).equal(12);
+
+                    done();
+
+                });
+
+            });
+
+            it('should not execute before the Future is forked', done => {
+
+                let x = 0;
+
+                let result = Future.do(async () => {
+                    await x++
+
+                })
+
+                assert(x).equal(0);
+
+                result.fork(()=>{}, ()=> {
+
+                assert(x).equal(1);
+
+                done();
+               
+                });
+
+            });
+
+        })
+
+    });
 
     describe('attempt', () => {
 
