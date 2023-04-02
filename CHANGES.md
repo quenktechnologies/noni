@@ -1,9 +1,18 @@
 # Changelog
 
+## [1.49.0] - 2023-04-02
+
+### Added
+ - `raise` to except module to quickly turn errors into `Except<T>` values.
+
+### Changed
+ - Split `error` module into `except` and `err`. `error` is deprecated.
+
+## [1.48.0] - ???
+
 ## [1.47.0] - 2023-03-03
 
 ### Changed
-
  - Changed Future to no longer use internal callbacks to avoid #78. It's all
    Promises now and support for abort() is more or less gone (for now).
   
