@@ -56,7 +56,7 @@ export const isBoolean = (value: Type): value is boolean =>
 /**
  * isFunction test.
  */
-export const isFunction = (value: Type): value is (<A, B>(a: A) => B) =>
+export const isFunction = (value: Type): value is Function => 
     typeof value === 'function';
 
 /**
