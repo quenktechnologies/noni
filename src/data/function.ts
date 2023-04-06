@@ -27,10 +27,10 @@ export const compose4 = <A, B, C, D, E>
  */
 export const compose5 = <A, B, C, D, E, F>
     (f: Function<A, B>,
-    g: Function<B, C>,
-    h: Function<C, D>,
-    i: Function<D, E>,
-    j: Function<E, F>) => (a: A) => j(i(h(g(f(a)))));
+        g: Function<B, C>,
+        h: Function<C, D>,
+        i: Function<D, E>,
+        j: Function<E, F>) => (a: A) => j(i(h(g(f(a)))));
 
 /**
  * cons given two values, ignore the second and always return the first.
@@ -76,6 +76,31 @@ export const curry5 = <A, B, C, D, E, F>
     (a: A) => (b: B) => (c: C) => (d: D) => (e: E) => f(a, b, c, d, e);
 
 /**
+ * apply is partial application for a function of 2 arity.
+ */
+export const apply = <A, B, C>
+    (f: (a: A, b: B) => C, a: A) => curry(f)(a);
+
+/**
+ * apply3 is partial application for a function of 3 arity.
+ */
+export const apply3 = <A, B, C, D>
+    (f: (a: A, b: B, c: C) => D, a: A, b: B) => curry3(f)(a)(b)
+
+/**
+ * apply4 is partial application for a function of 4 arity.
+ */
+export const apply4 = <A, B, C, D, E>
+    (f: (a: A, b: B, c: C, d: D) => E, a: A, b: B, c: C) => curry4(f)(a)(b)(c);
+
+/**
+ * apply5 is partial application for a function of 4 arity.
+ */
+export const apply5 = <A, B, C, D, E, F>
+    (f: (a: A, b: B, c: C, d: D, e: E) => F, a: A, b: B, c: C, d: D) =>
+    curry5(f)(a)(b)(c)(d);
+
+/**
  * noop function
  */
-export const noop = () : void=> {};
+export const noop = (): void => { };
