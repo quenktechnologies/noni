@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.50.0] - 2023-04-06
+
+### Added
+ - Functions for partial application up to arity of 5.
+
 ## [1.49.0] - 2023-04-02
 
 ### Added
