@@ -318,6 +318,30 @@ describe('future', () => {
 
         })
 
+        describe('trap', () => {
+
+            it('should not recusively call itself when a Raise is returned', async () => {
+
+                let error = (msg:string) => raise(new Error(msg));
+                let ok = true;
+
+                try {
+
+                await error('BOOM').trap(e => raise(new Error(`KA${e.message}`)));
+
+                } catch (e) {
+
+                    assert((<Error>e).message).equal('KABOOM');
+                    ok = true;
+
+                }
+
+                assert(ok).true();
+
+            });
+
+        });
+
     });
 
     describe('attempt', () => {
@@ -334,7 +358,7 @@ describe('future', () => {
         it('should work otherwise', () =>
             toPromise(attempt(() => 11)
                 .chain(inc))
-                .then((n: number) => assert(n).equal(12)))
+            .then((n: number) => assert(n).equal(12)))
 
     });
 
@@ -343,7 +367,7 @@ describe('future', () => {
         it('should delay results', () =>
             toPromise(delay(() => 11)
                 .chain(inc))
-                .then((n: number) => assert(n).equal(12)))
+            .then((n: number) => assert(n).equal(12)))
 
     });
 
@@ -362,7 +386,7 @@ describe('future', () => {
                         return <Future<void>>raise(
                             new Error(`waited ${x} milliseconds `
                                 + `instead of 1000`))!
-                    else
+                        else
                         return <Future<void>>pure(undefined);
 
                 })
@@ -474,7 +498,7 @@ describe('future', () => {
 
         it('should reduce a list', () =>
             toPromise(reduce([1, 2, 3], 0, (p, c) => pure(p + c)))
-                .then(value => assert(value).equal(6)));
+            .then(value => assert(value).equal(6)));
 
         it('should fail if any fail', () => {
 
@@ -482,19 +506,19 @@ describe('future', () => {
 
             return reduce([1, 2, 3, 4], 0, (p, c, k) =>
                 (k === 2) ? raise(new Error('not allowed')) : pure(p + c))
-                .trap((e: Error) => {
+                    .trap((e: Error) => {
 
-                    if (e.message === 'not allowed')
-                        failed = true;
+                        if (e.message === 'not allowed')
+                            failed = true;
 
-                    return pure(6);
+                        return pure(6);
 
-                })
-                .then(() => {
+                    })
+                    .then(() => {
 
-                    assert(failed).be.true();
+                        assert(failed).be.true();
 
-                });
+                    });
 
         });
 
@@ -540,18 +564,18 @@ describe('future', () => {
 
             return toPromise(batch([
                 [tagTask('a', 300, tags),
-                tagTask('a', 600, tags),
-                tagTask('a', 100, tags)],
+                    tagTask('a', 600, tags),
+                    tagTask('a', 100, tags)],
                 [tagTask('b', 200, tags)],
                 [tagTask('c', 300, tags), tagTask('c', 500, tags)],
                 [tagTask('d', 200, tags), tagTask('d', 600, tags)]]))
                 .then((list: number[][]) =>
                     assert(list)
-                        .equate([
-                            [300, 600, 100],
-                            [200],
-                            [300, 500],
-                            [200, 600]]))
+                    .equate([
+                        [300, 600, 100],
+                        [200],
+                        [300, 500],
+                        [200, 600]]))
                 .then(() =>
                     assert(tags).equate([
                         'a', 'a', 'a', 'b', 'c', 'c', 'd', 'd'

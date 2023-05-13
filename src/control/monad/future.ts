@@ -1,12 +1,12 @@
 /**
- * A Future is a primitive for managing asynchronous side-effects in an 
+ * A Future is a primitive for managing asynchronous side-effects in an
  * organized manner.
  *
  * It works by queuing up the async tasks in a monad like chain, only executing
  * them when the instruction to do so is given. This is in contrast to the
  * Promise which executes these side-effects as soon as it is created. A Future
- * is easier to reason about than a Promise and allows async code to be more 
- * composable. To allow Futures to benefit from the JS engine's built in Promise 
+ * is easier to reason about than a Promise and allows async code to be more
+ * composable. To allow Futures to benefit from the JS engine's built in Promise
  * support however, Futures also implement the Promise api.
  */
 import { Type } from '../../data/type';
@@ -21,7 +21,7 @@ import { Monad } from './';
  * Yield is a value that may be itself or may be wrapped in a [[Future]].
  *
  * This is type is used to represent return values of functions that may be
- * async or not for situations where it may be desirable to have the. Care 
+ * async or not for situations where it may be desirable to have the. Care
  * should be used when handling these values as it is easy to forget to fork()
  * the Future resulting in incorrect values being passed around.
  *
@@ -77,7 +77,7 @@ export type Task<A> = () => Promise<A>;
 export type Callback<A> = (e: Error | undefined | null, a?: A) => void;
 
 /**
- * CallBackReceiver type takes a node style callback 
+ * CallBackReceiver type takes a node style callback
  * and performs some side-effect.
  */
 export type CallbackReceiver<A> = (cb: Callback<A>) => void;
@@ -100,7 +100,7 @@ export type ResolveFunc<A, TResult1 = A>
     ;
 
 /**
- * RejectFunc for promises. 
+ * RejectFunc for promises.
  */
 export type RejectFunc<TResult2 = never>
     = ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
@@ -119,7 +119,7 @@ const trapTags = ['Trap', 'Generation'];
  * Future represents a chain of asynchronous tasks that some result when
  * executed.
  *
- * The Future implementation is different that a Promise as it does not 
+ * The Future implementation is different that a Promise as it does not
  * execute it's tasks until instructed to giving control back to the calling
  * code (unlike Promises). To accomplish this, a state machine is built up
  * from the various calls to chain(), map() etc and executed in the run()
@@ -146,17 +146,17 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
      * statement preventing asynchronous tasks from pre-empting each other. This
      * is in line with how Futures are meant to work and could be seen as the
      * Promise equivalent of:
-     * 
+     *
      * ```
      *  pure().chain(task1).chain(task2).chain(task3);
      * ```
-     * The difference between Futures and promises of course, is that Futures do 
-     * not execute their tasks until fork() is called whereas Promises are 
-     * immediate. Nonetheless, an async function can be treated as a Future 
+     * The difference between Futures and promises of course, is that Futures do
+     * not execute their tasks until fork() is called whereas Promises are
+     * immediate. Nonetheless, an async function can be treated as a Future
      * because it does not execute any code until it is called.
      *
-     * This static method may therfore be more desirable than doFuture() as it 
-     * allows for the use of arrow functions doing await with the need to set 
+     * This static method may therfore be more desirable than doFuture() as it
+     * allows for the use of arrow functions doing await with the need to set
      * `this` to a variable.
      */
     static do<A>(fun: Task<A>): Future<A> {
@@ -309,16 +309,16 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 
                     if (top.tag === 'Generation') {
 
-                        // Hook into the engine's generator error 
+                        // Hook into the engine's generator error
                         // handling machinery. We need to capture any errors
-                        // thrown out to give prior traps a chance to handle 
+                        // thrown out to give prior traps a chance to handle
                         // them.
                         try {
 
                             let { done, value: future } =
                                 (<Generation<A>>top).src.throw(err);
 
-                            // Pop the Generation if the generator finished. 
+                            // Pop the Generation if the generator finished.
                             if (done) stack.pop();
 
                             stack.push(future);
@@ -334,6 +334,7 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 
                     } else if (top.tag === 'Trap') {
 
+                        stack.pop();
                         stack.push((<Trap<A>>top).func(err));
 
                     }
@@ -531,7 +532,7 @@ export class Tag<A> {
 export const pure = <A>(a: A): Future<A> => new Pure(a);
 
 /**
- * voidPure is a Future that provides the absence of a value for your 
+ * voidPure is a Future that provides the absence of a value for your
  * convenience.
  */
 export const voidPure: Future<void> = new Pure(undefined);
@@ -599,7 +600,7 @@ export const fromCallback = <A>(f: CallbackReceiver<A>)
 
 
 /**
- * parallel runs a list of Futures in parallel failing if any 
+ * parallel runs a list of Futures in parallel failing if any
  * fail and succeeding with a list of successful values.
  */
 export const parallel = <A>(list: Future<A>[])
@@ -607,7 +608,7 @@ export const parallel = <A>(list: Future<A>[])
 
 /**
  * sequential execution of a list of futures.
- * 
+ *
  * This function succeeds with a list of all results or fails on the first
  * error.
  */
@@ -658,7 +659,7 @@ export const race = <A>(list: Future<A>[]): Future<A> =>
         Promise.race(list))
 
 /**
- * some executes a list of Futures sequentially until one resolves with a 
+ * some executes a list of Futures sequentially until one resolves with a
  * successful value.
  *
  * If none resolve successfully, the final error is raised.
@@ -688,7 +689,7 @@ export const some = <A>(list: Future<A>[]): Future<A> =>
 /**
  * toPromise transforms a Future into a Promise.
  *
- * This function depends on the global promise constructor and 
+ * This function depends on the global promise constructor and
  * will fail if the environment does not provide one.
  *
  * @deprecated
@@ -715,13 +716,13 @@ export type DoFutureGenerator<A>
  * Each Future yielded from the generator is executed sequentially with results
  * made available via the Generator#next() method. Raise values trigger an
  * internal error handling mechanism and can be caught via try/catch clauses
- * in the generator. 
+ * in the generator.
  *
  * Note: due to the lazy nature of how Futures are evaluated, try/catch will not
  * intercept a Raise used with a return statement. At that point the generator
- * is already complete and that Raise must be handled by the calling code if 
+ * is already complete and that Raise must be handled by the calling code if
  * desired. Alternatively, you can yield the final Future instead of returning
  * it. That way it can be intercepted by the try/catch.
  */
 export const doFuture = <A>(f: DoFutureGenerator<A>): Future<A> =>
-    new Generation(f()); 
+    new Generation(f());
