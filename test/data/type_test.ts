@@ -1,5 +1,6 @@
 import { assert } from '@quenk/test/lib/assert';
-import { Any, test, toString } from '../../src/data/type';
+
+import { Any, test, toString, isNull } from '../../src/data/type';
 
 class Point {
 
@@ -78,6 +79,23 @@ describe('type', () => {
 
         });
 
+    });
+
+    describe('isNull', () => {
+
+        it('should work', () => {
+
+          assert(isNull(undefined)).true();
+          assert(isNull(null)).true();
+          assert(isNull('undefined')).false();
+          assert(isNull('null')).false();
+          assert(isNull('')).false();
+          assert(isNull(0)).false();
+          assert(isNull([])).false();
+          assert(isNull({})).false();
+          
+        });
+      
     });
 
 });

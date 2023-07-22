@@ -68,6 +68,11 @@ export const isPrim = (value: Type) =>
         isFunction(value))
 
 /**
+ * isNull tests whether the value is null or undefined.
+ */
+export const isNull = (value:Type) => (value == null);
+
+/**
  * is performs a typeof of check on a type.
  */
 export const is = <A>(expected: string) => (value: A) =>
