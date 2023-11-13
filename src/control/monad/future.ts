@@ -165,6 +165,104 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
 
     }
 
+/**
+ * fromCallback produces a Future from a node style async function.
+ */
+ static fromCallback = <A>(f: CallbackReceiver<A>)
+    : Future<A> => run(() => new Promise((resolve, reject) => {
+
+        f((err: Error | null | undefined, a?: A) =>
+            (err != null) ? reject(err) : resolve(<A>a));
+
+    }))
+
+/**
+ * parallel runs a list of Futures in parallel failing if any
+ * fail and succeeding with a list of successful values.
+ */
+static parallel = <A>(list: Future<A>[])
+    : Future<A[]> => run(() => Promise.all(list));
+
+/**
+ * sequential execution of a list of futures.
+ *
+ * This function succeeds with a list of all results or fails on the first
+ * error.
+ */
+static sequential = <A>(list: Future<A>[]): Future<A[]> =>
+    run(async () => {
+
+        let results = Array(list.length);
+
+        for (let i = 0; i < list.length; i++)
+            results[i] = await list[i];
+
+        return results;
+
+    });
+
+/**
+ * batch runs a list of batched Futures one batch at a time.
+ */
+ static batch = <A>(list: Future<A>[][]) =>
+    sequential(list.map(w => parallel(w)));
+
+/**
+ * reduce a list of values into a single value using a reducer function that
+ * produces a Future.
+ */
+static reduce =
+    <A, B>(list: A[], initValue: B, f: Reducer<A, B>)
+        : Future<B> => doFuture<B>(function*() {
+
+            let accumValue = initValue;
+
+            for (let i = 0; i < list.length; i++)
+                accumValue = yield f(accumValue, list[i], i);
+
+            return pure(accumValue);
+
+        });
+
+/**
+ * race given a list of Futures, will return a Future that is settled by
+ * the first error or success to occur.
+ *
+ * Raising an error if the list is empty.
+ */
+static race = <A>(list: Future<A>[]): Future<A> =>
+    run(() => empty(list) ?
+        Promise.reject(new Error('race(): Cannot race an empty list!')) :
+        Promise.race(list))
+
+/**
+ * some executes a list of Futures sequentially until one resolves with a
+ * successful value.
+ *
+ * If none resolve successfully, the final error is raised.
+ */
+static some = <A>(list: Future<A>[]): Future<A> =>
+    doFuture<A>(function*() {
+
+        for (let i = 0; i < list.length; i++) {
+
+            try {
+
+                let result = yield list[i];
+                return pure(result);
+
+            } catch (e) {
+
+                if (i === (list.length - 1)) return raise(<Error>e);
+
+            }
+
+        }
+
+        return raise(new Error('some: empty list'));
+
+    });
+
     get [Symbol.toStringTag]() {
 
         return 'Future';
@@ -587,104 +685,14 @@ export const wait = (n: Milliseconds): Future<void> =>
 
     }));
 
-/**
- * fromCallback produces a Future from a node style async function.
- */
-export const fromCallback = <A>(f: CallbackReceiver<A>)
-    : Future<A> => run(() => new Promise((resolve, reject) => {
-
-        f((err: Error | null | undefined, a?: A) =>
-            (err != null) ? reject(err) : resolve(<A>a));
-
-    }))
-
-
-/**
- * parallel runs a list of Futures in parallel failing if any
- * fail and succeeding with a list of successful values.
- */
-export const parallel = <A>(list: Future<A>[])
-    : Future<A[]> => run(() => Promise.all(list));
-
-/**
- * sequential execution of a list of futures.
- *
- * This function succeeds with a list of all results or fails on the first
- * error.
- */
-export const sequential = <A>(list: Future<A>[]): Future<A[]> =>
-    run(async () => {
-
-        let results = Array(list.length);
-
-        for (let i = 0; i < list.length; i++)
-            results[i] = await list[i];
-
-        return results;
-
-    });
-
-/**
- * batch runs a list of batched Futures one batch at a time.
- */
-export const batch = <A>(list: Future<A>[][]) =>
-    sequential(list.map(w => parallel(w)));
-
-/**
- * reduce a list of values into a single value using a reducer function that
- * produces a Future.
- */
-export const reduce =
-    <A, B>(list: A[], initValue: B, f: Reducer<A, B>)
-        : Future<B> => doFuture<B>(function*() {
-
-            let accumValue = initValue;
-
-            for (let i = 0; i < list.length; i++)
-                accumValue = yield f(accumValue, list[i], i);
-
-            return pure(accumValue);
-
-        });
-
-/**
- * race given a list of Futures, will return a Future that is settled by
- * the first error or success to occur.
- *
- * Raising an error if the list is empty.
- */
-export const race = <A>(list: Future<A>[]): Future<A> =>
-    run(() => empty(list) ?
-        Promise.reject(new Error('race(): Cannot race an empty list!')) :
-        Promise.race(list))
-
-/**
- * some executes a list of Futures sequentially until one resolves with a
- * successful value.
- *
- * If none resolve successfully, the final error is raised.
- */
-export const some = <A>(list: Future<A>[]): Future<A> =>
-    doFuture<A>(function*() {
-
-        for (let i = 0; i < list.length; i++) {
-
-            try {
-
-                let result = yield list[i];
-                return pure(result);
-
-            } catch (e) {
-
-                if (i === (list.length - 1)) return raise(<Error>e);
-
-            }
-
-        }
-
-        return raise(new Error('some: empty list'));
-
-    });
+/* @deprecated */
+export const fromCallback = Future.fromCallback;
+export const parallel = Future.parallel;
+export const sequential = Future.sequential;
+export const batch = Future.batch;
+export const reduce = Future.reduce;
+export const race = Future.race;
+export const some = Future.some;
 
 /**
  * toPromise transforms a Future into a Promise.
