@@ -136,6 +136,13 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
   constructor(public tag: string = "Future") {}
 
   /**
+   * of wraps a pure value in a Future.
+   */
+  static of<A>(a: A): Future<A> {
+    return new Pure<A>(a);
+  }
+
+  /**
    * do notation for Futures using async functions.
    *
    * An async function executes its body sequentially, pausing at each 'await'
@@ -158,6 +165,13 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
   static do<A>(fun: Task<A>): Future<A> {
     return new Run(fun);
   }
+
+  /**
+   * raise wraps an Error in a Future.
+   *
+   * This future will be considered a failure.
+   */
+  static raise = <A>(e: Err): Future<A> => new Raise(e);
 
   /**
    * fromCallback produces a Future from a node style async function.
@@ -256,7 +270,7 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
   }
 
   of(a: A): Future<A> {
-    return new Pure<A>(a);
+    return Future.of(a);
   }
 
   map<B>(f: (a: A) => B): Future<B> {
@@ -547,11 +561,6 @@ export class Tag<A> {
 }
 
 /**
- * pure wraps a synchronous value in a Future.
- */
-export const pure = <A>(a: A): Future<A> => new Pure(a);
-
-/**
  * voidPure is a Future that provides the absence of a value for your
  * convenience.
  */
@@ -569,13 +578,6 @@ export const wrap = <A>(a: A | Future<A>): Future<A> =>
 export const run = <A>(task: Task<A>): Future<A> => new Run(task);
 
 export { run as liftP };
-
-/**
- * raise wraps an Error in a Future.
- *
- * This future will be considered a failure.
- */
-export const raise = <A>(e: Err): Future<A> => new Raise(e);
 
 /**
  * attempt a synchronous task, trapping any thrown errors in the Future.
@@ -615,6 +617,7 @@ export const wait = (n: Milliseconds): Future<void> =>
   );
 
 /* @deprecated */
+export const pure = Future.of;
 export const fromCallback = Future.fromCallback;
 export const parallel = Future.parallel;
 export const sequential = Future.sequential;
@@ -622,6 +625,7 @@ export const batch = Future.batch;
 export const reduce = Future.reduce;
 export const race = Future.race;
 export const some = Future.some;
+export const raise = Future.raise;
 
 /**
  * toPromise transforms a Future into a Promise.
@@ -666,6 +670,8 @@ export type DoFutureGenerator<A> = () => Generator<
  * is already complete and that Raise must be handled by the calling code if
  * desired. Alternatively, you can yield the final Future instead of returning
  * it. That way it can be intercepted by the try/catch.
+ *
+ * @deprecated
  */
 export const doFuture = <A>(f: DoFutureGenerator<A>): Future<A> =>
   new Generation(f());
