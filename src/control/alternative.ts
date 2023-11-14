@@ -1,5 +1,5 @@
-import {Applicative} from './applicative';
-import {Plus} from './plus';
+import { Applicative } from "./applicative";
+import { Plus } from "./plus";
 
 /**
  * Alternative

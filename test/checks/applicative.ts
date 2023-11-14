@@ -1,4 +1,4 @@
-import { Applicative } from '../../src/control/applicative';
+import { Applicative } from "../../src/control/applicative";
 
 export type Eq = (f: any) => (g: any) => any;
 
@@ -8,14 +8,14 @@ export type Eq = (f: any) => (g: any) => any;
  * Applicative a => a.ap(a.of(x=>x)) = a
  */
 export const identity =
-    <A>(pure: <X>(x: X) => Applicative<X>) => (eq: Eq) => (x: A) => {
+  <A>(pure: <X>(x: X) => Applicative<X>) =>
+  (eq: Eq) =>
+  (x: A) => {
+    let a = <Applicative<A>>pure(x).ap(pure((x: A) => x));
+    let b = pure(x);
 
-        let a = <Applicative<A>>pure(x).ap(pure((x: A) => x));
-        let b = pure(x);
-
-        return (eq(b)(a));
-
-    }
+    return eq(b)(a);
+  };
 
 /**
  * homomorphism law
@@ -23,14 +23,14 @@ export const identity =
  * Applicative a => a.of(x).ap(a.of(f)) = a.of(f(x))
  */
 export const homomorphism =
-    <A>(pure: <X>(x: X) => Applicative<X>) => (eq: Eq) => (x: A) => {
+  <A>(pure: <X>(x: X) => Applicative<X>) =>
+  (eq: Eq) =>
+  (x: A) => {
+    let a = <Applicative<A>>pure(x).ap(pure((x: A) => x));
+    let b = pure(x);
 
-        let a = <Applicative<A>>pure(x).ap(pure((x: A) => x));
-        let b = pure(x);
-
-        return (eq(a)(b));
-
-    }
+    return eq(a)(b);
+  };
 
 /**
  * interchange law
@@ -38,12 +38,12 @@ export const homomorphism =
  * Applicative a => a.of(y).ap(u) = u.ap(a.of(f=>f(y)))
  */
 export const interchange =
-    <A>(pure: <X>(x: X) => Applicative<X>) => (eq: Eq) => (x: A) => {
+  <A>(pure: <X>(x: X) => Applicative<X>) =>
+  (eq: Eq) =>
+  (x: A) => {
+    let u = pure((a: A) => a);
+    let a = <Applicative<A>>pure(x).ap(u);
+    let b = <Applicative<A>>u.ap(pure((f: any) => f((a: A) => a)));
 
-        let u = pure((a: A) => a);
-        let a = <Applicative<A>>pure(x).ap(u);
-        let b = <Applicative<A>>u.ap(pure((f: any) => f((a: A) => a)));
-
-        return (eq(a)(b));
-
-    }
+    return eq(a)(b);
+  };

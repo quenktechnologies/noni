@@ -1,4 +1,4 @@
-import { Type } from './';
+import { Type } from "./";
 
 /**
  * Constructor interface.
@@ -7,7 +7,5 @@ import { Type } from './';
  * a type is a constructor but are not concerned with its parameters.
  */
 export interface Constructor<T> {
-
-    new(...args: Type[]): T
-
+  new (...args: Type[]): T;
 }

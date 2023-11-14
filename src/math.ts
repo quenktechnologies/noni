@@ -20,7 +20,7 @@ export type NegativeInteger = number;
 /**
  * isMultipleOf tests whether the Integer 'y' is a multiple of x.
  */
-export const isMultipleOf = (x: Integer, y: Integer) => ((y % x) === 0);
+export const isMultipleOf = (x: Integer, y: Integer) => y % x === 0;
 
 /**
  * round a number "x" to "n" places (n defaults to 0 places).
@@ -33,8 +33,8 @@ export const isMultipleOf = (x: Integer, y: Integer) => ((y % x) === 0);
  *
  * Where:
  *
- * sign is the sign of x 
- * round is Math.round 
+ * sign is the sign of x
+ * round is Math.round
  * abs is Math.abs
  * (1 / 10^n+1) is the offset.
  *
@@ -48,14 +48,12 @@ export const isMultipleOf = (x: Integer, y: Integer) => ((y % x) === 0);
  *
  * See the description [here]( https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round)
  * for more details.
- * 
+ *
  */
 export const round = (x: number, n: PositiveInteger = 0): number => {
+  let exp = Math.pow(10, n);
+  let sign = x >= 0 ? 1 : -1;
+  let offset = n > 0 ? 1 / Math.pow(10, n + 1) : 0;
 
-    let exp = Math.pow(10, n);
-    let sign = x >= 0 ? 1 : -1;
-    let offset = (n > 0) ? (1 / (Math.pow(10, n + 1))) : 0;
-
-    return sign * (Math.round((Math.abs(x) * exp) + offset) / exp);
-
-}
+  return sign * (Math.round(Math.abs(x) * exp + offset) / exp);
+};

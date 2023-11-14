@@ -1,5 +1,3 @@
 module.exports = {
-
-    location: 'Arouca'
-
-}
+    location: "Arouca",
+};

@@ -1,4 +1,4 @@
-import { Apply } from '../../src/control/apply';
+import { Apply } from "../../src/control/apply";
 
 type F<A> = (a: A) => A;
 
@@ -11,19 +11,24 @@ export type Eq = (f: any) => (g: any) => any;
  *
  */
 export const composition =
-    <A>(pure: <X>(x: X) => Apply<X>) => (eq: Eq) => (f: F<A>) =>
-        (g: F<A>) => (x: A) => {
+  <A>(pure: <X>(x: X) => Apply<X>) =>
+  (eq: Eq) =>
+  (f: F<A>) =>
+  (g: F<A>) =>
+  (x: A) => {
+    let a = pure(x);
+    let b: Apply<F<A>> = pure(f);
+    let c: Apply<F<A>> = pure(g);
 
-            let a = pure(x);
-            let b: Apply<F<A>> = pure(f);
-            let c: Apply<F<A>> = pure(g);
+    let l = a.ap(
+      b.ap(
+        <Apply<(a: F<A>) => (x: A) => A>>(
+          c.map((f) => (g: (x: A) => A) => (x: A) => f(g(x)))
+        )
+      )
+    );
 
-            let l = a.ap(b.ap(
-                <Apply<(a: F<A>) => (x: A) => A>>c
-                    .map(f => (g: (x: A) => A) => (x: A) => f(g(x)))));
+    let r = a.ap(b).ap(c);
 
-            let r = a.ap(b).ap(c);
-
-            return (eq(l)(r));
-
-        }
+    return eq(l)(r);
+  };

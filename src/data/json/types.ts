@@ -1,28 +1,25 @@
 /**
  * JSONValue are values that can appear in a JSON document.
  */
-export type JSONValue
-    = JSONObject
-    | JSONArray
-    | JSONString
-    | JSONBoolean
-    | JSONNumber
-    | JSONNull
-    | undefined
-    ;
+export type JSONValue =
+  | JSONObject
+  | JSONArray
+  | JSONString
+  | JSONBoolean
+  | JSONNumber
+  | JSONNull
+  | undefined;
 
 /**
  * JSONArray represents an array in a JSON document.
  */
-export interface JSONArray extends Array<JSONValue> { }
+export interface JSONArray extends Array<JSONValue> {}
 
 /**
  * JSONObject represents an object within a JSON document.
  */
 export interface JSONObject {
-
-    [key: string]: JSONValue
-
+  [key: string]: JSONValue;
 }
 
 /**
