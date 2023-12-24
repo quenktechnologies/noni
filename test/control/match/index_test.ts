@@ -1,5 +1,6 @@
 import { assert } from "@quenk/test/lib/assert";
-import { match } from "../../src/control/match";
+
+import { match } from "../../../src/control/match";
 
 class ClassA {
   constructor(public a: string) {}

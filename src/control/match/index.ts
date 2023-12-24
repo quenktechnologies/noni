@@ -23,8 +23,8 @@
  *
  */
 
-import { Constructor } from "../data/type/constructor";
-import { test, show } from "../data/type";
+import { Constructor } from "../../data/type/constructor";
+import { test, show } from "../../data/type";
 
 /**
  * Result is the sum of the UnMatched and Matched types.

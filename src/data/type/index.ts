@@ -11,7 +11,8 @@ export type Pattern<T> =
   | number
   | boolean
   | object
-  | { new (...args: Type[]): T };
+  | { new (...args: Type[]): T }
+  ;
 
 const prims = ["string", "number", "boolean"];
 
@@ -77,10 +78,11 @@ export const is =
     typeof value === expected;
 
 /**
- * test whether a value conforms to some pattern.
+ * test a value at runtime to determine if it conforms to a type.
  *
- * This function is made available mainly for a crude pattern matching
- * machinery that works as followss:
+ * This function exists to provide best effort type pattern matching 
+ * capabilities. It is based on the following rules:
+ *
  * string   -> Matches on the value of the string.
  * number   -> Matches on the value of the number.
  * boolean  -> Matches on the value of the boolean.
@@ -90,26 +92,26 @@ export const is =
  *             the function is RegExp then we uses the RegExp.test function
  *             instead.
  */
-export const test = <V, T>(value: V, t: Pattern<T>): boolean => {
-  if (prims.indexOf(typeof t) > -1 && <Type>value === t) return true;
+export const test = <T,V>(type:T, value: V): boolean => {
+  if (prims.indexOf(typeof type) > -1 && <Type>value === type) return true;
   else if (
-    typeof t === "function" &&
-    ((<Function>t === String && typeof value === "string") ||
-      (<Function>t === Number && typeof value === "number") ||
-      (<Function>t === Boolean && typeof value === "boolean") ||
-      (<Function>t === Array && Array.isArray(value)) ||
-      <Function>t === Any ||
-      value instanceof <Function>t)
+    typeof type === "function" &&
+    ((<Function>type === String && typeof value === "string") ||
+      (<Function>type === Number && typeof value === "number") ||
+      (<Function>type === Boolean && typeof value === "boolean") ||
+      (<Function>type === Array && Array.isArray(value)) ||
+      <Function>type === Any ||
+      value instanceof <Function>type)
   )
     return true;
-  else if (t instanceof RegExp && typeof value === "string" && t.test(value))
+  else if (type instanceof RegExp && typeof value === "string" && type.test(value))
     return true;
-  else if (typeof t === "object" && typeof value === "object")
-    return Object.keys(t).every((k) =>
+  else if (typeof type === "object" && typeof value === "object")
+    return Object.keys(<object><unknown>type).every((k) =>
       Object.hasOwnProperty.call(value, k)
         ? test(
             (<{ [key: string]: Type }>value)[k],
-            (<{ [key: string]: Type }>t)[k]
+            (<{ [key: string]: Type }>type)[k]
           )
         : false
     );
