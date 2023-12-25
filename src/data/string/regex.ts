@@ -16,7 +16,7 @@ export const REGEX_SPECIAL_CHARS = /[\\^$*+?.()|[\]{}]/g;
  * input simple.
  */
 export const escape = (str: string) =>
-  String(str)
-    .replace(REGEX_SPECIAL_CHARS, "\\$&")
-    .replace(/-/g, "\\u002d")
-    .replace(/-/g, "\\x2d");
+    String(str)
+        .replace(REGEX_SPECIAL_CHARS, '\\$&')
+        .replace(/-/g, '\\u002d')
+        .replace(/-/g, '\\x2d');

@@ -18,4 +18,4 @@ export type Lazy<A> = A | (() => A);
  * evaluate a potentially lazy value provided its actual value.
  */
 export const evaluate = <A>(value: Lazy<A>): A =>
-  typeof value === "function" ? (<() => A>value)() : value;
+    typeof value === 'function' ? (<() => A>value)() : value;

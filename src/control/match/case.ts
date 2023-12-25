@@ -1,14 +1,14 @@
 /**
- * This module provides classes for mimicking type level pattern matching 
+ * This module provides classes for mimicking type level pattern matching
  * commonly found in functional programming languages in JavaScript.
  *
  * JavaScript already provides the "case" statement which allows for c
  * onditional execution of a block based on a value. The API allows for the
  * same except the *type* of the value is used instead.
  */
-import {  test, Type } from '../../data/type';
+import { test, Type } from '../../data/type';
 
-export {Type}
+export { Type };
 
 /*
  * TypeCase is an interface for mimicking type based pattern matching usually
@@ -29,7 +29,7 @@ export interface TypeCase<A, B> {
 }
 
 /**
- * MatchedValue is the actual type of a value that has been pattern matched by a 
+ * MatchedValue is the actual type of a value that has been pattern matched by a
  * Case class.
  *
  * When using String,Boolean or Number to pattern match, the value has the type
@@ -38,8 +38,8 @@ export interface TypeCase<A, B> {
  * When using a constructor function to pattern match, the value has the type
  * constructed by the constructor function.
  *
- * When using an object to pattern match, the value's type is an object 
- * with corresponding keys each of which following the previous rules 
+ * When using an object to pattern match, the value's type is an object
+ * with corresponding keys each of which following the previous rules
  * recursively.
  */
 export type MatchedValue<A> = A extends StringConstructor
@@ -99,7 +99,7 @@ export class Default<A, B> implements TypeCase<A, B> {
 /**
  * CaseFunction is a composite class for TypeCases.
  *
- * When using this TypeCase it may be necessary to cast the cases value 
+ * When using this TypeCase it may be necessary to cast the cases value
  * to a single type the compiler understands.
  */
 export class CaseFunction<A, B> implements TypeCase<A, B> {

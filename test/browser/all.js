@@ -1,13 +1,14 @@
+/* eslint-disable */
 (function () {
     function r(e, n, t) {
         function o(i, f) {
             if (!n[i]) {
                 if (!e[i]) {
-                    var c = "function" == typeof require && require;
+                    var c = 'function' == typeof require && require;
                     if (!f && c) return c(i, !0);
                     if (u) return u(i, !0);
                     var a = new Error("Cannot find module '" + i + "'");
-                    throw ((a.code = "MODULE_NOT_FOUND"), a);
+                    throw ((a.code = 'MODULE_NOT_FOUND'), a);
                 }
                 var p = (n[i] = { exports: {} });
                 e[i][0].call(
@@ -27,7 +28,7 @@
             return n[i].exports;
         }
         for (
-            var u = "function" == typeof require && require, i = 0;
+            var u = 'function' == typeof require && require, i = 0;
             i < t.length;
             i++
         )
@@ -39,10 +40,10 @@
     {
         1: [
             function (require, module, exports) {
-                "use strict";
-                Object.defineProperty(exports, "__esModule", { value: true });
+                'use strict';
+                Object.defineProperty(exports, '__esModule', { value: true });
                 exports.webGenerateV4 = exports.generateV4 = void 0;
-                const platform_1 = require("../platform");
+                const platform_1 = require('../platform');
                 const rnds8 = new Uint8Array(16);
                 const byteToHex = [];
                 /**
@@ -51,8 +52,8 @@
                 const generateV4 = (noDash = false) => {
                     // Assumes NodeJS
                     if (!platform_1.isBrowser) {
-                        let result = require("crypto").randomUUID();
-                        return noDash ? result.split("-").join("") : result;
+                        let result = require('crypto').randomUUID();
+                        return noDash ? result.split('-').join('') : result;
                     }
                     return (0, exports.webGenerateV4)(noDash);
                 };
@@ -69,7 +70,7 @@
                         for (let i = 0; i < 256; ++i)
                             byteToHex.push((i + 0x100).toString(16).slice(1));
                     let offset = 0;
-                    let dash = noDash ? "" : "-";
+                    let dash = noDash ? '' : '-';
                     // Note: Be careful editing this code!  It's been tuned for performance
                     // and works in ways you may not expect.
                     // See https://github.com/uuidjs/uuid/pull/434
@@ -98,20 +99,20 @@
                 };
                 exports.webGenerateV4 = webGenerateV4;
             },
-            { "../platform": 2, crypto: undefined },
+            { '../platform': 2, crypto: undefined }
         ],
         2: [
             function (require, module, exports) {
-                "use strict";
-                Object.defineProperty(exports, "__esModule", { value: true });
+                'use strict';
+                Object.defineProperty(exports, '__esModule', { value: true });
                 exports.isBrowser = void 0;
-                exports.isBrowser = typeof window !== "undefined";
+                exports.isBrowser = typeof window !== 'undefined';
             },
-            {},
+            {}
         ],
         3: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
                 var __extends =
                     (this && this.__extends) ||
                     (function () {
@@ -135,11 +136,11 @@
                             return extendStatics(d, b);
                         };
                         return function (d, b) {
-                            if (typeof b !== "function" && b !== null)
+                            if (typeof b !== 'function' && b !== null)
                                 throw new TypeError(
-                                    "Class extends value " +
+                                    'Class extends value ' +
                                         String(b) +
-                                        " is not a constructor or null"
+                                        ' is not a constructor or null'
                                 );
                             extendStatics(d, b);
                             function __() {
@@ -151,15 +152,15 @@
                                     : ((__.prototype = b.prototype), new __());
                         };
                     })();
-                Object.defineProperty(exports, "__esModule", { value: true });
+                Object.defineProperty(exports, '__esModule', { value: true });
                 exports.assert =
                     exports.toString =
                     exports.Failed =
                     exports.Negative =
                     exports.Positive =
                         void 0;
-                var stringify = require("json-stringify-safe");
-                var deepEqual = require("deep-equal");
+                var stringify = require('json-stringify-safe');
+                var deepEqual = require('deep-equal');
                 /**
                  * Positive value matcher.
                  */
@@ -168,23 +169,23 @@
                         this.name = name;
                         this.value = value;
                         this.throwErrors = throwErrors;
-                        this.prefix = "must";
+                        this.prefix = 'must';
                     }
-                    Object.defineProperty(Positive.prototype, "be", {
+                    Object.defineProperty(Positive.prototype, 'be', {
                         get: function () {
                             return this;
                         },
                         enumerable: false,
-                        configurable: true,
+                        configurable: true
                     });
-                    Object.defineProperty(Positive.prototype, "is", {
+                    Object.defineProperty(Positive.prototype, 'is', {
                         get: function () {
                             return this;
                         },
                         enumerable: false,
-                        configurable: true,
+                        configurable: true
                     });
-                    Object.defineProperty(Positive.prototype, "not", {
+                    Object.defineProperty(Positive.prototype, 'not', {
                         get: function () {
                             return new Negative(
                                 this.name,
@@ -193,25 +194,25 @@
                             );
                         },
                         enumerable: false,
-                        configurable: true,
+                        configurable: true
                     });
-                    Object.defineProperty(Positive.prototype, "instance", {
+                    Object.defineProperty(Positive.prototype, 'instance', {
                         get: function () {
                             return this;
                         },
                         enumerable: false,
-                        configurable: true,
+                        configurable: true
                     });
                     Positive.prototype.assert = function (ok, condition) {
                         if (!ok) {
                             if (this.throwErrors)
                                 throw new Error(
                                     this.name +
-                                        " " +
+                                        ' ' +
                                         this.prefix +
-                                        " " +
+                                        ' ' +
                                         condition +
-                                        "!"
+                                        '!'
                                 );
                             return new Failed(
                                 this.name,
@@ -224,65 +225,65 @@
                     Positive.prototype.of = function (cons) {
                         return this.assert(
                             this.value instanceof cons,
-                            "be instanceof " + cons.name
+                            'be instanceof ' + cons.name
                         );
                     };
                     Positive.prototype.object = function () {
                         return this.assert(
-                            typeof this.value === "object" &&
+                            typeof this.value === 'object' &&
                                 this.value !== null,
-                            "be typeof object"
+                            'be typeof object'
                         );
                     };
                     Positive.prototype.array = function () {
                         return this.assert(
                             Array.isArray(this.value),
-                            "be an array"
+                            'be an array'
                         );
                     };
                     Positive.prototype.string = function () {
                         return this.assert(
-                            typeof this.value === "string",
-                            "be typeof string"
+                            typeof this.value === 'string',
+                            'be typeof string'
                         );
                     };
                     Positive.prototype.number = function () {
                         return this.assert(
-                            typeof this.value === "number",
-                            "be typeof number"
+                            typeof this.value === 'number',
+                            'be typeof number'
                         );
                     };
                     Positive.prototype.boolean = function () {
                         return this.assert(
-                            typeof this.value === "boolean",
-                            "be typeof boolean"
+                            typeof this.value === 'boolean',
+                            'be typeof boolean'
                         );
                     };
                     Positive.prototype.true = function () {
-                        return this.assert(this.value === true, "be true");
+                        return this.assert(this.value === true, 'be true');
                     };
                     Positive.prototype.false = function () {
-                        return this.assert(this.value === false, "be false");
+                        return this.assert(this.value === false, 'be false');
                     };
                     Positive.prototype.null = function () {
-                        return this.assert(this.value === null, "be null");
+                        return this.assert(this.value === null, 'be null');
                     };
                     Positive.prototype.undefined = function () {
                         return this.assert(
                             this.value === undefined,
-                            "be undefined"
+                            'be undefined'
                         );
                     };
                     Positive.prototype.equal = function (b) {
                         return this.assert(
                             this.value === b,
-                            "equal " + (0, exports.toString)(b)
+                            'equal ' + (0, exports.toString)(b)
                         );
                     };
                     Positive.prototype.equate = function (b) {
                         return this.assert(
                             deepEqual(this.value, b),
-                            "equate " + (0, exports.toString)(b)
+                            'equate ' + (0, exports.toString)(b)
                         );
                     };
                     Positive.prototype.throw = function (message) {
@@ -298,7 +299,7 @@
                         }
                         return this.assert(
                             ok,
-                            "throw " + (message != null ? message : "")
+                            'throw ' + (message != null ? message : '')
                         );
                     };
                     return Positive;
@@ -314,7 +315,7 @@
                             (_super !== null &&
                                 _super.apply(this, arguments)) ||
                             this;
-                        _this.prefix = "must not";
+                        _this.prefix = 'must not';
                         return _this;
                     }
                     Negative.prototype.assert = function (ok, condition) {
@@ -324,7 +325,7 @@
                             condition
                         );
                     };
-                    Object.defineProperty(Negative.prototype, "not", {
+                    Object.defineProperty(Negative.prototype, 'not', {
                         get: function () {
                             // not not == true
                             return new Positive(
@@ -334,7 +335,7 @@
                             );
                         },
                         enumerable: false,
-                        configurable: true,
+                        configurable: true
                     });
                     return Negative;
                 })(Positive);
@@ -361,13 +362,13 @@
                  * @private
                  */
                 var toString = function (value) {
-                    if (typeof value === "function") {
+                    if (typeof value === 'function') {
                         return value.name;
                     } else if (value instanceof Date) {
                         return value.toISOString();
                     } else if (value instanceof RegExp) {
                         return value.toString();
-                    } else if (typeof value === "object") {
+                    } else if (typeof value === 'object') {
                         if (
                             value != null &&
                             value.constructor !== Object &&
@@ -387,7 +388,7 @@
                  */
                 var assert = function (value, name) {
                     if (name === void 0) {
-                        name = "";
+                        name = '';
                     }
                     return new Positive(
                         name ? name : (0, exports.toString)(value),
@@ -397,18 +398,18 @@
                 };
                 exports.assert = assert;
             },
-            { "deep-equal": 6, "json-stringify-safe": 20 },
+            { 'deep-equal': 6, 'json-stringify-safe': 20 }
         ],
         4: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var GetIntrinsic = require("get-intrinsic");
+                var GetIntrinsic = require('get-intrinsic');
 
-                var callBind = require("./");
+                var callBind = require('./');
 
                 var $indexOf = callBind(
-                    GetIntrinsic("String.prototype.indexOf")
+                    GetIntrinsic('String.prototype.indexOf')
                 );
 
                 module.exports = function callBoundIntrinsic(
@@ -417,42 +418,42 @@
                 ) {
                     var intrinsic = GetIntrinsic(name, !!allowMissing);
                     if (
-                        typeof intrinsic === "function" &&
-                        $indexOf(name, ".prototype.") > -1
+                        typeof intrinsic === 'function' &&
+                        $indexOf(name, '.prototype.') > -1
                     ) {
                         return callBind(intrinsic);
                     }
                     return intrinsic;
                 };
             },
-            { "./": 5, "get-intrinsic": 11 },
+            { './': 5, 'get-intrinsic': 11 }
         ],
         5: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var bind = require("function-bind");
-                var GetIntrinsic = require("get-intrinsic");
+                var bind = require('function-bind');
+                var GetIntrinsic = require('get-intrinsic');
 
-                var $apply = GetIntrinsic("%Function.prototype.apply%");
-                var $call = GetIntrinsic("%Function.prototype.call%");
+                var $apply = GetIntrinsic('%Function.prototype.apply%');
+                var $call = GetIntrinsic('%Function.prototype.call%');
                 var $reflectApply =
-                    GetIntrinsic("%Reflect.apply%", true) ||
+                    GetIntrinsic('%Reflect.apply%', true) ||
                     bind.call($call, $apply);
 
                 var $gOPD = GetIntrinsic(
-                    "%Object.getOwnPropertyDescriptor%",
+                    '%Object.getOwnPropertyDescriptor%',
                     true
                 );
                 var $defineProperty = GetIntrinsic(
-                    "%Object.defineProperty%",
+                    '%Object.defineProperty%',
                     true
                 );
-                var $max = GetIntrinsic("%Math.max%");
+                var $max = GetIntrinsic('%Math.max%');
 
                 if ($defineProperty) {
                     try {
-                        $defineProperty({}, "a", { value: 1 });
+                        $defineProperty({}, 'a', { value: 1 });
                     } catch (e) {
                         // IE 8 has a broken defineProperty
                         $defineProperty = null;
@@ -462,17 +463,17 @@
                 module.exports = function callBind(originalFunction) {
                     var func = $reflectApply(bind, $call, arguments);
                     if ($gOPD && $defineProperty) {
-                        var desc = $gOPD(func, "length");
+                        var desc = $gOPD(func, 'length');
                         if (desc.configurable) {
                             // original length, plus the receiver, minus any additional arguments (after the receiver)
-                            $defineProperty(func, "length", {
+                            $defineProperty(func, 'length', {
                                 value:
                                     1 +
                                     $max(
                                         0,
                                         originalFunction.length -
                                             (arguments.length - 1)
-                                    ),
+                                    )
                             });
                         }
                     }
@@ -484,23 +485,23 @@
                 };
 
                 if ($defineProperty) {
-                    $defineProperty(module.exports, "apply", {
-                        value: applyBind,
+                    $defineProperty(module.exports, 'apply', {
+                        value: applyBind
                     });
                 } else {
                     module.exports.apply = applyBind;
                 }
             },
-            { "function-bind": 9, "get-intrinsic": 11 },
+            { 'function-bind': 9, 'get-intrinsic': 11 }
         ],
         6: [
             function (require, module, exports) {
-                var objectKeys = require("object-keys");
-                var isArguments = require("is-arguments");
-                var is = require("object-is");
-                var isRegex = require("is-regex");
-                var flags = require("regexp.prototype.flags");
-                var isDate = require("is-date-object");
+                var objectKeys = require('object-keys');
+                var isArguments = require('is-arguments');
+                var is = require('object-is');
+                var isRegex = require('is-regex');
+                var flags = require('regexp.prototype.flags');
+                var isDate = require('is-date-object');
 
                 var getTime = Date.prototype.getTime;
 
@@ -518,8 +519,8 @@
                     if (
                         !actual ||
                         !expected ||
-                        (typeof actual !== "object" &&
-                            typeof expected !== "object")
+                        (typeof actual !== 'object' &&
+                            typeof expected !== 'object')
                     ) {
                         return opts.strict
                             ? is(actual, expected)
@@ -545,18 +546,18 @@
                 function isBuffer(x) {
                     if (
                         !x ||
-                        typeof x !== "object" ||
-                        typeof x.length !== "number"
+                        typeof x !== 'object' ||
+                        typeof x.length !== 'number'
                     ) {
                         return false;
                     }
                     if (
-                        typeof x.copy !== "function" ||
-                        typeof x.slice !== "function"
+                        typeof x.copy !== 'function' ||
+                        typeof x.slice !== 'function'
                     ) {
                         return false;
                     }
-                    if (x.length > 0 && typeof x[0] !== "number") {
+                    if (x.length > 0 && typeof x[0] !== 'number') {
                         return false;
                     }
                     return true;
@@ -651,22 +652,22 @@
                 module.exports = deepEqual;
             },
             {
-                "is-arguments": 17,
-                "is-date-object": 18,
-                "is-regex": 19,
-                "object-is": 22,
-                "object-keys": 26,
-                "regexp.prototype.flags": 29,
-            },
+                'is-arguments': 17,
+                'is-date-object': 18,
+                'is-regex': 19,
+                'object-is': 22,
+                'object-keys': 26,
+                'regexp.prototype.flags': 29
+            }
         ],
         7: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var keys = require("object-keys");
+                var keys = require('object-keys');
                 var hasSymbols =
-                    typeof Symbol === "function" &&
-                    typeof Symbol("foo") === "symbol";
+                    typeof Symbol === 'function' &&
+                    typeof Symbol('foo') === 'symbol';
 
                 var toStr = Object.prototype.toString;
                 var concat = Array.prototype.concat;
@@ -674,13 +675,13 @@
 
                 var isFunction = function (fn) {
                     return (
-                        typeof fn === "function" &&
-                        toStr.call(fn) === "[object Function]"
+                        typeof fn === 'function' &&
+                        toStr.call(fn) === '[object Function]'
                     );
                 };
 
                 var hasPropertyDescriptors =
-                    require("has-property-descriptors")();
+                    require('has-property-descriptors')();
 
                 var supportsDescriptors =
                     origDefineProperty && hasPropertyDescriptors;
@@ -697,7 +698,7 @@
                             configurable: true,
                             enumerable: false,
                             value: value,
-                            writable: true,
+                            writable: true
                         });
                     } else {
                         object[name] = value; // eslint-disable-line no-param-reassign
@@ -727,24 +728,24 @@
 
                 module.exports = defineProperties;
             },
-            { "has-property-descriptors": 12, "object-keys": 26 },
+            { 'has-property-descriptors': 12, 'object-keys': 26 }
         ],
         8: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 /* eslint no-invalid-this: 1 */
 
                 var ERROR_MESSAGE =
-                    "Function.prototype.bind called on incompatible ";
+                    'Function.prototype.bind called on incompatible ';
                 var slice = Array.prototype.slice;
                 var toStr = Object.prototype.toString;
-                var funcType = "[object Function]";
+                var funcType = '[object Function]';
 
                 module.exports = function bind(that) {
                     var target = this;
                     if (
-                        typeof target !== "function" ||
+                        typeof target !== 'function' ||
                         toStr.call(target) !== funcType
                     ) {
                         throw new TypeError(ERROR_MESSAGE + target);
@@ -773,14 +774,14 @@
                     var boundLength = Math.max(0, target.length - args.length);
                     var boundArgs = [];
                     for (var i = 0; i < boundLength; i++) {
-                        boundArgs.push("$" + i);
+                        boundArgs.push('$' + i);
                     }
 
                     bound = Function(
-                        "binder",
-                        "return function (" +
-                            boundArgs.join(",") +
-                            "){ return binder.apply(this,arguments); }"
+                        'binder',
+                        'return function (' +
+                            boundArgs.join(',') +
+                            '){ return binder.apply(this,arguments); }'
                     )(binder);
 
                     if (target.prototype) {
@@ -793,30 +794,30 @@
                     return bound;
                 };
             },
-            {},
+            {}
         ],
         9: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var implementation = require("./implementation");
+                var implementation = require('./implementation');
 
                 module.exports = Function.prototype.bind || implementation;
             },
-            { "./implementation": 8 },
+            { './implementation': 8 }
         ],
         10: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var functionsHaveNames = function functionsHaveNames() {
-                    return typeof function f() {}.name === "string";
+                    return typeof function f() {}.name === 'string';
                 };
 
                 var gOPD = Object.getOwnPropertyDescriptor;
                 if (gOPD) {
                     try {
-                        gOPD([], "length");
+                        gOPD([], 'length');
                     } catch (e) {
                         // IE 8 has a broken gOPD
                         gOPD = null;
@@ -828,7 +829,7 @@
                         if (!functionsHaveNames() || !gOPD) {
                             return false;
                         }
-                        var desc = gOPD(function () {}, "name");
+                        var desc = gOPD(function () {}, 'name');
                         return !!desc && !!desc.configurable;
                     };
 
@@ -838,18 +839,18 @@
                     function boundFunctionsHaveNames() {
                         return (
                             functionsHaveNames() &&
-                            typeof $bind === "function" &&
-                            function f() {}.bind().name !== ""
+                            typeof $bind === 'function' &&
+                            function f() {}.bind().name !== ''
                         );
                     };
 
                 module.exports = functionsHaveNames;
             },
-            {},
+            {}
         ],
         11: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var undefined;
 
@@ -863,7 +864,7 @@
                         return $Function(
                             '"use strict"; return (' +
                                 expressionSyntax +
-                                ").constructor;"
+                                ').constructor;'
                         )();
                     } catch (e) {}
                 };
@@ -871,7 +872,7 @@
                 var $gOPD = Object.getOwnPropertyDescriptor;
                 if ($gOPD) {
                     try {
-                        $gOPD({}, "");
+                        $gOPD({}, '');
                     } catch (e) {
                         $gOPD = null; // this is IE 8, which has a broken gOPD
                     }
@@ -889,7 +890,7 @@
                           } catch (calleeThrows) {
                               try {
                                   // IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
-                                  return $gOPD(arguments, "callee").get;
+                                  return $gOPD(arguments, 'callee').get;
                               } catch (gOPDthrows) {
                                   return throwTypeError;
                               }
@@ -897,7 +898,7 @@
                       })()
                     : throwTypeError;
 
-                var hasSymbols = require("has-symbols")();
+                var hasSymbols = require('has-symbols')();
 
                 var getProto =
                     Object.getPrototypeOf ||
@@ -908,151 +909,151 @@
                 var needsEval = {};
 
                 var TypedArray =
-                    typeof Uint8Array === "undefined"
+                    typeof Uint8Array === 'undefined'
                         ? undefined
                         : getProto(Uint8Array);
 
                 var INTRINSICS = {
-                    "%AggregateError%":
-                        typeof AggregateError === "undefined"
+                    '%AggregateError%':
+                        typeof AggregateError === 'undefined'
                             ? undefined
                             : AggregateError,
-                    "%Array%": Array,
-                    "%ArrayBuffer%":
-                        typeof ArrayBuffer === "undefined"
+                    '%Array%': Array,
+                    '%ArrayBuffer%':
+                        typeof ArrayBuffer === 'undefined'
                             ? undefined
                             : ArrayBuffer,
-                    "%ArrayIteratorPrototype%": hasSymbols
+                    '%ArrayIteratorPrototype%': hasSymbols
                         ? getProto([][Symbol.iterator]())
                         : undefined,
-                    "%AsyncFromSyncIteratorPrototype%": undefined,
-                    "%AsyncFunction%": needsEval,
-                    "%AsyncGenerator%": needsEval,
-                    "%AsyncGeneratorFunction%": needsEval,
-                    "%AsyncIteratorPrototype%": needsEval,
-                    "%Atomics%":
-                        typeof Atomics === "undefined" ? undefined : Atomics,
-                    "%BigInt%":
-                        typeof BigInt === "undefined" ? undefined : BigInt,
-                    "%Boolean%": Boolean,
-                    "%DataView%":
-                        typeof DataView === "undefined" ? undefined : DataView,
-                    "%Date%": Date,
-                    "%decodeURI%": decodeURI,
-                    "%decodeURIComponent%": decodeURIComponent,
-                    "%encodeURI%": encodeURI,
-                    "%encodeURIComponent%": encodeURIComponent,
-                    "%Error%": Error,
-                    "%eval%": eval, // eslint-disable-line no-eval
-                    "%EvalError%": EvalError,
-                    "%Float32Array%":
-                        typeof Float32Array === "undefined"
+                    '%AsyncFromSyncIteratorPrototype%': undefined,
+                    '%AsyncFunction%': needsEval,
+                    '%AsyncGenerator%': needsEval,
+                    '%AsyncGeneratorFunction%': needsEval,
+                    '%AsyncIteratorPrototype%': needsEval,
+                    '%Atomics%':
+                        typeof Atomics === 'undefined' ? undefined : Atomics,
+                    '%BigInt%':
+                        typeof BigInt === 'undefined' ? undefined : BigInt,
+                    '%Boolean%': Boolean,
+                    '%DataView%':
+                        typeof DataView === 'undefined' ? undefined : DataView,
+                    '%Date%': Date,
+                    '%decodeURI%': decodeURI,
+                    '%decodeURIComponent%': decodeURIComponent,
+                    '%encodeURI%': encodeURI,
+                    '%encodeURIComponent%': encodeURIComponent,
+                    '%Error%': Error,
+                    '%eval%': eval, // eslint-disable-line no-eval
+                    '%EvalError%': EvalError,
+                    '%Float32Array%':
+                        typeof Float32Array === 'undefined'
                             ? undefined
                             : Float32Array,
-                    "%Float64Array%":
-                        typeof Float64Array === "undefined"
+                    '%Float64Array%':
+                        typeof Float64Array === 'undefined'
                             ? undefined
                             : Float64Array,
-                    "%FinalizationRegistry%":
-                        typeof FinalizationRegistry === "undefined"
+                    '%FinalizationRegistry%':
+                        typeof FinalizationRegistry === 'undefined'
                             ? undefined
                             : FinalizationRegistry,
-                    "%Function%": $Function,
-                    "%GeneratorFunction%": needsEval,
-                    "%Int8Array%":
-                        typeof Int8Array === "undefined"
+                    '%Function%': $Function,
+                    '%GeneratorFunction%': needsEval,
+                    '%Int8Array%':
+                        typeof Int8Array === 'undefined'
                             ? undefined
                             : Int8Array,
-                    "%Int16Array%":
-                        typeof Int16Array === "undefined"
+                    '%Int16Array%':
+                        typeof Int16Array === 'undefined'
                             ? undefined
                             : Int16Array,
-                    "%Int32Array%":
-                        typeof Int32Array === "undefined"
+                    '%Int32Array%':
+                        typeof Int32Array === 'undefined'
                             ? undefined
                             : Int32Array,
-                    "%isFinite%": isFinite,
-                    "%isNaN%": isNaN,
-                    "%IteratorPrototype%": hasSymbols
+                    '%isFinite%': isFinite,
+                    '%isNaN%': isNaN,
+                    '%IteratorPrototype%': hasSymbols
                         ? getProto(getProto([][Symbol.iterator]()))
                         : undefined,
-                    "%JSON%": typeof JSON === "object" ? JSON : undefined,
-                    "%Map%": typeof Map === "undefined" ? undefined : Map,
-                    "%MapIteratorPrototype%":
-                        typeof Map === "undefined" || !hasSymbols
+                    '%JSON%': typeof JSON === 'object' ? JSON : undefined,
+                    '%Map%': typeof Map === 'undefined' ? undefined : Map,
+                    '%MapIteratorPrototype%':
+                        typeof Map === 'undefined' || !hasSymbols
                             ? undefined
                             : getProto(new Map()[Symbol.iterator]()),
-                    "%Math%": Math,
-                    "%Number%": Number,
-                    "%Object%": Object,
-                    "%parseFloat%": parseFloat,
-                    "%parseInt%": parseInt,
-                    "%Promise%":
-                        typeof Promise === "undefined" ? undefined : Promise,
-                    "%Proxy%": typeof Proxy === "undefined" ? undefined : Proxy,
-                    "%RangeError%": RangeError,
-                    "%ReferenceError%": ReferenceError,
-                    "%Reflect%":
-                        typeof Reflect === "undefined" ? undefined : Reflect,
-                    "%RegExp%": RegExp,
-                    "%Set%": typeof Set === "undefined" ? undefined : Set,
-                    "%SetIteratorPrototype%":
-                        typeof Set === "undefined" || !hasSymbols
+                    '%Math%': Math,
+                    '%Number%': Number,
+                    '%Object%': Object,
+                    '%parseFloat%': parseFloat,
+                    '%parseInt%': parseInt,
+                    '%Promise%':
+                        typeof Promise === 'undefined' ? undefined : Promise,
+                    '%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
+                    '%RangeError%': RangeError,
+                    '%ReferenceError%': ReferenceError,
+                    '%Reflect%':
+                        typeof Reflect === 'undefined' ? undefined : Reflect,
+                    '%RegExp%': RegExp,
+                    '%Set%': typeof Set === 'undefined' ? undefined : Set,
+                    '%SetIteratorPrototype%':
+                        typeof Set === 'undefined' || !hasSymbols
                             ? undefined
                             : getProto(new Set()[Symbol.iterator]()),
-                    "%SharedArrayBuffer%":
-                        typeof SharedArrayBuffer === "undefined"
+                    '%SharedArrayBuffer%':
+                        typeof SharedArrayBuffer === 'undefined'
                             ? undefined
                             : SharedArrayBuffer,
-                    "%String%": String,
-                    "%StringIteratorPrototype%": hasSymbols
-                        ? getProto(""[Symbol.iterator]())
+                    '%String%': String,
+                    '%StringIteratorPrototype%': hasSymbols
+                        ? getProto(''[Symbol.iterator]())
                         : undefined,
-                    "%Symbol%": hasSymbols ? Symbol : undefined,
-                    "%SyntaxError%": $SyntaxError,
-                    "%ThrowTypeError%": ThrowTypeError,
-                    "%TypedArray%": TypedArray,
-                    "%TypeError%": $TypeError,
-                    "%Uint8Array%":
-                        typeof Uint8Array === "undefined"
+                    '%Symbol%': hasSymbols ? Symbol : undefined,
+                    '%SyntaxError%': $SyntaxError,
+                    '%ThrowTypeError%': ThrowTypeError,
+                    '%TypedArray%': TypedArray,
+                    '%TypeError%': $TypeError,
+                    '%Uint8Array%':
+                        typeof Uint8Array === 'undefined'
                             ? undefined
                             : Uint8Array,
-                    "%Uint8ClampedArray%":
-                        typeof Uint8ClampedArray === "undefined"
+                    '%Uint8ClampedArray%':
+                        typeof Uint8ClampedArray === 'undefined'
                             ? undefined
                             : Uint8ClampedArray,
-                    "%Uint16Array%":
-                        typeof Uint16Array === "undefined"
+                    '%Uint16Array%':
+                        typeof Uint16Array === 'undefined'
                             ? undefined
                             : Uint16Array,
-                    "%Uint32Array%":
-                        typeof Uint32Array === "undefined"
+                    '%Uint32Array%':
+                        typeof Uint32Array === 'undefined'
                             ? undefined
                             : Uint32Array,
-                    "%URIError%": URIError,
-                    "%WeakMap%":
-                        typeof WeakMap === "undefined" ? undefined : WeakMap,
-                    "%WeakRef%":
-                        typeof WeakRef === "undefined" ? undefined : WeakRef,
-                    "%WeakSet%":
-                        typeof WeakSet === "undefined" ? undefined : WeakSet,
+                    '%URIError%': URIError,
+                    '%WeakMap%':
+                        typeof WeakMap === 'undefined' ? undefined : WeakMap,
+                    '%WeakRef%':
+                        typeof WeakRef === 'undefined' ? undefined : WeakRef,
+                    '%WeakSet%':
+                        typeof WeakSet === 'undefined' ? undefined : WeakSet
                 };
 
                 var doEval = function doEval(name) {
                     var value;
-                    if (name === "%AsyncFunction%") {
-                        value = getEvalledConstructor("async function () {}");
-                    } else if (name === "%GeneratorFunction%") {
-                        value = getEvalledConstructor("function* () {}");
-                    } else if (name === "%AsyncGeneratorFunction%") {
-                        value = getEvalledConstructor("async function* () {}");
-                    } else if (name === "%AsyncGenerator%") {
-                        var fn = doEval("%AsyncGeneratorFunction%");
+                    if (name === '%AsyncFunction%') {
+                        value = getEvalledConstructor('async function () {}');
+                    } else if (name === '%GeneratorFunction%') {
+                        value = getEvalledConstructor('function* () {}');
+                    } else if (name === '%AsyncGeneratorFunction%') {
+                        value = getEvalledConstructor('async function* () {}');
+                    } else if (name === '%AsyncGenerator%') {
+                        var fn = doEval('%AsyncGeneratorFunction%');
                         if (fn) {
                             value = fn.prototype;
                         }
-                    } else if (name === "%AsyncIteratorPrototype%") {
-                        var gen = doEval("%AsyncGenerator%");
+                    } else if (name === '%AsyncIteratorPrototype%') {
+                        var gen = doEval('%AsyncGenerator%');
                         if (gen) {
                             value = getProto(gen.prototype);
                         }
@@ -1064,78 +1065,78 @@
                 };
 
                 var LEGACY_ALIASES = {
-                    "%ArrayBufferPrototype%": ["ArrayBuffer", "prototype"],
-                    "%ArrayPrototype%": ["Array", "prototype"],
-                    "%ArrayProto_entries%": ["Array", "prototype", "entries"],
-                    "%ArrayProto_forEach%": ["Array", "prototype", "forEach"],
-                    "%ArrayProto_keys%": ["Array", "prototype", "keys"],
-                    "%ArrayProto_values%": ["Array", "prototype", "values"],
-                    "%AsyncFunctionPrototype%": ["AsyncFunction", "prototype"],
-                    "%AsyncGenerator%": ["AsyncGeneratorFunction", "prototype"],
-                    "%AsyncGeneratorPrototype%": [
-                        "AsyncGeneratorFunction",
-                        "prototype",
-                        "prototype",
+                    '%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
+                    '%ArrayPrototype%': ['Array', 'prototype'],
+                    '%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
+                    '%ArrayProto_forEach%': ['Array', 'prototype', 'forEach'],
+                    '%ArrayProto_keys%': ['Array', 'prototype', 'keys'],
+                    '%ArrayProto_values%': ['Array', 'prototype', 'values'],
+                    '%AsyncFunctionPrototype%': ['AsyncFunction', 'prototype'],
+                    '%AsyncGenerator%': ['AsyncGeneratorFunction', 'prototype'],
+                    '%AsyncGeneratorPrototype%': [
+                        'AsyncGeneratorFunction',
+                        'prototype',
+                        'prototype'
                     ],
-                    "%BooleanPrototype%": ["Boolean", "prototype"],
-                    "%DataViewPrototype%": ["DataView", "prototype"],
-                    "%DatePrototype%": ["Date", "prototype"],
-                    "%ErrorPrototype%": ["Error", "prototype"],
-                    "%EvalErrorPrototype%": ["EvalError", "prototype"],
-                    "%Float32ArrayPrototype%": ["Float32Array", "prototype"],
-                    "%Float64ArrayPrototype%": ["Float64Array", "prototype"],
-                    "%FunctionPrototype%": ["Function", "prototype"],
-                    "%Generator%": ["GeneratorFunction", "prototype"],
-                    "%GeneratorPrototype%": [
-                        "GeneratorFunction",
-                        "prototype",
-                        "prototype",
+                    '%BooleanPrototype%': ['Boolean', 'prototype'],
+                    '%DataViewPrototype%': ['DataView', 'prototype'],
+                    '%DatePrototype%': ['Date', 'prototype'],
+                    '%ErrorPrototype%': ['Error', 'prototype'],
+                    '%EvalErrorPrototype%': ['EvalError', 'prototype'],
+                    '%Float32ArrayPrototype%': ['Float32Array', 'prototype'],
+                    '%Float64ArrayPrototype%': ['Float64Array', 'prototype'],
+                    '%FunctionPrototype%': ['Function', 'prototype'],
+                    '%Generator%': ['GeneratorFunction', 'prototype'],
+                    '%GeneratorPrototype%': [
+                        'GeneratorFunction',
+                        'prototype',
+                        'prototype'
                     ],
-                    "%Int8ArrayPrototype%": ["Int8Array", "prototype"],
-                    "%Int16ArrayPrototype%": ["Int16Array", "prototype"],
-                    "%Int32ArrayPrototype%": ["Int32Array", "prototype"],
-                    "%JSONParse%": ["JSON", "parse"],
-                    "%JSONStringify%": ["JSON", "stringify"],
-                    "%MapPrototype%": ["Map", "prototype"],
-                    "%NumberPrototype%": ["Number", "prototype"],
-                    "%ObjectPrototype%": ["Object", "prototype"],
-                    "%ObjProto_toString%": ["Object", "prototype", "toString"],
-                    "%ObjProto_valueOf%": ["Object", "prototype", "valueOf"],
-                    "%PromisePrototype%": ["Promise", "prototype"],
-                    "%PromiseProto_then%": ["Promise", "prototype", "then"],
-                    "%Promise_all%": ["Promise", "all"],
-                    "%Promise_reject%": ["Promise", "reject"],
-                    "%Promise_resolve%": ["Promise", "resolve"],
-                    "%RangeErrorPrototype%": ["RangeError", "prototype"],
-                    "%ReferenceErrorPrototype%": [
-                        "ReferenceError",
-                        "prototype",
+                    '%Int8ArrayPrototype%': ['Int8Array', 'prototype'],
+                    '%Int16ArrayPrototype%': ['Int16Array', 'prototype'],
+                    '%Int32ArrayPrototype%': ['Int32Array', 'prototype'],
+                    '%JSONParse%': ['JSON', 'parse'],
+                    '%JSONStringify%': ['JSON', 'stringify'],
+                    '%MapPrototype%': ['Map', 'prototype'],
+                    '%NumberPrototype%': ['Number', 'prototype'],
+                    '%ObjectPrototype%': ['Object', 'prototype'],
+                    '%ObjProto_toString%': ['Object', 'prototype', 'toString'],
+                    '%ObjProto_valueOf%': ['Object', 'prototype', 'valueOf'],
+                    '%PromisePrototype%': ['Promise', 'prototype'],
+                    '%PromiseProto_then%': ['Promise', 'prototype', 'then'],
+                    '%Promise_all%': ['Promise', 'all'],
+                    '%Promise_reject%': ['Promise', 'reject'],
+                    '%Promise_resolve%': ['Promise', 'resolve'],
+                    '%RangeErrorPrototype%': ['RangeError', 'prototype'],
+                    '%ReferenceErrorPrototype%': [
+                        'ReferenceError',
+                        'prototype'
                     ],
-                    "%RegExpPrototype%": ["RegExp", "prototype"],
-                    "%SetPrototype%": ["Set", "prototype"],
-                    "%SharedArrayBufferPrototype%": [
-                        "SharedArrayBuffer",
-                        "prototype",
+                    '%RegExpPrototype%': ['RegExp', 'prototype'],
+                    '%SetPrototype%': ['Set', 'prototype'],
+                    '%SharedArrayBufferPrototype%': [
+                        'SharedArrayBuffer',
+                        'prototype'
                     ],
-                    "%StringPrototype%": ["String", "prototype"],
-                    "%SymbolPrototype%": ["Symbol", "prototype"],
-                    "%SyntaxErrorPrototype%": ["SyntaxError", "prototype"],
-                    "%TypedArrayPrototype%": ["TypedArray", "prototype"],
-                    "%TypeErrorPrototype%": ["TypeError", "prototype"],
-                    "%Uint8ArrayPrototype%": ["Uint8Array", "prototype"],
-                    "%Uint8ClampedArrayPrototype%": [
-                        "Uint8ClampedArray",
-                        "prototype",
+                    '%StringPrototype%': ['String', 'prototype'],
+                    '%SymbolPrototype%': ['Symbol', 'prototype'],
+                    '%SyntaxErrorPrototype%': ['SyntaxError', 'prototype'],
+                    '%TypedArrayPrototype%': ['TypedArray', 'prototype'],
+                    '%TypeErrorPrototype%': ['TypeError', 'prototype'],
+                    '%Uint8ArrayPrototype%': ['Uint8Array', 'prototype'],
+                    '%Uint8ClampedArrayPrototype%': [
+                        'Uint8ClampedArray',
+                        'prototype'
                     ],
-                    "%Uint16ArrayPrototype%": ["Uint16Array", "prototype"],
-                    "%Uint32ArrayPrototype%": ["Uint32Array", "prototype"],
-                    "%URIErrorPrototype%": ["URIError", "prototype"],
-                    "%WeakMapPrototype%": ["WeakMap", "prototype"],
-                    "%WeakSetPrototype%": ["WeakSet", "prototype"],
+                    '%Uint16ArrayPrototype%': ['Uint16Array', 'prototype'],
+                    '%Uint32ArrayPrototype%': ['Uint32Array', 'prototype'],
+                    '%URIErrorPrototype%': ['URIError', 'prototype'],
+                    '%WeakMapPrototype%': ['WeakMap', 'prototype'],
+                    '%WeakSetPrototype%': ['WeakSet', 'prototype']
                 };
 
-                var bind = require("function-bind");
-                var hasOwn = require("has");
+                var bind = require('function-bind');
+                var hasOwn = require('has');
                 var $concat = bind.call(Function.call, Array.prototype.concat);
                 var $spliceApply = bind.call(
                     Function.apply,
@@ -1159,13 +1160,13 @@
                 var stringToPath = function stringToPath(string) {
                     var first = $strSlice(string, 0, 1);
                     var last = $strSlice(string, -1);
-                    if (first === "%" && last !== "%") {
+                    if (first === '%' && last !== '%') {
                         throw new $SyntaxError(
-                            "invalid intrinsic syntax, expected closing `%`"
+                            'invalid intrinsic syntax, expected closing `%`'
                         );
-                    } else if (last === "%" && first !== "%") {
+                    } else if (last === '%' && first !== '%') {
                         throw new $SyntaxError(
-                            "invalid intrinsic syntax, expected opening `%`"
+                            'invalid intrinsic syntax, expected opening `%`'
                         );
                     }
                     var result = [];
@@ -1174,7 +1175,7 @@
                         rePropName,
                         function (match, number, quote, subString) {
                             result[result.length] = quote
-                                ? $replace(subString, reEscapeChar, "$1")
+                                ? $replace(subString, reEscapeChar, '$1')
                                 : number || match;
                         }
                     );
@@ -1190,7 +1191,7 @@
                     var alias;
                     if (hasOwn(LEGACY_ALIASES, intrinsicName)) {
                         alias = LEGACY_ALIASES[intrinsicName];
-                        intrinsicName = "%" + alias[0] + "%";
+                        intrinsicName = '%' + alias[0] + '%';
                     }
 
                     if (hasOwn(INTRINSICS, intrinsicName)) {
@@ -1198,35 +1199,35 @@
                         if (value === needsEval) {
                             value = doEval(intrinsicName);
                         }
-                        if (typeof value === "undefined" && !allowMissing) {
+                        if (typeof value === 'undefined' && !allowMissing) {
                             throw new $TypeError(
-                                "intrinsic " +
+                                'intrinsic ' +
                                     name +
-                                    " exists, but is not available. Please file an issue!"
+                                    ' exists, but is not available. Please file an issue!'
                             );
                         }
 
                         return {
                             alias: alias,
                             name: intrinsicName,
-                            value: value,
+                            value: value
                         };
                     }
 
                     throw new $SyntaxError(
-                        "intrinsic " + name + " does not exist!"
+                        'intrinsic ' + name + ' does not exist!'
                     );
                 };
 
                 module.exports = function GetIntrinsic(name, allowMissing) {
-                    if (typeof name !== "string" || name.length === 0) {
+                    if (typeof name !== 'string' || name.length === 0) {
                         throw new $TypeError(
-                            "intrinsic name must be a non-empty string"
+                            'intrinsic name must be a non-empty string'
                         );
                     }
                     if (
                         arguments.length > 1 &&
-                        typeof allowMissing !== "boolean"
+                        typeof allowMissing !== 'boolean'
                     ) {
                         throw new $TypeError(
                             '"allowMissing" argument must be a boolean'
@@ -1235,14 +1236,14 @@
 
                     if ($exec(/^%?[^%]*%?$/, name) === null) {
                         throw new $SyntaxError(
-                            "`%` may not be present anywhere but at the beginning and end of the intrinsic name"
+                            '`%` may not be present anywhere but at the beginning and end of the intrinsic name'
                         );
                     }
                     var parts = stringToPath(name);
-                    var intrinsicBaseName = parts.length > 0 ? parts[0] : "";
+                    var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
 
                     var intrinsic = getBaseIntrinsic(
-                        "%" + intrinsicBaseName + "%",
+                        '%' + intrinsicBaseName + '%',
                         allowMissing
                     );
                     var intrinsicRealName = intrinsic.name;
@@ -1262,22 +1263,22 @@
                         if (
                             (first === '"' ||
                                 first === "'" ||
-                                first === "`" ||
+                                first === '`' ||
                                 last === '"' ||
                                 last === "'" ||
-                                last === "`") &&
+                                last === '`') &&
                             first !== last
                         ) {
                             throw new $SyntaxError(
-                                "property names with quotes must have matching quotes"
+                                'property names with quotes must have matching quotes'
                             );
                         }
-                        if (part === "constructor" || !isOwn) {
+                        if (part === 'constructor' || !isOwn) {
                             skipFurtherCaching = true;
                         }
 
-                        intrinsicBaseName += "." + part;
-                        intrinsicRealName = "%" + intrinsicBaseName + "%";
+                        intrinsicBaseName += '.' + part;
+                        intrinsicRealName = '%' + intrinsicBaseName + '%';
 
                         if (hasOwn(INTRINSICS, intrinsicRealName)) {
                             value = INTRINSICS[intrinsicRealName];
@@ -1285,9 +1286,9 @@
                             if (!(part in value)) {
                                 if (!allowMissing) {
                                     throw new $TypeError(
-                                        "base intrinsic for " +
+                                        'base intrinsic for ' +
                                             name +
-                                            " exists, but the property is not available."
+                                            ' exists, but the property is not available.'
                                     );
                                 }
                                 return void undefined;
@@ -1305,8 +1306,8 @@
                                 // itself.
                                 if (
                                     isOwn &&
-                                    "get" in desc &&
-                                    !("originalValue" in desc.get)
+                                    'get' in desc &&
+                                    !('originalValue' in desc.get)
                                 ) {
                                     value = desc.get;
                                 } else {
@@ -1325,23 +1326,23 @@
                     return value;
                 };
             },
-            { "function-bind": 9, has: 16, "has-symbols": 13 },
+            { 'function-bind': 9, has: 16, 'has-symbols': 13 }
         ],
         12: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var GetIntrinsic = require("get-intrinsic");
+                var GetIntrinsic = require('get-intrinsic');
 
                 var $defineProperty = GetIntrinsic(
-                    "%Object.defineProperty%",
+                    '%Object.defineProperty%',
                     true
                 );
 
                 var hasPropertyDescriptors = function hasPropertyDescriptors() {
                     if ($defineProperty) {
                         try {
-                            $defineProperty({}, "a", { value: 1 });
+                            $defineProperty({}, 'a', { value: 1 });
                             return true;
                         } catch (e) {
                             // IE 8 has a broken defineProperty
@@ -1359,7 +1360,7 @@
                         }
                         try {
                             return (
-                                $defineProperty([], "length", { value: 1 })
+                                $defineProperty([], 'length', { value: 1 })
                                     .length !== 1
                             );
                         } catch (e) {
@@ -1370,66 +1371,66 @@
 
                 module.exports = hasPropertyDescriptors;
             },
-            { "get-intrinsic": 11 },
+            { 'get-intrinsic': 11 }
         ],
         13: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var origSymbol = typeof Symbol !== "undefined" && Symbol;
-                var hasSymbolSham = require("./shams");
+                var origSymbol = typeof Symbol !== 'undefined' && Symbol;
+                var hasSymbolSham = require('./shams');
 
                 module.exports = function hasNativeSymbols() {
-                    if (typeof origSymbol !== "function") {
+                    if (typeof origSymbol !== 'function') {
                         return false;
                     }
-                    if (typeof Symbol !== "function") {
+                    if (typeof Symbol !== 'function') {
                         return false;
                     }
-                    if (typeof origSymbol("foo") !== "symbol") {
+                    if (typeof origSymbol('foo') !== 'symbol') {
                         return false;
                     }
-                    if (typeof Symbol("bar") !== "symbol") {
+                    if (typeof Symbol('bar') !== 'symbol') {
                         return false;
                     }
 
                     return hasSymbolSham();
                 };
             },
-            { "./shams": 14 },
+            { './shams': 14 }
         ],
         14: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 /* eslint complexity: [2, 18], max-statements: [2, 33] */
                 module.exports = function hasSymbols() {
                     if (
-                        typeof Symbol !== "function" ||
-                        typeof Object.getOwnPropertySymbols !== "function"
+                        typeof Symbol !== 'function' ||
+                        typeof Object.getOwnPropertySymbols !== 'function'
                     ) {
                         return false;
                     }
-                    if (typeof Symbol.iterator === "symbol") {
+                    if (typeof Symbol.iterator === 'symbol') {
                         return true;
                     }
 
                     var obj = {};
-                    var sym = Symbol("test");
+                    var sym = Symbol('test');
                     var symObj = Object(sym);
-                    if (typeof sym === "string") {
+                    if (typeof sym === 'string') {
                         return false;
                     }
 
                     if (
                         Object.prototype.toString.call(sym) !==
-                        "[object Symbol]"
+                        '[object Symbol]'
                     ) {
                         return false;
                     }
                     if (
                         Object.prototype.toString.call(symObj) !==
-                        "[object Symbol]"
+                        '[object Symbol]'
                     ) {
                         return false;
                     }
@@ -1448,14 +1449,14 @@
                         return false;
                     } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
                     if (
-                        typeof Object.keys === "function" &&
+                        typeof Object.keys === 'function' &&
                         Object.keys(obj).length !== 0
                     ) {
                         return false;
                     }
 
                     if (
-                        typeof Object.getOwnPropertyNames === "function" &&
+                        typeof Object.getOwnPropertyNames === 'function' &&
                         Object.getOwnPropertyNames(obj).length !== 0
                     ) {
                         return false;
@@ -1470,7 +1471,7 @@
                         return false;
                     }
 
-                    if (typeof Object.getOwnPropertyDescriptor === "function") {
+                    if (typeof Object.getOwnPropertyDescriptor === 'function') {
                         var descriptor = Object.getOwnPropertyDescriptor(
                             obj,
                             sym
@@ -1486,52 +1487,52 @@
                     return true;
                 };
             },
-            {},
+            {}
         ],
         15: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var hasSymbols = require("has-symbols/shams");
+                var hasSymbols = require('has-symbols/shams');
 
                 module.exports = function hasToStringTagShams() {
                     return hasSymbols() && !!Symbol.toStringTag;
                 };
             },
-            { "has-symbols/shams": 14 },
+            { 'has-symbols/shams': 14 }
         ],
         16: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var bind = require("function-bind");
+                var bind = require('function-bind');
 
                 module.exports = bind.call(
                     Function.call,
                     Object.prototype.hasOwnProperty
                 );
             },
-            { "function-bind": 9 },
+            { 'function-bind': 9 }
         ],
         17: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var hasToStringTag = require("has-tostringtag/shams")();
-                var callBound = require("call-bind/callBound");
+                var hasToStringTag = require('has-tostringtag/shams')();
+                var callBound = require('call-bind/callBound');
 
-                var $toString = callBound("Object.prototype.toString");
+                var $toString = callBound('Object.prototype.toString');
 
                 var isStandardArguments = function isArguments(value) {
                     if (
                         hasToStringTag &&
                         value &&
-                        typeof value === "object" &&
+                        typeof value === 'object' &&
                         Symbol.toStringTag in value
                     ) {
                         return false;
                     }
-                    return $toString(value) === "[object Arguments]";
+                    return $toString(value) === '[object Arguments]';
                 };
 
                 var isLegacyArguments = function isArguments(value) {
@@ -1540,11 +1541,11 @@
                     }
                     return (
                         value !== null &&
-                        typeof value === "object" &&
-                        typeof value.length === "number" &&
+                        typeof value === 'object' &&
+                        typeof value.length === 'number' &&
                         value.length >= 0 &&
-                        $toString(value) !== "[object Array]" &&
-                        $toString(value.callee) === "[object Function]"
+                        $toString(value) !== '[object Array]' &&
+                        $toString(value.callee) === '[object Function]'
                     );
                 };
 
@@ -1558,11 +1559,11 @@
                     ? isStandardArguments
                     : isLegacyArguments;
             },
-            { "call-bind/callBound": 4, "has-tostringtag/shams": 15 },
+            { 'call-bind/callBound': 4, 'has-tostringtag/shams': 15 }
         ],
         18: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var getDay = Date.prototype.getDay;
                 var tryDateObject = function tryDateGetDayCall(value) {
@@ -1575,11 +1576,11 @@
                 };
 
                 var toStr = Object.prototype.toString;
-                var dateClass = "[object Date]";
-                var hasToStringTag = require("has-tostringtag/shams")();
+                var dateClass = '[object Date]';
+                var hasToStringTag = require('has-tostringtag/shams')();
 
                 module.exports = function isDateObject(value) {
-                    if (typeof value !== "object" || value === null) {
+                    if (typeof value !== 'object' || value === null) {
                         return false;
                     }
                     return hasToStringTag
@@ -1587,22 +1588,22 @@
                         : toStr.call(value) === dateClass;
                 };
             },
-            { "has-tostringtag/shams": 15 },
+            { 'has-tostringtag/shams': 15 }
         ],
         19: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var callBound = require("call-bind/callBound");
-                var hasToStringTag = require("has-tostringtag/shams")();
+                var callBound = require('call-bind/callBound');
+                var hasToStringTag = require('has-tostringtag/shams')();
                 var has;
                 var $exec;
                 var isRegexMarker;
                 var badStringifier;
 
                 if (hasToStringTag) {
-                    has = callBound("Object.prototype.hasOwnProperty");
-                    $exec = callBound("RegExp.prototype.exec");
+                    has = callBound('Object.prototype.hasOwnProperty');
+                    $exec = callBound('RegExp.prototype.exec');
                     isRegexMarker = {};
 
                     var throwRegexMarker = function () {
@@ -1610,28 +1611,28 @@
                     };
                     badStringifier = {
                         toString: throwRegexMarker,
-                        valueOf: throwRegexMarker,
+                        valueOf: throwRegexMarker
                     };
 
-                    if (typeof Symbol.toPrimitive === "symbol") {
+                    if (typeof Symbol.toPrimitive === 'symbol') {
                         badStringifier[Symbol.toPrimitive] = throwRegexMarker;
                     }
                 }
 
-                var $toString = callBound("Object.prototype.toString");
+                var $toString = callBound('Object.prototype.toString');
                 var gOPD = Object.getOwnPropertyDescriptor;
-                var regexClass = "[object RegExp]";
+                var regexClass = '[object RegExp]';
 
                 module.exports = hasToStringTag
                     ? // eslint-disable-next-line consistent-return
                       function isRegex(value) {
-                          if (!value || typeof value !== "object") {
+                          if (!value || typeof value !== 'object') {
                               return false;
                           }
 
-                          var descriptor = gOPD(value, "lastIndex");
+                          var descriptor = gOPD(value, 'lastIndex');
                           var hasLastIndexDataProperty =
-                              descriptor && has(descriptor, "value");
+                              descriptor && has(descriptor, 'value');
                           if (!hasLastIndexDataProperty) {
                               return false;
                           }
@@ -1646,8 +1647,8 @@
                           // In older browsers, typeof regex incorrectly returns 'function'
                           if (
                               !value ||
-                              (typeof value !== "object" &&
-                                  typeof value !== "function")
+                              (typeof value !== 'object' &&
+                                  typeof value !== 'function')
                           ) {
                               return false;
                           }
@@ -1655,7 +1656,7 @@
                           return $toString(value) === regexClass;
                       };
             },
-            { "call-bind/callBound": 4, "has-tostringtag/shams": 15 },
+            { 'call-bind/callBound': 4, 'has-tostringtag/shams': 15 }
         ],
         20: [
             function (require, module, exports) {
@@ -1676,11 +1677,11 @@
 
                     if (cycleReplacer == null)
                         cycleReplacer = function (key, value) {
-                            if (stack[0] === value) return "[Circular ~]";
+                            if (stack[0] === value) return '[Circular ~]';
                             return (
-                                "[Circular ~." +
-                                keys.slice(0, stack.indexOf(value)).join(".") +
-                                "]"
+                                '[Circular ~.' +
+                                keys.slice(0, stack.indexOf(value)).join('.') +
+                                ']'
                             );
                         };
 
@@ -1703,11 +1704,11 @@
                     };
                 }
             },
-            {},
+            {}
         ],
         21: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var numberIsNaN = function (value) {
                     return value !== value;
@@ -1726,57 +1727,57 @@
                     return false;
                 };
             },
-            {},
+            {}
         ],
         22: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var define = require("define-properties");
-                var callBind = require("call-bind");
+                var define = require('define-properties');
+                var callBind = require('call-bind');
 
-                var implementation = require("./implementation");
-                var getPolyfill = require("./polyfill");
-                var shim = require("./shim");
+                var implementation = require('./implementation');
+                var getPolyfill = require('./polyfill');
+                var shim = require('./shim');
 
                 var polyfill = callBind(getPolyfill(), Object);
 
                 define(polyfill, {
                     getPolyfill: getPolyfill,
                     implementation: implementation,
-                    shim: shim,
+                    shim: shim
                 });
 
                 module.exports = polyfill;
             },
             {
-                "./implementation": 21,
-                "./polyfill": 23,
-                "./shim": 24,
-                "call-bind": 5,
-                "define-properties": 7,
-            },
+                './implementation': 21,
+                './polyfill': 23,
+                './shim': 24,
+                'call-bind': 5,
+                'define-properties': 7
+            }
         ],
         23: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var implementation = require("./implementation");
+                var implementation = require('./implementation');
 
                 module.exports = function getPolyfill() {
-                    return typeof Object.is === "function"
+                    return typeof Object.is === 'function'
                         ? Object.is
                         : implementation;
                 };
             },
-            { "./implementation": 21 },
+            { './implementation': 21 }
         ],
         24: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var getPolyfill = require("./polyfill");
-                var define = require("define-properties");
+                var getPolyfill = require('./polyfill');
+                var define = require('define-properties');
 
                 module.exports = function shimObjectIs() {
                     var polyfill = getPolyfill();
@@ -1786,39 +1787,41 @@
                         {
                             is: function testObjectIs() {
                                 return Object.is !== polyfill;
-                            },
+                            }
                         }
                     );
                     return polyfill;
                 };
             },
-            { "./polyfill": 23, "define-properties": 7 },
+            { './polyfill': 23, 'define-properties': 7 }
         ],
         25: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var keysShim;
                 if (!Object.keys) {
                     // modified from https://github.com/es-shims/es5-shim
                     var has = Object.prototype.hasOwnProperty;
                     var toStr = Object.prototype.toString;
-                    var isArgs = require("./isArguments"); // eslint-disable-line global-require
+                    var isArgs = require('./isArguments'); // eslint-disable-line global-require
                     var isEnumerable = Object.prototype.propertyIsEnumerable;
                     var hasDontEnumBug = !isEnumerable.call(
                         { toString: null },
-                        "toString"
+                        'toString'
                     );
-                    var hasProtoEnumBug = isEnumerable.call(function () {},
-                    "prototype");
+                    var hasProtoEnumBug = isEnumerable.call(
+                        function () {},
+                        'prototype'
+                    );
                     var dontEnums = [
-                        "toString",
-                        "toLocaleString",
-                        "valueOf",
-                        "hasOwnProperty",
-                        "isPrototypeOf",
-                        "propertyIsEnumerable",
-                        "constructor",
+                        'toString',
+                        'toLocaleString',
+                        'valueOf',
+                        'hasOwnProperty',
+                        'isPrototypeOf',
+                        'propertyIsEnumerable',
+                        'constructor'
                     ];
                     var equalsConstructorPrototype = function (o) {
                         var ctor = o.constructor;
@@ -1847,20 +1850,20 @@
                         $self: true,
                         $webkitIndexedDB: true,
                         $webkitStorageInfo: true,
-                        $window: true,
+                        $window: true
                     };
                     var hasAutomationEqualityBug = (function () {
                         /* global window */
-                        if (typeof window === "undefined") {
+                        if (typeof window === 'undefined') {
                             return false;
                         }
                         for (var k in window) {
                             try {
                                 if (
-                                    !excludedKeys["$" + k] &&
+                                    !excludedKeys['$' + k] &&
                                     has.call(window, k) &&
                                     window[k] !== null &&
-                                    typeof window[k] === "object"
+                                    typeof window[k] === 'object'
                                 ) {
                                     try {
                                         equalsConstructorPrototype(window[k]);
@@ -1877,7 +1880,7 @@
                     var equalsConstructorPrototypeIfNotBuggy = function (o) {
                         /* global window */
                         if (
-                            typeof window === "undefined" ||
+                            typeof window === 'undefined' ||
                             !hasAutomationEqualityBug
                         ) {
                             return equalsConstructorPrototype(o);
@@ -1891,18 +1894,18 @@
 
                     keysShim = function keys(object) {
                         var isObject =
-                            object !== null && typeof object === "object";
+                            object !== null && typeof object === 'object';
                         var isFunction =
-                            toStr.call(object) === "[object Function]";
+                            toStr.call(object) === '[object Function]';
                         var isArguments = isArgs(object);
                         var isString =
                             isObject &&
-                            toStr.call(object) === "[object String]";
+                            toStr.call(object) === '[object String]';
                         var theKeys = [];
 
                         if (!isObject && !isFunction && !isArguments) {
                             throw new TypeError(
-                                "Object.keys called on a non-object"
+                                'Object.keys called on a non-object'
                             );
                         }
 
@@ -1924,7 +1927,7 @@
                         } else {
                             for (var name in object) {
                                 if (
-                                    !(skipProto && name === "prototype") &&
+                                    !(skipProto && name === 'prototype') &&
                                     has.call(object, name)
                                 ) {
                                     theKeys.push(String(name));
@@ -1940,7 +1943,7 @@
                                 if (
                                     !(
                                         skipConstructor &&
-                                        dontEnums[k] === "constructor"
+                                        dontEnums[k] === 'constructor'
                                     ) &&
                                     has.call(object, dontEnums[k])
                                 ) {
@@ -1953,21 +1956,21 @@
                 }
                 module.exports = keysShim;
             },
-            { "./isArguments": 27 },
+            { './isArguments': 27 }
         ],
         26: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var slice = Array.prototype.slice;
-                var isArgs = require("./isArguments");
+                var isArgs = require('./isArguments');
 
                 var origKeys = Object.keys;
                 var keysShim = origKeys
                     ? function keys(o) {
                           return origKeys(o);
                       }
-                    : require("./implementation");
+                    : require('./implementation');
 
                 var originalKeys = Object.keys;
 
@@ -1995,37 +1998,37 @@
 
                 module.exports = keysShim;
             },
-            { "./implementation": 25, "./isArguments": 27 },
+            { './implementation': 25, './isArguments': 27 }
         ],
         27: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var toStr = Object.prototype.toString;
 
                 module.exports = function isArguments(value) {
                     var str = toStr.call(value);
-                    var isArgs = str === "[object Arguments]";
+                    var isArgs = str === '[object Arguments]';
                     if (!isArgs) {
                         isArgs =
-                            str !== "[object Array]" &&
+                            str !== '[object Array]' &&
                             value !== null &&
-                            typeof value === "object" &&
-                            typeof value.length === "number" &&
+                            typeof value === 'object' &&
+                            typeof value.length === 'number' &&
                             value.length >= 0 &&
-                            toStr.call(value.callee) === "[object Function]";
+                            toStr.call(value.callee) === '[object Function]';
                     }
                     return isArgs;
                 };
             },
-            {},
+            {}
         ],
         28: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var functionsHaveConfigurableNames =
-                    require("functions-have-names").functionsHaveConfigurableNames();
+                    require('functions-have-names').functionsHaveConfigurableNames();
 
                 var $Object = Object;
                 var $TypeError = TypeError;
@@ -2033,104 +2036,104 @@
                 module.exports = function flags() {
                     if (this != null && this !== $Object(this)) {
                         throw new $TypeError(
-                            "RegExp.prototype.flags getter called on non-object"
+                            'RegExp.prototype.flags getter called on non-object'
                         );
                     }
-                    var result = "";
+                    var result = '';
                     if (this.hasIndices) {
-                        result += "d";
+                        result += 'd';
                     }
                     if (this.global) {
-                        result += "g";
+                        result += 'g';
                     }
                     if (this.ignoreCase) {
-                        result += "i";
+                        result += 'i';
                     }
                     if (this.multiline) {
-                        result += "m";
+                        result += 'm';
                     }
                     if (this.dotAll) {
-                        result += "s";
+                        result += 's';
                     }
                     if (this.unicode) {
-                        result += "u";
+                        result += 'u';
                     }
                     if (this.sticky) {
-                        result += "y";
+                        result += 'y';
                     }
                     return result;
                 };
 
                 if (functionsHaveConfigurableNames && Object.defineProperty) {
-                    Object.defineProperty(module.exports, "name", {
-                        value: "get flags",
+                    Object.defineProperty(module.exports, 'name', {
+                        value: 'get flags'
                     });
                 }
             },
-            { "functions-have-names": 10 },
+            { 'functions-have-names': 10 }
         ],
         29: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var define = require("define-properties");
-                var callBind = require("call-bind");
+                var define = require('define-properties');
+                var callBind = require('call-bind');
 
-                var implementation = require("./implementation");
-                var getPolyfill = require("./polyfill");
-                var shim = require("./shim");
+                var implementation = require('./implementation');
+                var getPolyfill = require('./polyfill');
+                var shim = require('./shim');
 
                 var flagsBound = callBind(getPolyfill());
 
                 define(flagsBound, {
                     getPolyfill: getPolyfill,
                     implementation: implementation,
-                    shim: shim,
+                    shim: shim
                 });
 
                 module.exports = flagsBound;
             },
             {
-                "./implementation": 28,
-                "./polyfill": 30,
-                "./shim": 31,
-                "call-bind": 5,
-                "define-properties": 7,
-            },
+                './implementation': 28,
+                './polyfill': 30,
+                './shim': 31,
+                'call-bind': 5,
+                'define-properties': 7
+            }
         ],
         30: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
-                var implementation = require("./implementation");
+                var implementation = require('./implementation');
 
                 var supportsDescriptors =
-                    require("define-properties").supportsDescriptors;
+                    require('define-properties').supportsDescriptors;
                 var $gOPD = Object.getOwnPropertyDescriptor;
 
                 module.exports = function getPolyfill() {
-                    if (supportsDescriptors && /a/gim.flags === "gim") {
-                        var descriptor = $gOPD(RegExp.prototype, "flags");
+                    if (supportsDescriptors && /a/gim.flags === 'gim') {
+                        var descriptor = $gOPD(RegExp.prototype, 'flags');
                         if (
                             descriptor &&
-                            typeof descriptor.get === "function" &&
-                            typeof RegExp.prototype.dotAll === "boolean" &&
-                            typeof RegExp.prototype.hasIndices === "boolean"
+                            typeof descriptor.get === 'function' &&
+                            typeof RegExp.prototype.dotAll === 'boolean' &&
+                            typeof RegExp.prototype.hasIndices === 'boolean'
                         ) {
                             /* eslint getter-return: 0 */
-                            var calls = "";
+                            var calls = '';
                             var o = {};
-                            Object.defineProperty(o, "hasIndices", {
+                            Object.defineProperty(o, 'hasIndices', {
                                 get: function () {
-                                    calls += "d";
-                                },
+                                    calls += 'd';
+                                }
                             });
-                            Object.defineProperty(o, "sticky", {
+                            Object.defineProperty(o, 'sticky', {
                                 get: function () {
-                                    calls += "y";
-                                },
+                                    calls += 'y';
+                                }
                             });
-                            if (calls === "dy") {
+                            if (calls === 'dy') {
                                 return descriptor.get;
                             }
                         }
@@ -2138,15 +2141,15 @@
                     return implementation;
                 };
             },
-            { "./implementation": 28, "define-properties": 7 },
+            { './implementation': 28, 'define-properties': 7 }
         ],
         31: [
             function (require, module, exports) {
-                "use strict";
+                'use strict';
 
                 var supportsDescriptors =
-                    require("define-properties").supportsDescriptors;
-                var getPolyfill = require("./polyfill");
+                    require('define-properties').supportsDescriptors;
+                var getPolyfill = require('./polyfill');
                 var gOPD = Object.getOwnPropertyDescriptor;
                 var defineProperty = Object.defineProperty;
                 var TypeErr = TypeError;
@@ -2156,34 +2159,34 @@
                 module.exports = function shimFlags() {
                     if (!supportsDescriptors || !getProto) {
                         throw new TypeErr(
-                            "RegExp.prototype.flags requires a true ES5 environment that supports property descriptors"
+                            'RegExp.prototype.flags requires a true ES5 environment that supports property descriptors'
                         );
                     }
                     var polyfill = getPolyfill();
                     var proto = getProto(regex);
-                    var descriptor = gOPD(proto, "flags");
+                    var descriptor = gOPD(proto, 'flags');
                     if (!descriptor || descriptor.get !== polyfill) {
-                        defineProperty(proto, "flags", {
+                        defineProperty(proto, 'flags', {
                             configurable: true,
                             enumerable: false,
-                            get: polyfill,
+                            get: polyfill
                         });
                     }
                     return polyfill;
                 };
             },
-            { "./polyfill": 30, "define-properties": 7 },
+            { './polyfill': 30, 'define-properties': 7 }
         ],
         32: [
             function (require, module, exports) {
-                const { assert } = require("@quenk/test/lib/assert");
+                const { assert } = require('@quenk/test/lib/assert');
 
-                const { webGenerateV4 } = require("../../../lib/crypto/uuid");
+                const { webGenerateV4 } = require('../../../lib/crypto/uuid');
 
-                describe("uuid", () => {
-                    describe("webGenerateV4", () => {
-                        it("should generate a v4 string", () => {
-                            let strs = webGenerateV4().split("-");
+                describe('uuid', () => {
+                    describe('webGenerateV4', () => {
+                        it('should generate a v4 string', () => {
+                            let strs = webGenerateV4().split('-');
                             assert(strs.length).equal(5);
                             assert(strs[0].length).equal(8);
                             assert(strs[1].length).equal(4);
@@ -2192,13 +2195,13 @@
                             assert(strs[4].length).equal(12);
                         });
 
-                        it("should generate without dashses", () => {
+                        it('should generate without dashses', () => {
                             let str = webGenerateV4(true);
-                            assert(str.indexOf("-")).equal(-1);
+                            assert(str.indexOf('-')).equal(-1);
                             assert(str.length).equal(32);
                         });
 
-                        it("should be unique for 10K rounds", () => {
+                        it('should be unique for 10K rounds', () => {
                             let output = [];
 
                             for (let i = 0; i <= 10000; i++) {
@@ -2216,8 +2219,8 @@
                     });
                 });
             },
-            { "../../../lib/crypto/uuid": 1, "@quenk/test/lib/assert": 3 },
-        ],
+            { '../../../lib/crypto/uuid': 1, '@quenk/test/lib/assert': 3 }
+        ]
     },
     {},
     [32]

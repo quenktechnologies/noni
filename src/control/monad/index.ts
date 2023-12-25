@@ -1,6 +1,6 @@
-import { Type } from "../../data/type";
-import { Applicative } from "../applicative";
-import { Chain } from "../chain";
+import { Type } from '../../data/type';
+import { Applicative } from '../applicative';
+import { Chain } from '../chain';
 
 /**
  * DoFn type.
@@ -25,15 +25,15 @@ export interface Monad<A> extends Applicative<A>, Chain<A> {}
  * join flattens a Monad that contains another Monad.
  */
 export const join = <A, M extends Monad<A>>(outer: Monad<M>): M =>
-  <M>outer.chain((x: M) => x);
+    <M>outer.chain((x: M) => x);
 
 /**
  * compose right composes functions that produce Monads so that the output
  * of the second is the input of the first.
  */
 export const compose = <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(
-  g: (b: B) => MC,
-  f: (a: A) => MB
+    g: (b: B) => MC,
+    f: (a: A) => MB
 ) => pipe<A, B, C, MB, MC>(f, g);
 
 /**
@@ -41,12 +41,12 @@ export const compose = <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(
  * first is the input of the second.
  */
 export const pipe =
-  <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(
-    f: (a: A) => MB,
-    g: (b: B) => MC
-  ) =>
-  (value: A) =>
-    f(value).chain((b) => g(b));
+    <A, B, C, MB extends Monad<B>, MC extends Monad<C>>(
+        f: (a: A) => MB,
+        g: (b: B) => MC
+    ) =>
+    (value: A) =>
+        f(value).chain(b => g(b));
 
 /**
  * pipeN is like pipe but takes variadic parameters.
@@ -54,9 +54,9 @@ export const pipe =
  * Because of this, the resulting function only maps from A -> B.
  */
 export const pipeN =
-  <A, B, MB extends Monad<B>>(f: (a: A) => MB, ...list: ((b: B) => MB)[]) =>
-  (value: A) =>
-    list.reduce((p, c) => <MB>p.chain((v) => <MB>c(v)), f(value));
+    <A, B, MB extends Monad<B>>(f: (a: A) => MB, ...list: ((b: B) => MB)[]) =>
+    (value: A) =>
+        list.reduce((p, c) => <MB>p.chain(v => <MB>c(v)), f(value));
 
 /**
  * doN simulates haskell's do notation using ES6's generator syntax.
@@ -101,16 +101,16 @@ export const pipeN =
  * Beware of uncaught errors being swallowed in the function body.
  */
 export const doN = <A, M extends Monad<A>>(f: DoFn<A, M>): M => {
-  let gen = f();
+    let gen = f();
 
-  let next = (val?: A): M => {
-    let r = gen.next(<A>val);
+    let next = (val?: A): M => {
+        let r = gen.next(<A>val);
 
-    if (r.done) return r.value;
-    else return <M>(<M>r.value).chain(next);
-  };
+        if (r.done) return r.value;
+        else return <M>(<M>r.value).chain(next);
+    };
 
-  return next();
+    return next();
 };
 
 export const doMonad = doN;

@@ -147,69 +147,69 @@
  */
 
 /** imports **/
-import { Monad } from "./";
-import { Functor } from "../../data/functor";
-import { Either, Left, Right, left, right } from "../../data/either";
-import { Eq } from "../../data/eq";
-import { tail } from "../../data/array";
+import { Monad } from './';
+import { Functor } from '../../data/functor';
+import { Either, Left, Right, left, right } from '../../data/either';
+import { Eq } from '../../data/eq';
+import { tail } from '../../data/array';
 
 /**
  * Free monad implementation.
  */
 export abstract class Free<F extends Functor<any>, A>
-  implements Monad<A>, Eq<Free<F, A>>
+    implements Monad<A>, Eq<Free<F, A>>
 {
-  /**
-   * of produces a pure Free from a value.
-   */
-  of(a: A): Free<F, A> {
-    return new Pure<F, A>(a);
-  }
+    /**
+     * of produces a pure Free from a value.
+     */
+    of(a: A): Free<F, A> {
+        return new Pure<F, A>(a);
+    }
 
-  /**
-   * map implementation.
-   */
-  map<B>(f: (a: A) => B): Free<F, B> {
-    return this.chain((a: A) => new Pure(f(a)));
-  }
+    /**
+     * map implementation.
+     */
+    map<B>(f: (a: A) => B): Free<F, B> {
+        return this.chain((a: A) => new Pure(f(a)));
+    }
 
-  /**
-   * chain implementation.
-   */
-  abstract chain<B>(g: (a: A) => Free<F, B>): Free<F, B>;
+    /**
+     * chain implementation.
+     */
+    abstract chain<B>(g: (a: A) => Free<F, B>): Free<F, B>;
 
-  /**
-   * ap implementation.
-   */
-  abstract ap<B>(f: Free<F, (a: A) => B>): Free<F, B>;
+    /**
+     * ap implementation.
+     */
+    abstract ap<B>(f: Free<F, (a: A) => B>): Free<F, B>;
 
-  /**
-   * resume unwraps one layer of [[Functor]].
-   */
-  abstract resume(): Either<F, A>;
+    /**
+     * resume unwraps one layer of [[Functor]].
+     */
+    abstract resume(): Either<F, A>;
 
-  /**
-   * fold a Free monad into a single value.
-   */
-  abstract fold<B>(f: (a: A) => B, g: (f: F) => B): B;
+    /**
+     * fold a Free monad into a single value.
+     */
+    abstract fold<B>(f: (a: A) => B, g: (f: F) => B): B;
 
-  /**
-   * foldM folds a Free monad into another monad.
-   */
-  abstract foldM<M extends Monad<A>>(
-    f: (a: A) => M,
-    g: (f: F) => Monad<Free<F, A>>
-  ): M;
+    /**
+     * foldM folds a Free monad into another monad.
+     */
+    abstract foldM<M extends Monad<A>>(
+        f: (a: A) => M,
+        g: (f: F) => Monad<Free<F, A>>
+    ): M;
 
-  /**
-   * run the computations of the [[Free]] to completion.
-   */
-  abstract run(f: (next: F) => Free<F, A>): A;
+    /**
+     * run the computations of the [[Free]] to completion.
+     */
+    abstract run(f: (next: F) => Free<F, A>): A;
 
-  /**
-   * eq implementation.
-   */
-  abstract eq(f: Free<F, A>): boolean;
+    /**
+     * eq implementation.
+     */
+    abstract eq(f: Free<F, A>): boolean;
 }
 
 /**
@@ -217,49 +217,54 @@ export abstract class Free<F extends Functor<any>, A>
  * @private
  */
 export class Suspend<F extends Functor<any>, A> extends Free<F, A> {
-  constructor(public value: F) {
-    super();
-  }
+    constructor(public value: F) {
+        super();
+    }
 
-  chain<B>(f: (a: A) => Free<F, B>): Free<F, B> {
-    return new Suspend(<F>this.value.map((free: Free<F, A>) => free.chain(f)));
-  }
+    chain<B>(f: (a: A) => Free<F, B>): Free<F, B> {
+        return new Suspend(
+            <F>this.value.map((free: Free<F, A>) => free.chain(f))
+        );
+    }
 
-  ap<B>(f: Free<F, (a: A) => B>): Free<F, B> {
-    return <Free<F, B>>this.chain((x) => f.map((g) => g(x)));
-  }
+    ap<B>(f: Free<F, (a: A) => B>): Free<F, B> {
+        return <Free<F, B>>this.chain(x => f.map(g => g(x)));
+    }
 
-  resume(): Either<F, A> {
-    return left<F, A>(this.value);
-  }
+    resume(): Either<F, A> {
+        return left<F, A>(this.value);
+    }
 
-  fold<B>(f: (a: A) => B, g: (f: F) => B): B {
-    return g(<F>this.value.map((free) => free.fold(f, g)));
-  }
+    fold<B>(f: (a: A) => B, g: (f: F) => B): B {
+        return g(<F>this.value.map(free => free.fold(f, g)));
+    }
 
-  foldM<M extends Monad<A>>(f: (a: A) => M, g: (f: F) => Monad<Free<F, A>>): M {
-    return <M>g(this.value).chain((free) => free.foldM(f, g));
-  }
+    foldM<M extends Monad<A>>(
+        f: (a: A) => M,
+        g: (f: F) => Monad<Free<F, A>>
+    ): M {
+        return <M>g(this.value).chain(free => free.foldM(f, g));
+    }
 
-  run(f: (next: F) => Free<F, A>): A {
-    let r = this.resume();
+    run(f: (next: F) => Free<F, A>): A {
+        let r = this.resume();
 
-    while (r instanceof Left) r = f(r.takeLeft()).resume();
+        while (r instanceof Left) r = f(r.takeLeft()).resume();
 
-    return r.takeRight();
-  }
+        return r.takeRight();
+    }
 
-  /**
-   * eq implementation.
-   */
-  eq(f: Free<F, A>): boolean {
-    let result = false;
+    /**
+     * eq implementation.
+     */
+    eq(f: Free<F, A>): boolean {
+        let result = false;
 
-    this.resume()
-      .takeLeft()
-      .map((func: Free<F, A>) => (result = func.eq(f)));
-    return result;
-  }
+        this.resume()
+            .takeLeft()
+            .map((func: Free<F, A>) => (result = func.eq(f)));
+        return result;
+    }
 }
 
 /**
@@ -267,74 +272,80 @@ export class Suspend<F extends Functor<any>, A> extends Free<F, A> {
  * @private
  */
 export class Pure<F extends Functor<any>, A> extends Free<F, A> {
-  constructor(public value: A) {
-    super();
-  }
+    constructor(public value: A) {
+        super();
+    }
 
-  chain<B>(f: (a: A) => Free<F, B>): Free<F, B> {
-    return f(this.value);
-  }
+    chain<B>(f: (a: A) => Free<F, B>): Free<F, B> {
+        return f(this.value);
+    }
 
-  ap<B>(f: Free<F, (a: A) => B>): Free<F, B> {
-    return <Free<F, B>>f.map((g) => g(this.value));
-  }
+    ap<B>(f: Free<F, (a: A) => B>): Free<F, B> {
+        return <Free<F, B>>f.map(g => g(this.value));
+    }
 
-  resume(): Either<F, A> {
-    return right<F, A>(this.value);
-  }
+    resume(): Either<F, A> {
+        return right<F, A>(this.value);
+    }
 
-  fold<B>(f: (a: A) => B, _: (f: F) => B): B {
-    return f(this.value);
-  }
+    fold<B>(f: (a: A) => B, _: (f: F) => B): B {
+        return f(this.value);
+    }
 
-  foldM<M extends Monad<A>>(f: (a: A) => M, _: (f: F) => Monad<Free<F, A>>): M {
-    return f(this.value);
-  }
+    foldM<M extends Monad<A>>(
+        f: (a: A) => M,
+        _: (f: F) => Monad<Free<F, A>>
+    ): M {
+        return f(this.value);
+    }
 
-  run(_: (next: F) => Free<F, A>): A {
-    return this.value;
-  }
+    run(_: (next: F) => Free<F, A>): A {
+        return this.value;
+    }
 
-  eq(f: Free<F, A>): boolean {
-    return f instanceof Pure ? this.value === f.value : f.eq(this);
-  }
+    eq(f: Free<F, A>): boolean {
+        return f instanceof Pure ? this.value === f.value : f.eq(this);
+    }
 }
 
 /**
  * Step in the reduction of a [[Free]] chain to a single value.
  */
 export class Step<F extends Functor<any>, A, B> {
-  constructor(public value: B, public next: Free<F, A>) {}
+    constructor(
+        public value: B,
+        public next: Free<F, A>
+    ) {}
 }
 
 /**
  * liftF a Functor into a Free.
  */
 export const liftF = <F extends Functor<any>, A>(f: F): Free<F, A> =>
-  new Suspend(<F>f.map((a) => new Pure(a)));
+    new Suspend(<F>f.map(a => new Pure(a)));
 
 /**
  * pure wraps a value in a Pure
  */
 export const pure = <F extends Functor<any>, A>(a: A): Free<F, A> =>
-  new Pure(a);
+    new Pure(a);
 
 /**
  * flatten a Free chain into a single level array.
  */
 export const flatten =
-  <F extends Functor<any>, A>(fr: Free<F, A>) =>
-  (f: (next: F) => Free<F, A>): F[] => {
-    let r = fr.resume();
-    let l: F[] = [];
+    <F extends Functor<any>, A>(fr: Free<F, A>) =>
+    (f: (next: F) => Free<F, A>): F[] => {
+        let r = fr.resume();
+        let l: F[] = [];
 
-    while (r instanceof Left) {
-      l.push(r.takeLeft());
-      r = f(tail(l)).resume();
-    }
+        while (r instanceof Left) {
+            l.push(r.takeLeft());
+            r = f(tail(l)).resume();
+        }
 
-    return l;
-  };
+        return l;
+    };
 
 /**
  * reduce a Free into a single value.
@@ -350,21 +361,21 @@ export const flatten =
  * Free<F,void>
  */
 export const reduce =
-  <F extends Functor<any>, B>(fr: Free<F, void>) =>
-  (b: B) =>
-  (f: (prev: B, curr: F) => Step<F, void, B>): B => {
-    let step = new Step(b, fr);
-    let r = fr.resume();
+    <F extends Functor<any>, B>(fr: Free<F, void>) =>
+    (b: B) =>
+    (f: (prev: B, curr: F) => Step<F, void, B>): B => {
+        let step = new Step(b, fr);
+        let r = fr.resume();
 
-    if (r instanceof Right) {
-      return b;
-    } else {
-      while (r instanceof Left) {
-        step = f(b, r.takeLeft());
-        b = step.value;
-        r = step.next.resume();
-      }
+        if (r instanceof Right) {
+            return b;
+        } else {
+            while (r instanceof Left) {
+                step = f(b, r.takeLeft());
+                b = step.value;
+                r = step.next.resume();
+            }
 
-      return b;
-    }
-  };
+            return b;
+        }
+    };

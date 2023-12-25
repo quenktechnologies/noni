@@ -1,8 +1,8 @@
-import { Alt } from "./alt";
+import { Alt } from './alt';
 
 /**
  * Plus
  */
 export interface Plus<A> extends Alt<A> {
-  empty(): Plus<A>;
+    empty(): Plus<A>;
 }

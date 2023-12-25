@@ -1,7 +1,7 @@
-import { Alt } from "../control/alt";
-import { Eq } from "../data/eq";
-import { Applicative } from "../control/applicative";
-import { Monad } from "../control/monad";
+import { Alt } from '../control/alt';
+import { Eq } from '../data/eq';
+import { Applicative } from '../control/applicative';
+import { Monad } from '../control/monad';
 
 /**
  * Identity monad.
@@ -11,51 +11,51 @@ import { Monad } from "../control/monad";
  * operations.
  */
 export class Identity<A>
-  implements Alt<A>, Applicative<A>, Monad<A>, Eq<Identity<A>>
+    implements Alt<A>, Applicative<A>, Monad<A>, Eq<Identity<A>>
 {
-  constructor(public value: A) {}
+    constructor(public value: A) {}
 
-  /**
-   * of
-   */
-  of(a: A): Identity<A> {
-    return new Identity(a);
-  }
+    /**
+     * of
+     */
+    of(a: A): Identity<A> {
+        return new Identity(a);
+    }
 
-  /**
-   * map
-   */
-  map<B>(f: (a: A) => B): Identity<B> {
-    return new Identity(f(this.value));
-  }
+    /**
+     * map
+     */
+    map<B>(f: (a: A) => B): Identity<B> {
+        return new Identity(f(this.value));
+    }
 
-  /**
-   * chain
-   */
-  chain<B>(f: (a: A) => Identity<B>): Identity<B> {
-    return f(this.value);
-  }
+    /**
+     * chain
+     */
+    chain<B>(f: (a: A) => Identity<B>): Identity<B> {
+        return f(this.value);
+    }
 
-  /**
-   * ap
-   */
-  ap<B>(i: Identity<(a: A) => B>): Identity<B> {
-    return new Identity(i.value(this.value));
-  }
+    /**
+     * ap
+     */
+    ap<B>(i: Identity<(a: A) => B>): Identity<B> {
+        return new Identity(i.value(this.value));
+    }
 
-  /**
-   * alt will prefer whatever Maybe instance provided.
-   */
-  alt(a: Identity<A>): Identity<A> {
-    return a;
-  }
+    /**
+     * alt will prefer whatever Maybe instance provided.
+     */
+    alt(a: Identity<A>): Identity<A> {
+        return a;
+    }
 
-  /**
-   * eq
-   */
-  eq(i: Identity<A>): boolean {
-    return i.value === this.value;
-  }
+    /**
+     * eq
+     */
+    eq(i: Identity<A>): boolean {
+        return i.value === this.value;
+    }
 }
 
 /**

@@ -23,8 +23,8 @@
  *
  */
 
-import { Constructor } from "../../data/type/constructor";
-import { test, show } from "../../data/type";
+import { Constructor } from '../../data/type/constructor';
+import { test, show } from '../../data/type';
 
 /**
  * Result is the sum of the UnMatched and Matched types.
@@ -35,80 +35,80 @@ export type Result<A> = UnMatched<A> | Matched<A>;
  * UnMatched represents a value yet to have a successful match.
  */
 export class UnMatched<A> {
-  constructor(public value: A) {}
+    constructor(public value: A) {}
 
-  /**
-   * caseOf test.
-   */
-  caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>;
-  caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>;
-  caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>;
-  caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>;
-  caseOf<T extends object, B>(
-    pattern: T,
-    f: (value: { [P in keyof T]: any }) => B
-  ): Result<A | B>;
-  caseOf<T extends string, B>(pattern: T, f: (value: T) => B): Result<A | B>;
-  caseOf<T extends number, B>(pattern: T, f: (value: T) => B): Result<A | B>;
-  caseOf<T extends boolean, B>(pattern: T, f: (value: T) => B): Result<A | B>;
-  caseOf<B>(pattern: any, f: (value: any) => B): Result<A | B> {
-    return test(this.value, pattern) ? new Matched<B>(f(this.value)) : this;
-  }
+    /**
+     * caseOf test.
+     */
+    caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>;
+    caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>;
+    caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>;
+    caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>;
+    caseOf<T extends object, B>(
+        pattern: T,
+        f: (value: { [P in keyof T]: any }) => B
+    ): Result<A | B>;
+    caseOf<T extends string, B>(pattern: T, f: (value: T) => B): Result<A | B>;
+    caseOf<T extends number, B>(pattern: T, f: (value: T) => B): Result<A | B>;
+    caseOf<T extends boolean, B>(pattern: T, f: (value: T) => B): Result<A | B>;
+    caseOf<B>(pattern: any, f: (value: any) => B): Result<A | B> {
+        return test(this.value, pattern) ? new Matched<B>(f(this.value)) : this;
+    }
 
-  /**
-   * orElse produces the alternative value since no cases have been matched yet.
-   */
-  orElse<B>(f: (a: A) => B): Matched<A | B> {
-    return new Matched<B>(f(this.value));
-  }
+    /**
+     * orElse produces the alternative value since no cases have been matched yet.
+     */
+    orElse<B>(f: (a: A) => B): Matched<A | B> {
+        return new Matched<B>(f(this.value));
+    }
 
-  /**
-   * end
-   *
-   * Calling end on an UnMatched is an error.
-   */
-  end(): A {
-    throw new Error(`The pattern '${show(this.value)}' was not matched!`);
-  }
+    /**
+     * end
+     *
+     * Calling end on an UnMatched is an error.
+     */
+    end(): A {
+        throw new Error(`The pattern '${show(this.value)}' was not matched!`);
+    }
 }
 
 /**
  * Matched represents a succefully matched case.
  */
 export class Matched<A> {
-  constructor(public value: A) {}
+    constructor(public value: A) {}
 
-  /**
-   * caseOf does nothing.
-   */
-  caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>;
-  caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>;
-  caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>;
-  caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>;
-  caseOf<T extends object, B>(
-    pattern: T,
-    f: (value: { [P in keyof T]: any }) => B
-  ): Result<A | B>;
-  caseOf<T extends string, B>(pattern: T, f: (value: T) => B): Result<A | B>;
-  caseOf<T extends number, B>(pattern: T, f: (value: T) => B): Result<A | B>;
-  caseOf<T extends boolean, B>(pattern: T, f: (value: T) => B): Result<A | B>;
-  caseOf<B>(_: any, __: (value: any) => B): Result<A | B> {
-    return this;
-  }
+    /**
+     * caseOf does nothing.
+     */
+    caseOf<T, B>(pattern: Constructor<T>, f: (value: T) => B): Result<A | B>;
+    caseOf<B>(pattern: String, f: (value: string) => B): Result<A | B>;
+    caseOf<B>(pattern: Number, f: (value: number) => B): Result<A | B>;
+    caseOf<B>(pattern: Boolean, f: (value: boolean) => B): Result<A | B>;
+    caseOf<T extends object, B>(
+        pattern: T,
+        f: (value: { [P in keyof T]: any }) => B
+    ): Result<A | B>;
+    caseOf<T extends string, B>(pattern: T, f: (value: T) => B): Result<A | B>;
+    caseOf<T extends number, B>(pattern: T, f: (value: T) => B): Result<A | B>;
+    caseOf<T extends boolean, B>(pattern: T, f: (value: T) => B): Result<A | B>;
+    caseOf<B>(_: any, __: (value: any) => B): Result<A | B> {
+        return this;
+    }
 
-  /**
-   * orElse does nothing.
-   */
-  orElse<B>(_: (a: A) => B): Matched<A | B> {
-    return this;
-  }
+    /**
+     * orElse does nothing.
+     */
+    orElse<B>(_: (a: A) => B): Matched<A | B> {
+        return this;
+    }
 
-  /**
-   * end produces the value the Matched was created with.
-   */
-  end(): A {
-    return this.value;
-  }
+    /**
+     * end produces the value the Matched was created with.
+     */
+    end(): A {
+        return this.value;
+    }
 }
 
 /**

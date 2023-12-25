@@ -3,38 +3,38 @@
  * and Buffers. This module's purpose is primarily for use with database APIs
  * that accept some non-primitive types.
  */
-import { Err, attempt } from "../../control/error";
+import { Err, attempt } from '../../control/error';
 
 /**
  * Provides typescript definitions for JSONX strings unserialzed into JavaScript objects.
  */
-import { Either } from "../either";
+import { Either } from '../either';
 import {
-  JSONXValue,
-  JSONXObject,
-  JSONXArray,
-  JSONXDate,
-  JSONXBuffer,
-  JSONXString,
-  JSONXBoolean,
-  JSONXNumber,
-  JSONXNull,
-} from "./types";
+    JSONXValue,
+    JSONXObject,
+    JSONXArray,
+    JSONXDate,
+    JSONXBuffer,
+    JSONXString,
+    JSONXBoolean,
+    JSONXNumber,
+    JSONXNull
+} from './types';
 
 export {
-  JSONXValue as Value,
-  JSONXObject as Object,
-  JSONXArray as Array,
-  JSONXDate as Date,
-  JSONXBuffer as Buffer,
-  JSONXString as String,
-  JSONXBoolean as Boolean,
-  JSONXNumber as Number,
-  JSONXNull as Null,
+    JSONXValue as Value,
+    JSONXObject as Object,
+    JSONXArray as Array,
+    JSONXDate as Date,
+    JSONXBuffer as Buffer,
+    JSONXString as String,
+    JSONXBoolean as Boolean,
+    JSONXNumber as Number,
+    JSONXNull as Null
 };
 
 /**
  * parse a string as JSONX safely.
  */
 export const parse = (s: string): Either<Err, JSONXValue> =>
-  attempt(() => JSON.parse(s));
+    attempt(() => JSON.parse(s));

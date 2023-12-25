@@ -1,4 +1,4 @@
-require("ts-node").register({
+require('ts-node').register({
     baseUrl: __dirname,
-    project: __dirname + "/tsconfig.json",
+    project: __dirname + '/tsconfig.json'
 });

@@ -1,12 +1,12 @@
-import { Milliseconds } from "./time";
-import { Function } from "../data/function";
+import { Milliseconds } from './time';
+import { Function } from '../data/function';
 
 /**
  * tick runs a function in the "next tick" using process.nextTick in node
  * or setTimeout(f, 0) elsewhere.
  */
 export const tick = (f: () => void) =>
-  typeof window == "undefined" ? setTimeout(f, 0) : process.nextTick(f);
+    typeof window == 'undefined' ? setTimeout(f, 0) : process.nextTick(f);
 
 /**
  * debounce delays the application of a function until the specified time
@@ -17,20 +17,20 @@ export const tick = (f: () => void) =>
  * after the delay, using the value of the final attempt for application.
  */
 export const debounce = <A>(
-  f: Function<A, void>,
-  delay: Milliseconds
+    f: Function<A, void>,
+    delay: Milliseconds
 ): Function<A, void> => {
-  let id: number = -1;
+    let id = -1;
 
-  return (a: A) => {
-    if (id === -1) {
-      id = <number>(<unknown>setTimeout(() => f(a), delay));
-    } else {
-      clearTimeout(id);
+    return (a: A) => {
+        if (id === -1) {
+            id = <number>(<unknown>setTimeout(() => f(a), delay));
+        } else {
+            clearTimeout(id);
 
-      id = <number>(<unknown>setTimeout(() => f(a), delay));
-    }
-  };
+            id = <number>(<unknown>setTimeout(() => f(a), delay));
+        }
+    };
 };
 
 /**
@@ -41,18 +41,18 @@ export const debounce = <A>(
  * will be ignored until the duration has passed.
  */
 export const throttle = <A>(
-  f: Function<A, void>,
-  duration: Milliseconds
+    f: Function<A, void>,
+    duration: Milliseconds
 ): Function<A, void> => {
-  let wait: boolean = false;
+    let wait = false;
 
-  return (a: A) => {
-    if (wait === false) {
-      f(a);
+    return (a: A) => {
+        if (wait === false) {
+            f(a);
 
-      wait = true;
+            wait = true;
 
-      setTimeout(() => (wait = false), duration);
-    }
-  };
+            setTimeout(() => (wait = false), duration);
+        }
+    };
 };

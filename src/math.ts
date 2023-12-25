@@ -51,9 +51,9 @@ export const isMultipleOf = (x: Integer, y: Integer) => y % x === 0;
  *
  */
 export const round = (x: number, n: PositiveInteger = 0): number => {
-  let exp = Math.pow(10, n);
-  let sign = x >= 0 ? 1 : -1;
-  let offset = n > 0 ? 1 / Math.pow(10, n + 1) : 0;
+    let exp = Math.pow(10, n);
+    let sign = x >= 0 ? 1 : -1;
+    let offset = n > 0 ? 1 / Math.pow(10, n + 1) : 0;
 
-  return sign * (Math.round(Math.abs(x) * exp + offset) / exp);
+    return sign * (Math.round(Math.abs(x) * exp + offset) / exp);
 };

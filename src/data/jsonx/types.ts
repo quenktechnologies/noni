@@ -2,26 +2,26 @@
  * JSONXValue
  */
 export type JSONXValue =
-  | JSONXObject
-  | JSONXArray
-  | JSONXDate
-  | JSONXBuffer
-  | JSONXString
-  | JSONXBoolean
-  | JSONXNumber
-  | JSONXNull
-  | undefined;
+    | JSONXObject
+    | JSONXArray
+    | JSONXDate
+    | JSONXBuffer
+    | JSONXString
+    | JSONXBoolean
+    | JSONXNumber
+    | JSONXNull
+    | undefined;
 
 /**
  * JSONXArray
  */
-export interface JSONXArray extends Array<JSONXValue> {}
+export type JSONXArray = Array<JSONXValue>;
 
 /**
  * JSONXObject
  */
 export interface JSONXObject {
-  [key: string]: JSONXValue;
+    [key: string]: JSONXValue;
 }
 
 /**

@@ -5,5 +5,5 @@
  * modifying some underlying value.
  */
 export interface Functor<A> {
-  map<B>(f: (a: A) => B): Functor<B>;
+    map<B>(f: (a: A) => B): Functor<B>;
 }

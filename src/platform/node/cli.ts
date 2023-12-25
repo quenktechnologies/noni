@@ -1,7 +1,7 @@
-import * as cp from "child_process";
+import * as cp from 'child_process';
 
-import { Future, fromCallback } from "../../control/monad/future";
-import { Path } from "../../io/file";
+import { Future, fromCallback } from '../../control/monad/future';
+import { Path } from '../../io/file';
 
 /**
  * Command to execute.
@@ -29,11 +29,11 @@ export type Stderr = string | Buffer;
  * Returns stdout and stderr output as a tuple.
  */
 export const exec = (cmd: Command, opts?: Options): Future<[Stdout, Stderr]> =>
-  fromCallback((cb) => {
-    cp.exec(cmd, opts, (err, stdout, stderr) =>
-      err ? cb(err) : cb(null, [stdout, stderr])
-    );
-  });
+    fromCallback(cb => {
+        cp.exec(cmd, opts, (err, stdout, stderr) =>
+            err ? cb(err) : cb(null, [stdout, stderr])
+        );
+    });
 
 /**
  * execFile wrapper, use this over exec() where possible.
@@ -41,12 +41,12 @@ export const exec = (cmd: Command, opts?: Options): Future<[Stdout, Stderr]> =>
  * Returns stdout and stderr output as a tuple.
  */
 export const execFile = (
-  file: Path,
-  args?: string[],
-  opts?: Options
+    file: Path,
+    args?: string[],
+    opts?: Options
 ): Future<[Stdout, Stderr]> =>
-  fromCallback((cb) => {
-    cp.execFile(file, args, opts, (err, stdout, stderr) =>
-      err ? cb(err) : cb(null, [stdout, stderr])
-    );
-  });
+    fromCallback(cb => {
+        cp.execFile(file, args, opts, (err, stdout, stderr) =>
+            err ? cb(err) : cb(null, [stdout, stderr])
+        );
+    });
