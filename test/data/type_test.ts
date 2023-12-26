@@ -15,39 +15,39 @@ describe('type', () => {
             assert(test(true, true)).equal(true);
             assert(test(false, false)).equal(true);
 
-            assert(test(1, 12)).equal(false);
+            assert(test(12, 1)).equal(false);
             assert(test('one', 'two')).equal(false);
             assert(test(true, false)).equal(false);
             assert(test(false, true)).equal(false);
         });
 
         it('must match builtins', () => {
-            assert(test(1, Number)).equal(true);
-            assert(test('one', String)).equal(true);
-            assert(test(true, Boolean)).equal(true);
-            assert(test(false, Boolean)).equal(true);
+            assert(test(Number, 1)).equal(true);
+            assert(test(String, 'one')).equal(true);
+            assert(test(Boolean, true)).equal(true);
+            assert(test(Boolean, false)).equal(true);
         });
 
         it('must match constructors', () => {
-            assert(test(new Point(), Point)).equal(true);
+            assert(test(Point, new Point())).equal(true);
             assert(test(Point, Point)).equal(false);
         });
 
         it('must match shapes', () => {
-            assert(test(new Point(), { x: Number, y: 12 })).equal(true);
-            assert(test({ y: 12 }, { x: Number, y: 12 })).equal(false);
+            assert(test({ x: Number, y: 12 }, new Point())).equal(true);
+            assert(test({ x: Number, y: 12 }, { y: 12 })).equal(false);
         });
 
         it('should match regular expressions', () => {
-            assert(test('Do you know the movie jaws?', /^jaws/)).equal(false);
-            assert(test('jaws? yeah I know it.', /^jaws/)).equal(true);
+            assert(test(/^jaws/, 'Do you know the movie jaws?')).equal(false);
+            assert(test(/^jaws/, 'jaws? yeah I know it.')).equal(true);
         });
 
         it('should match Any', () => {
-            assert(test('A string', Any)).equal(true);
-            assert(test(12, Any)).equal(true);
-            assert(test(false, Any)).equal(true);
-            assert(test({}, Any)).equal(true);
+            assert(test(Any, 'A string')).equal(true);
+            assert(test(Any, 12)).equal(true);
+            assert(test(Any, false)).equal(true);
+            assert(test(Any, {})).equal(true);
         });
     });
 

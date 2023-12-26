@@ -1,19 +1,10 @@
+import { contains, empty } from '../array';
+import { keys } from '../record';
+
 /**
  * Type is an alias for <any>.
  */
 export type Type = any;
-
-/**
- * Pattern is the value used to match expressions.
- */
-export type Pattern<T> =
-    | string
-    | number
-    | boolean
-    | object
-    | { new (...args: Type[]): T };
-
-const prims = ['string', 'number', 'boolean'];
 
 /**
  * Any is a class used to represent typescript's "any" type.
@@ -57,11 +48,12 @@ export const isBoolean = (value: Type): value is boolean =>
 export const isFunction = (value: Type): value is Function =>
     typeof value === 'function';
 
+const prims = ['string', 'number', 'boolean'];
+
 /**
  * isPrim test.
  */
-export const isPrim = (value: Type) =>
-    !(isObject(value) || isArray(value) || isFunction(value));
+export const isPrim = (value: Type) => contains(prims, typeof value);
 
 /**
  * isNull tests whether the value is null or undefined.
@@ -91,34 +83,33 @@ export const is =
  *             the function is RegExp then we uses the RegExp.test function
  *             instead.
  */
-export const test = <T, V>(type: T, value: V): boolean => {
-    if (prims.indexOf(typeof type) > -1 && <Type>value === type) return true;
-    else if (
-        typeof type === 'function' &&
-        ((<Function>type === String && typeof value === 'string') ||
-            (<Function>type === Number && typeof value === 'number') ||
-            (<Function>type === Boolean && typeof value === 'boolean') ||
-            (<Function>type === Array && Array.isArray(value)) ||
-            <Function>type === Any ||
-            value instanceof <Function>type)
-    )
-        return true;
-    else if (
-        type instanceof RegExp &&
-        typeof value === 'string' &&
-        type.test(value)
-    )
-        return true;
-    else if (typeof type === 'object' && typeof value === 'object')
-        return Object.keys(<object>(<unknown>type)).every(k =>
-            Object.hasOwnProperty.call(value, k)
-                ? test(
-                      (<{ [key: string]: Type }>value)[k],
-                      (<{ [key: string]: Type }>type)[k]
-                  )
-                : false
-        );
-    return false;
+export const test = <T, V>(pattern: T, value: V): boolean => {
+    let tests = [[pattern, value]];
+    while (!empty(tests)) {
+        let [pattern, target] = <[Type, Type]>tests.pop();
+        if (
+            pattern === Any ||
+            (isPrim(pattern) && target === pattern) ||
+            (isFunction(pattern) &&
+                ((pattern === String && isString(target)) ||
+                    (pattern === Number && isNumber(target)) ||
+                    (pattern === Boolean && isBoolean(target)) ||
+                    (pattern === Array && Array.isArray(target)) ||
+                    target instanceof pattern)) ||
+            (pattern instanceof RegExp &&
+                isString(target) &&
+                pattern.test(target))
+        ) {
+            continue;
+        } else if (isObject(pattern) && isObject(target)) {
+            keys(pattern).forEach(k => {
+                tests.push([pattern[k], target[k]]);
+            });
+        } else {
+            return false;
+        }
+    }
+    return true;
 };
 
 /**

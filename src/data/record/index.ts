@@ -82,7 +82,23 @@ export interface Record<A> {
  *
  * It is used internally and should not be used directly elsewhere.
  */
-export const assign = Object.assign;
+export const assign = (...args: object[]) => {
+    let [target] = args;
+    let to = Object(target);
+    let rest = args.slice(1);
+
+    for (let index = 0; index < rest.length; index++) {
+        let nextSource = <Type>rest[index];
+
+        if (nextSource != null)
+            // Avoid bugs when hasOwnProperty is shadowed
+            for (let nextKey in nextSource)
+                if (hasKey(nextSource, nextKey))
+                    set(to, nextKey, nextSource[nextKey]);
+    }
+
+    return to;
+};
 
 /**
  * isRecord tests whether a value is a record.
@@ -357,8 +373,8 @@ export const values = <A>(r: Record<A>): A[] =>
 /**
  * hasKey indicates whether a Record has a given key.
  */
-export const hasKey = (r: object, key: string): boolean =>
-    Object.hasOwnProperty.call(r, key);
+export const hasKey = (obj: object, key: string): boolean =>
+    !isBadKey(key) && Object.hasOwnProperty.call(obj, key);
 
 /**
  * clone a Record.

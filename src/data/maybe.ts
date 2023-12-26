@@ -8,128 +8,147 @@ import { Eq } from './eq';
 /**
  * Maybe monad represents an optional or nullable value.
  */
-export interface Maybe<A>
-    extends Monad<A>,
+export abstract class Maybe<A>
+    implements
+        Monad<A>,
         Alt<A>,
         Plus<A>,
         Alternative<A>,
         Extend<A>,
-        Eq<Maybe<A>> {
-    of(a: A): Maybe<A>;
+        Eq<Maybe<A>>
+{
+    static of<A>(value: A): Maybe<A> {
+        return value == null ? new Nothing<A>() : new Just(value);
+    }
 
-    map<B>(_: (a: A) => B): Maybe<B>;
+    static just<A>(value: A): Maybe<A> {
+        return new Just(value);
+    }
 
-    ap<B>(_: Maybe<(a: A) => B>): Maybe<B>;
+    static nothing<A>(): Maybe<A> {
+        return new Nothing<A>();
+    }
 
-    chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
+    /**
+     * fromNullable constructs a Maybe from a value that may be null.
+     */
+    static fromNullable = <A>(a: A | undefined | null): Maybe<A> =>
+        a == null ? new Nothing<A>() : new Just(a);
 
-    alt(a: Maybe<A>): Maybe<A>;
+    /**
+     * fromArray checks an array to see if it's empty
+     *
+     * Returns [[Nothing]] if it is, [[Just]] otherwise.
+     */
+    static fromArray = <A>(a: A[]): Maybe<A[]> =>
+        a.length === 0 ? new Nothing<A[]>() : new Just(a);
 
-    empty(): Maybe<A>;
+    /**
+     * fromObject uses Object.keys to turn see if an object
+     * has any own properties.
+     */
+    static fromObject = <A extends Object>(o: A): Maybe<A> =>
+        Object.keys(o).length === 0 ? new Nothing<A>() : new Just(o);
 
-    extend<B>(_: (ex: Maybe<A>) => B): Maybe<B>;
+    /**
+     * fromString constructs Nothing<A> if the string is empty or Just<A> otherwise.
+     */
+    static fromString = (s: string): Maybe<string> =>
+        s === '' ? new Nothing<string>() : new Just(s);
+
+    /**
+     * fromBoolean constructs Nothing if b is false, Just<A> otherwise
+     */
+    static fromBoolean = (b: boolean): Maybe<boolean> =>
+        b === false ? new Nothing<boolean>() : new Just(b);
+
+    /**
+     * fromNumber constructs Nothing if n is 0 Just<A> otherwise.
+     */
+    static fromNumber = (n: number): Maybe<number> =>
+        n === 0 || isNaN(n) ? new Nothing<number>() : new Just(n);
+
+    abstract of(a: A): Maybe<A>;
+
+    abstract map<B>(_: (a: A) => B): Maybe<B>;
+
+    abstract ap<B>(_: Maybe<(a: A) => B>): Maybe<B>;
+
+    abstract chain<B>(_: (a: A) => Maybe<B>): Maybe<B>;
+
+    abstract alt(a: Maybe<A>): Maybe<A>;
+
+    abstract eq(e: Maybe<A>): boolean;
+
+    abstract extend<B>(_: (ex: Maybe<A>) => B): Maybe<B>;
 
     /**
      * orJust is like applying map to the Nothing<A> side.
      */
-    orJust<B>(_f: () => B): Maybe<A | B>;
+    abstract orJust<B>(_f: () => B): Maybe<A | B>;
 
     /**
      * orElse allows for an alternative Maybe value to
      * be provided when Nothing<A> but using a function.
      */
-    orElse<B>(f: () => Maybe<B>): Maybe<A | B>;
+    abstract orElse<B>(f: () => Maybe<B>): Maybe<A | B>;
 
     /**
      * isNothing tests whether the Maybe is a Nothing.
      */
-    isNothing(): boolean;
+    abstract isNothing(): boolean;
 
     /**
      * isJust tests whether the Maybe is a Just.
      */
-    isJust(): boolean;
+    abstract isJust(): boolean;
 
     /**
      * get the value from a Maybe.
      */
-    get(): A;
+    abstract get(): A;
+
+    empty(): Maybe<A> {
+        return new Nothing<A>();
+    }
 }
 
 /**
  * Nothing represents the absence of a usable value.
  */
-export class Nothing<A> implements Maybe<A> {
-    /**
-     * map simply returns a Nothing<A>
-     */
+export class Nothing<A> extends Maybe<A> {
     map<B>(_: (a: A) => B): Maybe<B> {
         return new Nothing<B>();
     }
 
-    /**
-     * ap allows for a function wrapped in a Just to apply
-     * to value present in this Just.
-     */
     ap<B>(_: Maybe<(a: A) => B>): Maybe<B> {
         return new Nothing<B>();
     }
 
-    /**
-     * of wraps a value in a Just.
-     */
     of(a: A): Maybe<A> {
-        return new Just(a);
+        return Maybe.of(a);
     }
 
-    /**
-     * chain simply returns a Nothing<A>.
-     */
     chain<B>(_: (a: A) => Maybe<B>): Maybe<B> {
         return new Nothing<B>();
     }
 
-    /**
-     * alt will prefer whatever Maybe instance provided.
-     */
     alt(a: Maybe<A>): Maybe<A> {
         return a;
     }
 
-    /**
-     * empty provides a default Maybe.
-     * Maybe.empty() = new Nothing()
-     */
-    empty(): Maybe<A> {
-        return new Nothing<A>();
-    }
-
-    /**
-     * extend returns a Nothing<A>.
-     */
     extend<B>(_: (ex: Maybe<A>) => B): Maybe<B> {
         return new Nothing<B>();
     }
 
-    /**
-     * eq returns true if compared to another Nothing instance.
-     */
     eq(m: Maybe<A>) {
         return m instanceof Nothing;
     }
 
-    /**
-     * orJust converts a Nothing<A> to a Just
-     * using the value from the provided function.
-     */
     orJust<B>(f: () => B): Maybe<B> {
         return new Just(f());
     }
 
-    /**
-     * orElse allows an alternative Maybe value
-     * to be provided since this one is Nothing<A>.
-     */
     orElse<B>(f: () => Maybe<B>): Maybe<B> {
         return f();
     }
@@ -142,10 +161,6 @@ export class Nothing<A> implements Maybe<A> {
         return false;
     }
 
-    /**
-     * get throws an error because there
-     * is nothing here to get.
-     */
     get(): A {
         throw new TypeError('Cannot get a value from Nothing!');
     }
@@ -154,78 +169,43 @@ export class Nothing<A> implements Maybe<A> {
 /**
  * Just represents the presence of a usable value.
  */
-export class Just<A> implements Maybe<A> {
-    constructor(public value: A) {}
+export class Just<A> extends Maybe<A> {
+    constructor(public value: A) {
+        super();
+    }
 
-    /**
-     * map over the value present in the Just.
-     */
     map<B>(f: (a: A) => B): Maybe<B> {
         return new Just(f(this.value));
     }
 
-    /**
-     * ap allows for a function wrapped in a Just to apply
-     * to value present in this Just.
-     */
     ap<B>(mb: Maybe<(a: A) => B>): Maybe<B> {
         return <Maybe<B>>mb.map(f => f(this.value));
     }
 
-    /**
-     * of wraps a value in a Just.
-     */
     of(a: A): Maybe<A> {
-        return new Just(a);
+        return Maybe.of(a);
     }
 
-    /**
-     * chain allows the sequencing of functions that return a Maybe.
-     */
     chain<B>(f: (a: A) => Maybe<B>): Maybe<B> {
         return f(this.value);
     }
 
-    /**
-     * alt will prefer the first Just encountered (this).
-     */
     alt(_: Maybe<A>): Maybe<A> {
         return this;
     }
 
-    /**
-     * empty provides a default Maybe.
-     * Maybe.empty() = new Nothing()
-     */
-    empty(): Maybe<A> {
-        return new Nothing<A>();
-    }
-
-    /**
-     * extend allows sequencing of Maybes with
-     * functions that unwrap into non Maybe types.
-     */
     extend<B>(f: (ex: Maybe<A>) => B): Maybe<B> {
         return new Just(f(this));
     }
 
-    /**
-     * eq tests the value of two Justs.
-     */
     eq(m: Maybe<A>): boolean {
         return m instanceof Just && m.value === this.value;
     }
 
-    /**
-     * orJust returns this Just.
-     */
     orJust<B>(_: (a: A) => B): Maybe<A> {
         return this;
     }
 
-    /**
-     * orElse returns this Just
-     */
     orElse<B>(_: (a: A) => B): Maybe<A> {
         return this;
     }
@@ -238,71 +218,25 @@ export class Just<A> implements Maybe<A> {
         return true;
     }
 
-    /**
-     * get the value of this Just.
-     */
     get(): A {
         return this.value;
     }
 }
 
-/**
- * of
- */
-export const of = <A>(a: A): Maybe<A> => new Just(a);
+export const nothing = Maybe.nothing;
 
-/**
- * nothing convenience constructor
- */
-export const nothing = <A>(): Maybe<A> => new Nothing<A>();
+export const just = Maybe.just;
 
-/**
- * just convenience constructor
- */
-export const just = <A>(a: A): Maybe<A> => new Just(a);
+export const fromNullable = Maybe.fromNullable;
 
-/**
- * fromNullable constructs a Maybe from a value that may be null.
- */
-export const fromNullable = <A>(a: A | undefined | null): Maybe<A> =>
-    a == null ? new Nothing<A>() : new Just(a);
+export const fromArray = Maybe.fromArray;
 
-/**
- * fromArray checks an array to see if it's empty
- *
- * Returns [[Nothing]] if it is, [[Just]] otherwise.
- */
-export const fromArray = <A>(a: A[]): Maybe<A[]> =>
-    a.length === 0 ? new Nothing<A[]>() : new Just(a);
+export const fromObject = Maybe.fromObject;
 
-/**
- * fromObject uses Object.keys to turn see if an object
- * has any own properties.
- */
-export const fromObject = <A extends Object>(o: A): Maybe<A> =>
-    Object.keys(o).length === 0 ? new Nothing<A>() : new Just(o);
+export const fromString = Maybe.fromString;
 
-/**
- * fromString constructs Nothing<A> if the string is empty or Just<A> otherwise.
- */
-export const fromString = (s: string): Maybe<string> =>
-    s === '' ? new Nothing<string>() : new Just(s);
+export const fromBoolean = Maybe.fromBoolean;
 
-/**
- * fromBoolean constructs Nothing if b is false, Just<A> otherwise
- */
-export const fromBoolean = (b: boolean): Maybe<boolean> =>
-    b === false ? new Nothing<boolean>() : new Just(b);
+export const fromNumber = Maybe.fromNumber;
 
-/**
- * fromNumber constructs Nothing if n is 0 Just<A> otherwise.
- */
-export const fromNumber = (n: number): Maybe<number> =>
-    n === 0 ? new Nothing<number>() : new Just(n);
-
-/**
- * fromNaN constructs Nothing if a value is not a number or
- * Just<A> otherwise.
- */
-export const fromNaN = (n: number): Maybe<number> =>
-    isNaN(n) ? new Nothing<number>() : new Just(n);
+export const fromNaN = Maybe.fromNumber;
