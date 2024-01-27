@@ -768,7 +768,6 @@ describe('future', () => {
                 ]);
             } catch (e) {
                 threw = true;
-
                 assert((<Error>e).message).equal('3');
             }
 

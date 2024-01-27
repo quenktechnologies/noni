@@ -254,17 +254,31 @@ export abstract class Future<A> implements Monad<A>, Promise<A> {
      * If none resolve successfully, the final error is raised.
      */
     static some = <A>(list: Future<A>[]): Future<A> =>
-        doFuture<A>(function* () {
+        Future.do(async () => {
             for (let i = 0; i < list.length; i++) {
                 try {
-                    let result = yield list[i];
-                    return pure(result);
+                    //XXX: Cannot use return here because fork() will not be
+                    // called yet.
+                    let result = await list[i];
+                    return Future.of(result);
                 } catch (e) {
                     if (i === list.length - 1) return raise(<Error>e);
                 }
             }
 
-            return raise(new Error('some: empty list'));
+            return raise(new Error('Future.some: empty list'));
+        });
+
+    /**
+     * liftSync wraps a synchronous function in a Future.
+     */
+    static liftSync = <A>(f: () => A): Future<A> =>
+        run(() => {
+            try {
+                return Future.of(f());
+            } catch (e) {
+                return raise(<Error>e);
+            }
         });
 
     get [Symbol.toStringTag]() {
@@ -599,11 +613,6 @@ export const run = <A>(task: Task<A>): Future<A> => new Run(task);
 export { run as liftP };
 
 /**
- * attempt a synchronous task, trapping any thrown errors in the Future.
- */
-export const attempt = <A>(f: () => A): Future<A> => run(async () => f());
-
-/**
  * delay execution of a function f after n milliseconds have passed.
  *
  * Any errors thrown are caught and processed in the Future chain.
@@ -645,6 +654,7 @@ export const reduce = Future.reduce;
 export const race = Future.race;
 export const some = Future.some;
 export const raise = Future.raise;
+export const attempt = Future.liftSync;
 
 /**
  * toPromise transforms a Future into a Promise.
