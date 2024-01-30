@@ -43,6 +43,16 @@ export abstract class Either<L, R>
         Extend<R>,
         Eq<Either<L, R>>
 {
+    /**
+     * left constructor helper.
+     */
+    static left = <A, B>(a: A): Either<A, B> => new Left<A, B>(a);
+
+    /**
+     * right constructor helper.
+     */
+    static right = <A, B>(b: B): Either<A, B> => new Right<A, B>(b);
+
     of(value: R): Either<L, R> {
         return new Right<L, R>(value);
     }
@@ -254,12 +264,12 @@ export class Right<L, R> extends Either<L, R> {
 /**
  * left constructor helper.
  */
-export const left = <A, B>(a: A): Either<A, B> => new Left<A, B>(a);
+export const left = Either.left;
 
 /**
  * right constructor helper.
  */
-export const right = <A, B>(b: B): Either<A, B> => new Right<A, B>(b);
+export const right = Either.right;
 
 /**
  * fromBoolean constructs an Either using a boolean value.
