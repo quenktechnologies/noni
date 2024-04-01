@@ -84,14 +84,14 @@ export class Case<A, B> implements TypeCase<B> {
  *
  * Use it as a catch-all when other TypeCase classes fail to match.
  */
-export class Default<A, B> implements TypeCase<B> {
-    constructor(public handler: (value: A) => B) {}
+export class Default<T> implements TypeCase<T> {
+    constructor(public handler: (value: Type) => T) {}
 
-    test(_: A): boolean {
+    test(): boolean {
         return true;
     }
 
-    apply(value: A): B {
+    apply(value: Type): T {
         return this.handler(value);
     }
 }
@@ -102,14 +102,14 @@ export class Default<A, B> implements TypeCase<B> {
  * When using this TypeCase it may be necessary to cast the cases value
  * to a single type the compiler understands.
  */
-export class CaseFunction<A, B> implements TypeCase<B> {
-    constructor(public cases: TypeCase<B>[] = []) {}
+export class CaseFunction<T> implements TypeCase<T> {
+    constructor(public cases: TypeCase<T>[] = []) {}
 
     test(value: Type): boolean {
         return this.cases.some(kase => kase.test(value));
     }
 
-    apply(value: A): B {
+    apply(value: Type): T {
         let kase = this.cases.find(kase => kase.test(value));
 
         if (!kase)
