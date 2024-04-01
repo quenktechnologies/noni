@@ -14,7 +14,7 @@ export { Type };
  * TypeCase is an interface for mimicking type based pattern matching usually
  * found in functional programming languages.
  */
-export interface TypeCase<A, B> {
+export interface TypeCase<T> {
     /**
      * test a value to determine whether it matches the TypeCase's pattern.
      */
@@ -25,7 +25,7 @@ export interface TypeCase<A, B> {
      *
      * NOTE: This should only be called if test() returns true.
      */
-    apply(value: A): B;
+    apply(value: Type): T;
 }
 
 /**
