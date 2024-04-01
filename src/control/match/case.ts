@@ -56,7 +56,7 @@ export type MatchedValue<A> = A extends StringConstructor
  * Case is provided for situations where it is better to extend
  * the Case class instead of creating new instances.
  */
-export class Case<A, B> implements TypeCase<A, B> {
+export class Case<A, B> implements TypeCase<B> {
     constructor(
         public pattern: A,
         public handler: (value: MatchedValue<A>) => B
@@ -84,7 +84,7 @@ export class Case<A, B> implements TypeCase<A, B> {
  *
  * Use it as a catch-all when other TypeCase classes fail to match.
  */
-export class Default<A, B> implements TypeCase<A, B> {
+export class Default<A, B> implements TypeCase<B> {
     constructor(public handler: (value: A) => B) {}
 
     test(_: A): boolean {
@@ -102,8 +102,8 @@ export class Default<A, B> implements TypeCase<A, B> {
  * When using this TypeCase it may be necessary to cast the cases value
  * to a single type the compiler understands.
  */
-export class CaseFunction<A, B> implements TypeCase<A, B> {
-    constructor(public cases: TypeCase<A, B>[] = []) {}
+export class CaseFunction<A, B> implements TypeCase<B> {
+    constructor(public cases: TypeCase<B>[] = []) {}
 
     test(value: Type): boolean {
         return this.cases.some(kase => kase.test(value));
