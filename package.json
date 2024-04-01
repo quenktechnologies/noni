@@ -1,6 +1,6 @@
 {
     "name": "@quenk/noni",
-    "version": "1.52.4",
+    "version": "1.52.5",
     "description": "Commons library used by Quenk Technologies everywhere.",
     "scripts": {
         "format": "./node_modules/.bin/prettier --write {src,test}/**/*.{ts,js,json}",
