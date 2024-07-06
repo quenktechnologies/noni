@@ -52,7 +52,7 @@ export class UnMatched<A> {
     caseOf<T extends number, B>(pattern: T, f: (value: T) => B): Result<A | B>;
     caseOf<T extends boolean, B>(pattern: T, f: (value: T) => B): Result<A | B>;
     caseOf<B>(pattern: any, f: (value: any) => B): Result<A | B> {
-        return test(this.value, pattern) ? new Matched<B>(f(this.value)) : this;
+        return test(pattern, this.value) ? new Matched<B>(f(this.value)) : this;
     }
 
     /**

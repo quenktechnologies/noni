@@ -48,4 +48,16 @@ describe('match', function () {
 
         assert(f).throw();
     });
+
+    it('should match a message', () => {
+        let result = match({ from: 'me', to: 'you', message: 'hi' })
+            .caseOf(
+                { from: String, to: String, message: String },
+                () => 'received'
+            )
+            .orElse(() => 'nothing')
+            .end();
+
+        assert(result).equal('received');
+    });
 });
