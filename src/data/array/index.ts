@@ -216,3 +216,13 @@ export const find = <A>(list: A[], cb: FindFunc<A>): Maybe<A> => {
  */
 export const isEqual = <A>(list1: A[], list2: A[]): boolean =>
     list1.every((val, idx) => list2[idx] === val);
+
+/**
+ * diff returns a simple difference between two arrays.
+ *
+ * Comparison is done via contains()
+ */
+export const diff = <A>(list1: A[], list2: A[]): A[] =>
+    [...list1, ...list2].filter(
+        value => !contains(list1, value) || !contains(list2, value)
+    );

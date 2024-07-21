@@ -18,7 +18,8 @@ import {
     flatten,
     concat,
     find,
-    isEqual
+    isEqual,
+    diff
 } from '../../src/data/array';
 
 describe('array', () => {
@@ -265,6 +266,20 @@ describe('array', () => {
 
         it('should respect order', () => {
             assert(isEqual([1, 2, 3], [1, 3, 2])).false();
+        });
+    });
+
+    describe('diff', () => {
+        it('should produce the diff elements ', () => {
+            assert(diff([1, 2, 3], [2, 3, 4])).equate([1, 4]);
+        });
+
+        it('should work with empty arrays ', () => {
+            assert(diff([1, 2, 3], [])).equate([1, 2, 3]);
+
+            assert(diff([], [2, 3, 4])).equate([2, 3, 4]);
+
+            assert(diff([], [])).equate([]);
         });
     });
 });
