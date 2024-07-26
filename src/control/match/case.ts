@@ -87,7 +87,7 @@ export class Case<A, B> implements TypeCase<B> {
 export class Default<T> implements TypeCase<T> {
     constructor(public handler: (value: Type) => T) {}
 
-    test(): boolean {
+    test(_: Type): boolean {
         return true;
     }
 

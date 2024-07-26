@@ -103,7 +103,7 @@ export const test = <T, V>(pattern: T, value: V): boolean => {
             continue;
         } else if (isObject(pattern) && isObject(target)) {
             keys(pattern).forEach(k => {
-                tests.push([pattern[k], target[k]]);
+                tests.push([(<Type>pattern)[k], (<Type>target)[k]]);
             });
         } else {
             return false;

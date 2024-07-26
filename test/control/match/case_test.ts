@@ -142,7 +142,7 @@ describe('case', () => {
     });
 
     describe('CaseFunction', () => {
-        let kase = new CaseFunction(<TypeCase<Value, Value>[]>[
+        let kase = new CaseFunction(<TypeCase<Value>[]>[
             new Case(String, (value: string) => value),
             new Case(Boolean, (value: boolean) => value),
             new Case(Number, (value: number) => value)

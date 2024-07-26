@@ -453,7 +453,8 @@ export const compact = <A>(rec: Record<A | null | undefined>): Record<A> => {
 
     for (let key in rec)
         if (hasKey(rec, key))
-            if (rec[key] != null) result = set(result, key, rec[key]);
+            if (rec[key] != null)
+                result = set<A, Record<A>>(result, key, <A>rec[key]);
 
     return result;
 };
