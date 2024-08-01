@@ -18,38 +18,40 @@ class Pat {
 }
 
 describe('case', () => {
-    describe('Case', () => {
+    describe('TypeCase', () => {
         describe('new', () => {
             it('should have multiple patterns', () => {
                 assert(
-                    () => new Case(String, (value: string) => value)
+                    () => new TypeCase(String, (value: string) => value)
                 ).not.throw();
                 assert(
-                    () => new Case(Boolean, (value: boolean) => value)
+                    () => new TypeCase(Boolean, (value: boolean) => value)
                 ).not.throw();
                 assert(
-                    () => new Case(Number, (value: number) => value)
+                    () => new TypeCase(Number, (value: number) => value)
                 ).not.throw();
                 assert(
-                    () => new Case(Pat, (value: Pat) => value.value)
+                    () => new TypeCase(Pat, (value: Pat) => value.value)
                 ).not.throw();
                 assert(
-                    () => new Case('a', (value: string) => value)
+                    () => new TypeCase('a', (value: string) => value)
                 ).not.throw();
-                assert(() => new Case(1, (value: number) => value)).not.throw();
                 assert(
-                    () => new Case(true, (value: boolean) => value)
+                    () => new TypeCase(1, (value: number) => value)
+                ).not.throw();
+                assert(
+                    () => new TypeCase(true, (value: boolean) => value)
                 ).not.throw();
                 assert(
                     () =>
-                        new Case(
+                        new TypeCase(
                             <typeof GPat<number>>GPat,
                             (value: GPat<number>) => value.value
                         )
                 ).not.throw();
                 assert(
                     () =>
-                        new Case(
+                        new TypeCase(
                             { a: String, b: 'b', c: 1 },
                             ({
                                 a,
@@ -69,7 +71,7 @@ describe('case', () => {
 
         describe('test', () => {
             it('should work', () => {
-                let kase = new Case(12, (value: number) => value);
+                let kase = new TypeCase(12, (value: number) => value);
                 assert(kase.test('12')).equal(false);
                 assert(kase.test(12)).equal(true);
             });
@@ -77,16 +79,19 @@ describe('case', () => {
 
         describe('apply', () => {
             it('should work', () => {
-                let stringCase = new Case(String, (value: string) => value);
+                let stringCase = new TypeCase(String, (value: string) => value);
                 assert(stringCase.apply('12')).equal('12');
 
-                let booleanCase = new Case(Boolean, (value: boolean) => value);
+                let booleanCase = new TypeCase(
+                    Boolean,
+                    (value: boolean) => value
+                );
                 assert(booleanCase.apply(true)).equal(true);
 
-                let numberCase = new Case(Number, (value: number) => value);
+                let numberCase = new TypeCase(Number, (value: number) => value);
                 assert(numberCase.apply(12)).equal(12);
 
-                let objectCase = new Case(
+                let objectCase = new TypeCase(
                     { a: String, b: 'b', c: 1 },
                     ({ a, b, c }: { a: string; b: string; c: number }) => {
                         return [a, b, c];
@@ -98,22 +103,25 @@ describe('case', () => {
                     1
                 ]);
 
-                let patCase = new Case(Pat, (value: Pat) => value.value);
+                let patCase = new TypeCase(Pat, (value: Pat) => value.value);
                 assert(patCase.apply(new Pat('a'))).equal('a');
 
-                let gpatCase = new Case(
+                let gpatCase = new TypeCase(
                     <typeof GPat<number>>GPat,
                     (value: GPat<number>) => value.value
                 );
                 assert(gpatCase.apply(new GPat(1))).equal(1);
 
-                let rawStringCase = new Case('a', (value: string) => value);
+                let rawStringCase = new TypeCase('a', (value: string) => value);
                 assert(rawStringCase.apply('a')).equal('a');
 
-                let rawBooleanCase = new Case(true, (value: boolean) => value);
+                let rawBooleanCase = new TypeCase(
+                    true,
+                    (value: boolean) => value
+                );
                 assert(rawBooleanCase.apply(true)).equal(true);
 
-                let rawNumberCase = new Case(1, (value: number) => value);
+                let rawNumberCase = new TypeCase(1, (value: number) => value);
                 assert(rawNumberCase.apply(1)).equal(1);
             });
         });
@@ -142,10 +150,10 @@ describe('case', () => {
     });
 
     describe('CaseFunction', () => {
-        let kase = new CaseFunction(<TypeCase<Value>[]>[
-            new Case(String, (value: string) => value),
-            new Case(Boolean, (value: boolean) => value),
-            new Case(Number, (value: number) => value)
+        let kase = new CaseFunction(<Case<Value, Value>[]>[
+            new TypeCase(String, (value: string) => value),
+            new TypeCase(Boolean, (value: boolean) => value),
+            new TypeCase(Number, (value: number) => value)
         ]);
 
         describe('test', () => {
