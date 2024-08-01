@@ -53,7 +53,6 @@ export const camelcase = (str: string): string => {
     let prev = '';
     let buf = '';
 
-    /* eslint-disable no-constant-condition */
     while (true) {
         if (i === str.length) return buf;
 
@@ -90,7 +89,6 @@ export const modulecase = (str: string): string => {
     let next = '';
     let buf = '';
 
-    /* eslint-disable no-constant-condition */
     while (true) {
         if (i === str.length) return buf;
 

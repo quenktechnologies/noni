@@ -74,7 +74,6 @@ export const tokenize = (str: Path): Token[] => {
 
             i++;
 
-            /* eslint-disable no-constant-condition */
             while (true) {
                 //everything between brackets is treated as a path
                 //if no closing bracket is found, we back track to the first dot
