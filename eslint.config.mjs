@@ -1,25 +1,35 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+import eslint from '@eslint/js';
+import globals from 'globals';
+import prettier from 'eslint-plugin-prettier/recommended';
+import tseslint from 'typescript-eslint';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
-
-export default [{
-    ignores: ["**/.eslintrc.js", "**/register.js", "test/browser/**/*"],
-}, {
-    languageOptions: {
-        ecmaVersion: 2020,
-        sourceType: "module",
-
-        parserOptions: {
-            project: "./test/tsconfig.json",
-        },
+export default [
+    {
+        files: ['src', 'test']
     },
-}];
+    {
+        ignores: ['test/register.js', 'test/browser/**/*.js']
+    },
+    eslint.configs.recommended,
+    ...tseslint.configs.recommended,
+    {
+        languageOptions: {
+            globals: globals.node,
+            ecmaVersion: 2020,
+            sourceType: 'module'
+        },
+
+        rules: {
+            '@typescript-eslint/ban-types': 'off',
+            '@typescript-eslint/no-this-alias': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/no-empty-function': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
+          '@typescript-eslint/no-wrapper-object-types': 'off',
+          '@typescript-eslint/no-unsafe-function-type': 'off',
+            'no-unused-vars': 'off',
+            'require-yield': 'off',
+            'prefer-const': 'off'
+        }
+    }
+];

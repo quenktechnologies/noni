@@ -10,6 +10,7 @@ const byteToHex: string[] = [];
 export const generateV4 = (noDash = false): string => {
     // Assumes NodeJS
     if (!isBrowser) {
+        /* eslint-disable @typescript-eslint/no-require-imports */
         let result = require('crypto').randomUUID();
         return noDash ? result.split('-').join('') : result;
     }

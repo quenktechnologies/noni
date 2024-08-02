@@ -4,7 +4,7 @@
     "description": "Commons library used by Quenk Technologies everywhere.",
     "scripts": {
         "format": "./node_modules/.bin/prettier --write {src,test}/**/*.{ts,js,json}",
-        "lint": "./node_modules/.bin/eslint",
+        "lint": "./node_modules/.bin/eslint src test",
         "test": "./node_modules/.bin/mocha $(find -name *_test.ts)",
         "build": "make"
     },
@@ -28,6 +28,7 @@
         "mocha": "^10.7.0",
         "prettier": "^3.3.3",
         "ts-node": "^10.7.0",
-        "typescript": "^5.5.4"
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.0.0"
     }
 }

@@ -557,7 +557,7 @@ describe('future', () => {
 
             await parallel(tasks).trap((e: Error) => {
                 if (e.message === 'foo') failed = true;
-                return pure(<{}[]>[]);
+                return pure(<object[]>[]);
             });
 
             assert(failed).equal(true);
@@ -705,12 +705,12 @@ describe('future', () => {
         });
 
         it('should not swallow errors', done => {
-            let promiseErrTask = (): Promise<{}> =>
+            let promiseErrTask = (): Promise<object> =>
                 new Promise((_, n) => {
                     setTimeout(() => n(new Error('promise')), 500);
                 });
 
-            liftP<{}>(promiseErrTask)
+            liftP<object>(promiseErrTask)
                 .trap(e => {
                     assert(e.message).equal('promise');
                     done();
