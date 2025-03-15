@@ -634,7 +634,7 @@ export const delay = <A>(f: () => A, n: Milliseconds = 0): Future<A> =>
 /**
  * wait n milliseconds before continuing the Future chain.
  */
-export const wait = (n: Milliseconds): Future<void> =>
+export const wait = (n: Milliseconds=0): Future<void> =>
     run(
         () =>
             new Promise(resolve => {
