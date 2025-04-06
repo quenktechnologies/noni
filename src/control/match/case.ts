@@ -14,18 +14,18 @@ export { Type };
  * Case is an interface for implementing class based pattern matching usually
  * found in functional programming languages.
  */
-export interface Case<A, B> {
+export interface Case<T> {
     /**
      * test a value to determine whether it matches the Case's pattern.
      */
-    test(value: A): boolean;
+    test(value: Type): boolean;
 
     /**
      * apply the Case's action to a value.
      *
      * NOTE: This should only be called if test() returns true.
      */
-    apply(value: A): B;
+    apply(value: Type): T;
 }
 
 /**
@@ -56,10 +56,10 @@ export type MatchedValue<A> = A extends StringConstructor
  * TypeCase is provided for situations where it is better to extend
  * the Case class instead of creating new instances.
  */
-export class TypeCase<A, B> implements Case<A, B> {
+export class TypeCase<P, T> implements Case<T> {
     constructor(
-        public pattern: A,
-        public handler: (value: MatchedValue<A>) => B
+        public pattern: P,
+        public handler: (value: MatchedValue<P>) => T
     ) {}
 
     /**
@@ -74,7 +74,7 @@ export class TypeCase<A, B> implements Case<A, B> {
      *
      * NOTE: This should not be called if test() fails for the value.
      */
-    apply(value: Type): B {
+    apply(value: Type): T {
         return this.handler(value);
     }
 }
@@ -84,7 +84,7 @@ export class TypeCase<A, B> implements Case<A, B> {
  *
  * Use it as a catch-all when other TypeCase classes fail to match.
  */
-export class Default<T> implements Case<Type, T> {
+export class Default<T> implements Case<T> {
     constructor(public handler: (value: Type) => T) {}
 
     test(_: Type): boolean {
@@ -102,14 +102,14 @@ export class Default<T> implements Case<Type, T> {
  * When using this TypeCase it may be necessary to cast the cases value
  * to a single type the compiler understands.
  */
-export class CaseFunction<A, B> implements Case<A, B> {
-    constructor(public cases: Case<A, B>[] = []) {}
+export class CaseFunction<T> implements Case<T> {
+    constructor(public cases: Case<T>[] = []) {}
 
     test(value: Type): boolean {
         return this.cases.some(kase => kase.test(value));
     }
 
-    apply(value: A): B {
+    apply(value: Type): T {
         let kase = this.cases.find(kase => kase.test(value));
 
         if (!kase)
