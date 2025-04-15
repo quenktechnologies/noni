@@ -110,6 +110,16 @@ export abstract class Either<L, R>
     abstract takeRight(): R;
 
     /**
+     * right is an alias for takeRight.
+     */
+    abstract right(): R;
+
+    /**
+     * left is an alias for takeLeft.
+     */
+    abstract left(): L;
+
+    /**
      * toMaybe transformation.
      */
     abstract toMaybe(): Maybe<R>;
@@ -176,10 +186,18 @@ export class Left<L, R> extends Either<L, R> {
     }
 
     takeLeft(): L {
+        return this.left();
+    }
+
+    left(): L {
         return this.value;
     }
 
     takeRight(): R {
+        return this.right();
+    }
+
+    right(): R {
         throw new TypeError(`Not right!`);
     }
 
@@ -249,10 +267,18 @@ export class Right<L, R> extends Either<L, R> {
     }
 
     takeLeft(): L {
+        return this.left();
+    }
+
+    left(): L {
         throw new TypeError(`Not left!`);
     }
 
     takeRight(): R {
+        return this.right();
+    }
+
+    right(): R {
         return this.value;
     }
 
