@@ -32,7 +32,7 @@ export type JSONXDate = Date;
 /**
  * JSONXBuffer
  */
-export type JSONXBuffer = Buffer;
+export type JSONXBuffer = Buffer | Blob
 
 /**
  * JSONXNumber
