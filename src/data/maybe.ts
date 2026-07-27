@@ -4,6 +4,7 @@ import { Plus } from '../control/plus';
 import { Alternative } from '../control/alternative';
 import { Extend } from '../control/extend';
 import { Eq } from './eq';
+import { Type, isFunction } from './type';
 
 /**
  * Maybe monad represents an optional or nullable value.
@@ -27,6 +28,15 @@ export abstract class Maybe<A>
 
     static nothing<A>(): Maybe<A> {
         return new Nothing<A>();
+    }
+
+    static is<T>(m: Type): m is Maybe<T> {
+        return (
+            m != null &&
+            isFunction(m.chain) &&
+            isFunction(m.isJust) &&
+            isFunction(m.isNothing)
+        );
     }
 
     /**

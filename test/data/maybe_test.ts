@@ -145,6 +145,40 @@ describe('maybe', () => {
         });
     });
 
+    describe('is', () => {
+        it('should return true for Just', () => {
+            assert(Maybe.is(just(1))).equal(true);
+        });
+
+        it('should return true for Nothing', () => {
+            assert(Maybe.is(nothing())).equal(true);
+        });
+
+        it('should return false for null', () => {
+            assert(Maybe.is(null)).equal(false);
+        });
+
+        it('should return false for undefined', () => {
+            assert(Maybe.is(undefined)).equal(false);
+        });
+
+        it('should return false for a plain object', () => {
+            assert(Maybe.is({})).equal(false);
+        });
+
+        it('should return false for an object missing required methods', () => {
+            assert(Maybe.is({ chain: () => {}, isJust: () => {} })).equal(
+                false
+            );
+        });
+
+        it('should return false for primitives', () => {
+            assert(Maybe.is(1)).equal(false);
+
+            assert(Maybe.is('str')).equal(false);
+        });
+    });
+
     describe('Maybe', () => {
         describe('orElse', () => {
             it('should not cause #3', () => {

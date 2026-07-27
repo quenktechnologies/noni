@@ -27,6 +27,7 @@ import { Monad } from '../control/monad';
 import { Extend } from '../control/extend';
 import { Eq } from './eq';
 import { Maybe, nothing, just } from './maybe';
+import { Type, isFunction } from './type';
 
 /**
  * The abstract Either class.
@@ -52,6 +53,15 @@ export abstract class Either<L, R>
      * right constructor helper.
      */
     static right = <A, B>(b: B): Either<A, B> => new Right<A, B>(b);
+
+    static is<T>(m: Type): m is Maybe<T> {
+        return (
+            m != null &&
+            isFunction(m.chain) &&
+            isFunction(m.isLeft) &&
+            isFunction(m.isRight)
+        );
+    }
 
     of(value: R): Either<L, R> {
         return new Right<L, R>(value);

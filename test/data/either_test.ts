@@ -76,6 +76,40 @@ describe('either', () => {
         });
     });
 
+    describe('is', () => {
+        it('should return true for Left', () => {
+            assert(Either.is(left(1))).equal(true);
+        });
+
+        it('should return true for Right', () => {
+            assert(Either.is(right(1))).equal(true);
+        });
+
+        it('should return false for null', () => {
+            assert(Either.is(null)).equal(false);
+        });
+
+        it('should return false for undefined', () => {
+            assert(Either.is(undefined)).equal(false);
+        });
+
+        it('should return false for a plain object', () => {
+            assert(Either.is({})).equal(false);
+        });
+
+        it('should return false for an object missing required methods', () => {
+            assert(Either.is({ chain: () => {}, isLeft: () => {} })).equal(
+                false
+            );
+        });
+
+        it('should return false for primitives', () => {
+            assert(Either.is(1)).equal(false);
+
+            assert(Either.is('str')).equal(false);
+        });
+    });
+
     describe('either', () => {
         it('should apply to the right side', () => {
             let l: Either<boolean, boolean> = left(false);
