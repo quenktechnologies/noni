@@ -54,12 +54,12 @@ export abstract class Either<L, R>
      */
     static right = <A, B>(b: B): Either<A, B> => new Right<A, B>(b);
 
-    static is<T>(m: Type): m is Maybe<T> {
+    static is<T>(e: Type): e is Maybe<T> {
         return (
-            m != null &&
-            isFunction(m.chain) &&
-            isFunction(m.isLeft) &&
-            isFunction(m.isRight)
+            e != null &&
+            isFunction(e.chain) &&
+            isFunction(e.isLeft) &&
+            isFunction(e.isRight)
         );
     }
 
